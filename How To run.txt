@@ -1,0 +1,2 @@
+Go to Main Screen and run from there
+install all libraries required
