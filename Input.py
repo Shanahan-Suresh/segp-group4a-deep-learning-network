@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import integration
 
 import CompleteOutput
 
@@ -45,12 +46,15 @@ class Ui_MainWindow(object):
             file.close()
 
     def SubmitButtonAction(self):
+        integration.main()
+        integration.set_data(self.Temperature.text(),self.Humidity.text(),self.WindSpeed.text(),self.SRFileNo.text(),self.AluminiumTemp.text(),self.ChemicalTemp.text(),self.LauricAcid.text(),self.StearicAcid.text(),
+        self.ParafinWax.text(),self.LauricAcidComp.text(),self.StearicAcidWaxComp.text(),self.ParafinWaxComp.text())
         self.ShowInputValues()
         self.newWindow = QtWidgets.QMainWindow()
         self.ui = CompleteOutput.Output()
         self.ui.setup(self.newWindow)
         self.newWindow.show()
-
+        
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(707, 435)
@@ -233,3 +237,4 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
