@@ -141,14 +141,14 @@ def save_model(model):
 
 #Loads a trained neural network model
 def load_model(data):
-    print(data)
+    #print(data)
     model = Net()
     model.load_state_dict(torch.load('savetesting'))
-    '''for var_name in model.state_dict():
-        print(var_name, "\t", model.state_dict()[var_name])
-    model.eval()'''
-    output = model(data.float(),120,160)
-    print(output.shape)
+    #model.eval()
+    ProducedImageTensor = model(data.float(),120,160)
+    ProducedImageTensor = ProducedImageTensor.squeeze(0)
+    save_image_from_tensor(ProducedImageTensor)
+    return ProducedImageTensor
 
 #Neural Network
 class Net(nn.Module):
@@ -245,8 +245,11 @@ def save_image_from_tensor(image_tensor, image_size = 500):
     ])
     image_tensor = transform(image_tensor)
 
+    #name of the saved file
+    file_name = 'test.png'
+
     #save image
-    save_image(image_tensor, 'test.png')
+    save_image(image_tensor, file_name)
 
 #Evaluates the neural network based on test dataset
 def performance_evaluation(test_data, training_data_count):
@@ -259,7 +262,7 @@ def performance_evaluation(test_data, training_data_count):
         if OriginalImageTensor == [0,0,0]:
                 continue
 
-        OriginalImageTensor = OriginalImageTensor.unsqueeze(0)
+        OriginalImageTensor = OriginalImageTensor.usqueeze(0)
         OriginalImageTensor = OriginalImageTensor.detach().numpy()
         original_images.append(OriginalImageTensor)
 
