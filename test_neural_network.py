@@ -14,8 +14,11 @@ def load_model(data):
     #print(data)
     model = Net()
     model.load_state_dict(torch.load('savetesting'))
-    #model.eval()
+    model.eval()
     ProducedImageTensor = model(data.float(),120,160)
+    pltTensor = ProducedImageTensor.cpu().detach().numpy()
+    plt.imshow(pltTensor[0])
+    plt.show()
     ProducedImageTensor = ProducedImageTensor.squeeze(0)
     save_image_from_tensor(ProducedImageTensor)
     return ProducedImageTensor
@@ -23,24 +26,22 @@ def load_model(data):
     #print(produced_image_tensor)
 
 #Saves a single tensor as an image to file
-def save_image_from_tensor(image_tensor, image_size = 500):
+def save_image_from_tensor(image_tensor, height = 500, width = 666):
 
     #swap tensor axes so 'channels' is first
     image_tensor = image_tensor.swapaxes(2,1)
     image_tensor = image_tensor.swapaxes(1,0)
 
-    #resize image
-    transform = transforms.Compose([
-    transforms.ToPILImage(),
-    transforms.Resize(size=500),
-    transforms.ToTensor()
-    ])
-    image_tensor = transform(image_tensor)
+    print('Before conversion {}'.format(image_tensor.dtype))
+
+    #resize image to 666 * 500
+    image_tensor = F.interpolate(image_tensor.unsqueeze(0).float(), size=(height, width), mode='nearest').squeeze(0).float()
 
     #name of the saved file
     file_name = 'temp.png'
 
     #save image
+    print('After conversion {}'.format(image_tensor.dtype))
     save_image(image_tensor, file_name)
 
 class Net(nn.Module):
