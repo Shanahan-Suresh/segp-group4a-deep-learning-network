@@ -10,6 +10,8 @@ import os
 from os.path import exists
 from PIL import Image
 import math
+def get_image():
+    return ProducedImageTensor
 def load_model(data):
     #print(data)
     model = Net()
