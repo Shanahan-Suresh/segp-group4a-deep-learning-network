@@ -11,8 +11,23 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QHeaderView
 
-
+def format_cursor_data(data):
+    if data[0] > 0.45 and data [1] >= 0.45:
+        return "[" + str(round((13*data[0] + 8*data[1] + 5.6*data[2]),2)) + "]"
+    if data[0] < 0.1 and data[1] >= data[2] :
+        if(data[1] - data[2] >= 0.2):
+            return "[" + str(round((15*data[0] + 14*data[1] + 5*data[2]),2)) + "]"
+        else:
+            return "[" + str(round((15*data[0] + 12*data[1] + 4*data[2]),2)) + "]"
+    return "[" + str(round((23*data[0] + 10*data[1] + 6*data[2]),2)) + "]"
 class Output(object):
+    def AnalyzeButtonAction(self):
+        Image = get_image()
+        Image = Image.cpu().detach().numpy()
+
+        tmp = plt.imshow(Image)
+        tmp.format_cursor_data = format_cursor_data
+        plt.show()
     def setup(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1037, 526)
@@ -144,6 +159,10 @@ class Output(object):
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_2.setGeometry(QtCore.QRect(455, 410, 75, 23))
         self.pushButton_2.setObjectName("pushButton_2")
+        self.analyze_button = QtWidgets.QPushButton(self.centralwidget)
+        self.analyze_button.setGeometry(QtCore.QRect(655, 410, 75, 23))
+        self.analyze_button.setObjectName("analyze_button")
+        self.analyze_button.clicked.connect(self.AnalyzeButtonAction)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -235,6 +254,7 @@ class Output(object):
         self.tableWidget.setSortingEnabled(__sortingEnabled)
         self.pushButton.setText(_translate("MainWindow", "Next"))
         self.pushButton_2.setText(_translate("MainWindow", "Previous"))
+        self.analyze_button.setText((_translate("MainWindow","Analyze Image")))
         file.close()
 import heatmap
 
