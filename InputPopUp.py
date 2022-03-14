@@ -12,11 +12,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import integration
 
 class Ui_Form(object):
-
     def SubmitAction(self):
         integration.main()
         integration.set_data(self.Temperature.text(),self.Humidity.text(),self.WindSpeed.text(),self.SRFileNo.text(),self.AluminiumTemp.text(),self.ChemicalTemp.text(),self.LauricAcid.text(),self.StearicAcid.text(),
-                             self.ParafinWax.text(),self.LauricAcidComp.text(),self.StearicAcidWaxComp.text(),self.ParafinWaxComp.text())
+        self.ParafinWax.text(),self.LauricAcidComp.text(),self.StearicAcidWaxComp.text(),self.ParafinWaxComp.text())
         with open("Variables.txt", 'w') as file:
             file.write(self.Temperature.text() +" °C" + "\n")
             file.write(self.Humidity.text() +" %" + "\n")
@@ -31,7 +30,6 @@ class Ui_Form(object):
             file.write(self.StearicAcidWaxComp.text() + "\n")
             file.write(self.ParafinWaxComp.text() + "\n")
         file.close()
-
 
     def setupUi(self, Form):
         Form.setWindowTitle("Test Model")

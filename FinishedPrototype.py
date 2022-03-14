@@ -10,24 +10,25 @@ import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
-from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QHeaderView, QFileDialog
 from fpdf import FPDF
-from matplotlib import pyplot as plt
-
 import InputPopUp
 import TrainingPage
+from matplotlib import pyplot as plt
 from test_neural_network import get_image
 
+
 def format_cursor_data(data):
-    if data[0] > 0.45 and data [1] >= 0.45:
-        return "[" + str(round((13*data[0] + 8*data[1] + 5.6*data[2]),2)) + "]"
-    if data[0] < 0.1 and data[1] >= data[2] :
-        if(data[1] - data[2] >= 0.2):
-            return "[" + str(round((15*data[0] + 14*data[1] + 5*data[2]),2)) + "]"
+    if data[0] > 0.45 and data[1] >= 0.45:
+        return "[" + str(round((13 * data[0] + 8 * data[1] + 5.6 * data[2]), 2)) + "]"
+    if data[0] < 0.1 and data[1] >= data[2]:
+        if (data[1] - data[2] >= 0.2):
+            return "[" + str(round((15 * data[0] + 14 * data[1] + 5 * data[2]), 2)) + "]"
         else:
-            return "[" + str(round((15*data[0] + 12*data[1] + 4*data[2]),2)) + "]"
-    return "[" + str(round((23*data[0] + 10*data[1] + 6*data[2]),2)) + "]"
+            return "[" + str(round((15 * data[0] + 12 * data[1] + 4 * data[2]), 2)) + "]"
+    return "[" + str(round((23 * data[0] + 10 * data[1] + 6 * data[2]), 2)) + "]"
+
+
 def ConvertToPdf():
     pdf = FPDF()
 
@@ -42,7 +43,7 @@ def ConvertToPdf():
     pdf.cell(200, 10, txt="Heat Map",  # main title
              ln=1, align='C')
 
-    pdf.image(name="Uq39Tl7H_400x400.jpg", x=10, y=20, w=80, h=80)
+    pdf.image(name="temp.png", x=10, y=20, w=110, h=80)
 
     # ***************************************
 
@@ -120,8 +121,6 @@ def ConvertToPdf():
         os.startfile(PDFfile)
 
 
-
-
 class Ui_MainWindow(QObject):
     def ExtractImage(self):
         Image = get_image()
@@ -133,17 +132,19 @@ class Ui_MainWindow(QObject):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.setFixedSize(829, 587)
+        MainWindow.resize(1148, 680)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
-        self.tableWidget.setGeometry(QtCore.QRect(0, 120, 391, 381))
+        self.tableWidget.setGeometry(QtCore.QRect(0, 120, 411, 481))
         self.tableWidget.setStyleSheet("tableWidget{\n"
                                        "border-width:10 px;\n"
                                        "}\n"
                                        );
         hheader = self.tableWidget.horizontalHeader()
         hheader.setSectionResizeMode(QHeaderView.Stretch)
+        vheader = self.tableWidget.verticalHeader()
+        vheader.setSectionResizeMode(QHeaderView.Stretch)
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setColumnCount(2)
@@ -280,8 +281,8 @@ class Ui_MainWindow(QObject):
         file.close()
         self.tableWidget.setItem(11, 1, item)
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(410, 122, 371, 371))
-        self.pushButton.setStyleSheet("background-image : url(Uq39Tl7H_400x400.jpg);border :2px solid black;")
+        self.pushButton.setGeometry(QtCore.QRect(460, 100, 666, 500))
+        self.pushButton.setStyleSheet("background-image : url(temp.png);border :2px solid black;")
         self.pushButton.setObjectName("pushButton")
         self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton.clicked.connect(self.ExtractImage)
@@ -312,7 +313,7 @@ class Ui_MainWindow(QObject):
         self.actionTest_model.setCheckable(False)
         self.actionTest_model.setChecked(False)
         self.actionTest_model.setObjectName("actionTest_model")
-        #self.actionTest_model.triggered.connect(self.TestAction)
+        # self.actionTest_model.triggered.connect(self.TestAction)
         self.actionExtract_Image = QtWidgets.QAction(MainWindow)
         self.actionExtract_Image.setObjectName("actionExtract_Image")
         self.actionExtract_Image.triggered.connect(self.ExtractImage)
@@ -506,10 +507,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
-#    MainWindow = QtWidgets.QMainWindow()
-#    ui = Ui_MainWindow()
-#    ui.setupUi(MainWindow)
+    #    MainWindow = QtWidgets.QMainWindow()
+    #    ui = Ui_MainWindow()
+    #    ui.setupUi(MainWindow)
     MainWindow = MyWindow()
     MainWindow.show()
     sys.exit(app.exec_())
