@@ -17,6 +17,7 @@ def load_model(data):
     model = Net()
     model.load_state_dict(torch.load('savetesting'))
     model.eval()
+    global ProducedImageTensor
     ProducedImageTensor = model(data.float(),120,160)
     pltTensor = ProducedImageTensor.cpu().detach().numpy()
     plt.imshow(pltTensor[0])
