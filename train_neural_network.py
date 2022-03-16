@@ -147,7 +147,7 @@ def load_model(data):
     #model.eval()
     ProducedImageTensor = model(data.float(),120,160)
     ProducedImageTensor = ProducedImageTensor.squeeze(0)
-    save_image_from_tensor(ProducedImageTensor)
+    #save_image_from_tensor(ProducedImageTensor)
     return ProducedImageTensor
 
 #Neural Network
@@ -157,10 +157,10 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.fc1 = nn.Linear(11, 2048)
-        self.batchnorm1 = nn.BatchNorm2d(64, track_running_stats=False)
+        self.batchnorm1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU()
         self.dropout1 = nn.Dropout(0.25)
-        self.batchnorm2 = nn.BatchNorm2d(128, track_running_stats=False)
+        self.batchnorm2 = nn.BatchNorm2d(128)
 
         self.dropout2 = nn.Dropout2d(0.25)
 
@@ -168,7 +168,7 @@ class Net(nn.Module):
 
         self.Convolution1 = nn.Conv2d(36,64, (3, 3), padding=1)
         self.dropout3 = nn.Dropout2d(0.25)
-        self.batchnorm3 = nn.BatchNorm2d(64, track_running_stats=False)
+        self.batchnorm3 = nn.BatchNorm2d(64)
         self.Convolution2 = nn.Conv2d(64, 128, (3, 3), padding=1)
         self.Convolution3 = nn.Conv2d(128, 64, (3, 3), padding = 1)
         self.Convolution4 = nn.Conv2d(64, 3, (3, 3), padding = 1)
@@ -262,12 +262,18 @@ def performance_evaluation(test_data, training_data_count):
         if OriginalImageTensor == [0,0,0]:
                 continue
 
-        OriginalImageTensor = OriginalImageTensor.usqueeze(0)
+        OriginalImageTensor = OriginalImageTensor.squeeze(0)
         OriginalImageTensor = OriginalImageTensor.detach().numpy()
         original_images.append(OriginalImageTensor)
 
         test_tensor = torch.tensor(test_data.iloc[i].values)
-        predicted_images.append(load_model(test_tensor))
+        predicted_images.append((load_model(test_tensor)).detach().numpy())
+
+	#Code for shape tests
+    origianal_img_shape_test = np.array(original_images)
+    predicted_img_shape_test = np.array(predicted_images)
+    print("Original image array: {}".format(origianal_img_shape_test.shape))
+    print("Predicted image array: {}".format(predicted_img_shape_test.shape))
 
     #mean squared error formula
     MSE = np.square(np.subtract(original_images,predicted_images)).mean()
@@ -280,12 +286,13 @@ def main():
 
     normalized_data = create_dataset(data)
     training_data, test_data = split_dataset(normalized_data)
-    training(training_data)
+    #training(training_data)
 
-   #load_model(torch.tensor(test_data.iloc[1].values))
+    #load_model(torch.tensor(test_data.iloc[1].values))
 
-   #training_data_count = len(training_data)
-   #performance_evaluation(test_data, training_data_count)
+    #Code for performance evaluation
+    training_data_count = len(training_data)
+    performance_evaluation(test_data, training_data_count)
 
 main()
 
