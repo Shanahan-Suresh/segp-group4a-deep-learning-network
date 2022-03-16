@@ -71,14 +71,15 @@ def getOriginalImage(file_num):
 
 
 #Trains the neural network to convert data into an image
-def training(training_data):
+def training(training_data, epoch_num, model_name, mode):
 
     #set up loss functions
     criterion = nn.CrossEntropyLoss()
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if (torch.cuda.is_available() and mode == 2) else 'cpu')
     model = Net()
-    model = model.to(device) #CUDA CODE
+    if mode == 2:
+        model = model.to(device) #CUDA CODE
     class_instance = model.float()
     optimizer = optim.SGD(class_instance.parameters(), lr=0.009, momentum=0.9)
     loss_function = nn.L1Loss()
@@ -86,11 +87,12 @@ def training(training_data):
     count = 0
 
     #trains network for each image (non-epoch)
-    for epoch in range(500):
+    for epoch in range(epoch_num):
 
         for i in range(len(training_data)):
             tensor = torch.tensor(training_data.iloc[i].values)
-            tensor = tensor.to(device) #CUDA CODE
+            if mode == 2:
+                tensor = tensor.to(device) #CUDA CODE
             OriginalImageTensor = getOriginalImage(finaldf['SR file number'].iloc[i])#tensor of the original image
 
             #skip if empty image
@@ -102,11 +104,13 @@ def training(training_data):
             #OriginalImagewidth = OriginalImageTensor.shape[1]
             OriginalImageTensor = OriginalImageTensor.unsqueeze(0)
             
-            OriginalImageTensor = OriginalImageTensor.to(device) #CUDA CODE
+            if mode == 2:
+                OriginalImageTensor = OriginalImageTensor.to(device) #CUDA CODE
 
             #produce tensor of neural network image using previous dimensions
             ProducedImageTensor = class_instance(tensor.float(),120,160) #tensor of the produced image
-            ProducedImageTensor = ProducedImageTensor.to(device) #CUDA CODE
+            if mode == 2:
+                ProducedImageTensor = ProducedImageTensor.to(device) #CUDA CODE
 
             #loss functions
             optimizer.zero_grad()
@@ -116,7 +120,7 @@ def training(training_data):
             optimizer.step() #optimizer
             
             #print comparisons
-            if epoch == 499:
+            if epoch == (epoch_num-1):
                 if count == 50 :
                     OriginalImageTensor = OriginalImageTensor.cpu().detach().numpy()
                     plt.imshow(OriginalImageTensor[0])
@@ -127,23 +131,26 @@ def training(training_data):
                     count = 0
                 count += 1
 
-        print("Epoch number:" + str(epoch))
+        print("Epoch number:" + str(epoch+1))
         print("Current epoch loss : {}".format(loss))
         print("Total loss : {}\n".format(total_loss/len(training_data)))
         total_loss = 0
 
-    save_model(class_instance)
     print("Training completed")
+    save_model(class_instance, model_name)
+
+    main()
 
 #Saves the current neural network model
-def save_model(model):
-    torch.save(model.state_dict(),'500-network')
+def save_model(model, model_name):
+    torch.save(model.state_dict(), model_name)
+    print('Model saved as {}'.format(model_name))
 
 #Loads a trained neural network model
-def load_model(data):
+def load_model(data, model_name):
     #print(data)
     model = Net()
-    model.load_state_dict(torch.load('savetesting'))
+    model.load_state_dict(torch.load(model_name))
     #model.eval()
     ProducedImageTensor = model(data.float(),120,160)
     ProducedImageTensor = ProducedImageTensor.squeeze(0)
@@ -252,7 +259,7 @@ def save_image_from_tensor(image_tensor, image_size = 500):
     save_image(image_tensor, file_name)
 
 #Evaluates the neural network based on test dataset
-def performance_evaluation(test_data, training_data_count):
+def performance_evaluation(test_data, training_data_count, model_name):
     original_images = []
     predicted_images = []
 
@@ -267,7 +274,7 @@ def performance_evaluation(test_data, training_data_count):
         original_images.append(OriginalImageTensor)
 
         test_tensor = torch.tensor(test_data.iloc[i].values)
-        predicted_images.append((load_model(test_tensor)).detach().numpy())
+        predicted_images.append((load_model(test_tensor, model_name)).detach().numpy())
 
 	#Code for shape tests
     origianal_img_shape_test = np.array(original_images)
@@ -278,7 +285,18 @@ def performance_evaluation(test_data, training_data_count):
     #mean squared error formula
     MSE = np.square(np.subtract(original_images,predicted_images)).mean()
 
-    print('Mean Squared Error : {}'.format(MSE))
+    print("Mean Squared Error for model '{}' : {}".format(model_name, MSE))
+
+    main()
+
+# Message to display train or evaluate options
+def menu_msg():
+    print("\n------Console Menu------")
+    print("1.Train")
+    print("2.Performance Evaluation")
+    print("3.Exit")
+    choice = int(input(""))
+    return choice
 
 def main():
     global finaldf
@@ -286,13 +304,30 @@ def main():
 
     normalized_data = create_dataset(data)
     training_data, test_data = split_dataset(normalized_data)
-    #training(training_data)
 
-    #load_model(torch.tensor(test_data.iloc[1].values))
+    choice = menu_msg()
 
-    #Code for performance evaluation
-    training_data_count = len(training_data)
-    performance_evaluation(test_data, training_data_count)
+    if choice == 1:
+        print(">>>Training\n")
+        epoch_num = int(input("Please insert the number of epochs to train the model with: "))
+        model_name = input("Please set the name of the model: ")
+        mode = int(input("Will you be training on CPU or GPU ?\n1.CPU\n2.GPU (CUDA)\n"))
+        training(training_data, epoch_num, model_name, mode)
+
+    elif choice == 2:
+        print(">>>Evaluating Performance\n")
+        model_name = input("Please state the name of the model you wish to load: ")
+        training_data_count = len(training_data)
+        performance_evaluation(test_data, training_data_count, model_name)
+
+    elif choice == 3:
+        print(">>>Terminating console...")
+        return
+
+    else:
+        print(">>>Unrecognized command\n")
+        main()
+
 
 main()
 
