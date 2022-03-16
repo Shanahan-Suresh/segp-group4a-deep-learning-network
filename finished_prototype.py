@@ -11,11 +11,12 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QHeaderView, QFileDialog
+from PyQt5.QtGui import QIcon
 from fpdf import FPDF
-import input_pop_up
-import training_page
 from matplotlib import pyplot as plt
 from test_neural_network import get_image
+import input_pop_up
+import training_page
 
 
 def format_cursor_data(data):
@@ -132,7 +133,7 @@ class Ui_MainWindow(QObject):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1148, 680)
+        MainWindow.setFixedSize(1148, 680)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
@@ -369,13 +370,18 @@ class Ui_MainWindow(QObject):
         self.menuTest.setTitle(_translate("MainWindow", "Model"))
         self.menuImage.setTitle(_translate("MainWindow", "Image"))
         self.actionSave_as.setText(_translate("MainWindow", "Save as Report"))
+        self.actionSave_as.setStatusTip(_translate("MainWindow", "Save as Report"))
         self.actionSave_as.setShortcut(_translate("MainWindow", "Ctrl+S"))
         self.actionTest_model.setText(_translate("MainWindow", "Test Model"))
         self.actionTest_model.setShortcut(_translate("MainWindow", "Ctrl+T"))
+        self.actionTest_model.setStatusTip(_translate("MainWindow", "Test Model"))
         self.actionExtract_Image.setText(_translate("MainWindow", "Extract Image"))
+        self.actionExtract_Image.setStatusTip(_translate("MainWindow", "Extract Image"))
         self.actionExtract_Image.setShortcut(_translate("MainWindow", "Ctrl+E"))
         self.actionSave_Image.setText(_translate("MainWindow", "Save Image"))
+        self.actionSave_Image.setStatusTip(_translate("MainWindow", "Save Image"))
         self.actionTrain_Model.setText(_translate("MainWindow", "Train Model"))
+        self.actionTrain_Model.setStatusTip(_translate("MainWindow", "Train Model"))
 
 
 import images
@@ -385,7 +391,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowIcon(QIcon('MainNotLogo.jpg'))
         self.setStyleSheet("background-color: white;")
+        self.menuBar.setStyleSheet("QMenu::item:selected { background-color: #1261A0;color: rgb(255,255,255);}")
         self.actionTest_model.triggered.connect(self.openTestWindow)
         self.actionTrain_Model.triggered.connect(self.openTrainWindow)
 
