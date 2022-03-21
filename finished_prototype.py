@@ -124,12 +124,7 @@ def ConvertToPdf():
 
 class Ui_MainWindow(QObject):
     def ExtractImage(self):
-        Image = get_image()
-        Image = Image.cpu().detach().numpy()
-
-        tmp = plt.imshow(Image)
-        tmp.format_cursor_data = format_cursor_data
-        plt.show()
+        import additional_features
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
