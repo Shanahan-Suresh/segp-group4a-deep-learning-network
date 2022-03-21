@@ -34,7 +34,7 @@ def save_image_from_tensor(image_tensor, height = 500, width = 666):
     #swap tensor axes so 'channels' is first
     image_tensor = image_tensor.swapaxes(2,1)
     image_tensor = image_tensor.swapaxes(1,0)
-
+    save_image(image_tensor,"temp2.png")
     print('Before conversion {}'.format(image_tensor.dtype))
 
     #resize image to 666 * 500
