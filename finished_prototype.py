@@ -17,6 +17,7 @@ from matplotlib import pyplot as plt
 from test_neural_network import get_image
 import input_pop_up
 import training_page
+import load_model
 
 
 def format_cursor_data(data):
@@ -127,8 +128,9 @@ class Ui_MainWindow(QObject):
         import additional_features
 
     def setupUi(self, MainWindow):
+        self.ClearFile()
         MainWindow.setObjectName("MainWindow")
-        MainWindow.setFixedSize(1148, 680)
+        MainWindow.setFixedSize(1154, 723)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
@@ -136,7 +138,7 @@ class Ui_MainWindow(QObject):
         self.tableWidget.setStyleSheet("tableWidget{\n"
                                        "border-width:10 px;\n"
                                        "}\n"
-                                       );
+                                       )
         hheader = self.tableWidget.horizontalHeader()
         hheader.setSectionResizeMode(QHeaderView.Stretch)
         vheader = self.tableWidget.verticalHeader()
@@ -278,8 +280,13 @@ class Ui_MainWindow(QObject):
         self.tableWidget.setItem(11, 1, item)
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(460, 100, 666, 500))
-        self.pushButton.setStyleSheet("background-image : url(temp.png);border :2px solid black;")
+        self.pushButton.setStyleSheet("background-color : #FAFAFA;border :2px solid black;")
         self.pushButton.setObjectName("pushButton")
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(10, 620, 51, 41))
+        self.pushButton_2.setStyleSheet("image: url(editIcon.png);border :1px solid black;")
+        self.pushButton_2.setText("")
+        self.pushButton_2.setObjectName("pushButton_2")
         self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton.clicked.connect(self.ExtractImage)
         self.NottinghamLogo = QtWidgets.QLabel(self.centralwidget)
@@ -303,7 +310,7 @@ class Ui_MainWindow(QObject):
         self.actionSave_as = QtWidgets.QAction(MainWindow)
         self.actionSave_as.setMenuRole(QtWidgets.QAction.TextHeuristicRole)
         self.actionSave_as.setPriority(QtWidgets.QAction.NormalPriority)
-        self.actionSave_as.setObjectName("actionSave_as")
+        self.actionSave_as.setEnabled(False)
         self.actionSave_as.triggered.connect(ConvertToPdf)
         self.actionTest_model = QtWidgets.QAction(MainWindow)
         self.actionTest_model.setCheckable(False)
@@ -313,20 +320,32 @@ class Ui_MainWindow(QObject):
         self.actionExtract_Image = QtWidgets.QAction(MainWindow)
         self.actionExtract_Image.setObjectName("actionExtract_Image")
         self.actionExtract_Image.triggered.connect(self.ExtractImage)
+        self.actionExtract_Image.setEnabled(False)
         self.actionSave_Image = QtWidgets.QAction(MainWindow)
         self.actionSave_Image.setObjectName("actionSave_Image")
         self.actionTrain_Model = QtWidgets.QAction(MainWindow)
         self.actionTrain_Model.setObjectName("actionTrain_Model")
+        self.actionSimulate_Model = QtWidgets.QAction(MainWindow)
+        self.actionSimulate_Model.setObjectName("actionSimulate_Model")
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addSeparator()
         self.menuTest.addAction(self.actionTest_model)
         self.menuTest.addAction(self.actionTrain_Model)
+        self.menuTest.addAction(self.actionSimulate_Model)
         self.menuImage.addAction(self.actionExtract_Image)
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuTest.menuAction())
         self.menuBar.addAction(self.menuImage.menuAction())
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def ClearFile(self):
+        file = open("variables.txt", 'w')
+        file.close()
+        file1 = open("Path.txt", 'w')
+        file1.write("savetesting")
+        file1.close()
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -376,11 +395,11 @@ class Ui_MainWindow(QObject):
         self.actionSave_Image.setText(_translate("MainWindow", "Save Image"))
         self.actionSave_Image.setStatusTip(_translate("MainWindow", "Save Image"))
         self.actionTrain_Model.setText(_translate("MainWindow", "Train Model"))
-        self.actionTrain_Model.setStatusTip(_translate("MainWindow", "Train Model"))
-
+        self.actionTrain_Model.setStatusTip(_translate("MainWindow", "Train Model"))        
+        self.actionSimulate_Model.setText(_translate("MainWindow", "Select Model"))
+        self.actionSimulate_Model.setStatusTip(_translate("MainWindow", "Select Model"))
 
 import images
-
 
 class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
     def __init__(self):
@@ -391,6 +410,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.menuBar.setStyleSheet("QMenu::item:selected { background-color: #1261A0;color: rgb(255,255,255);}")
         self.actionTest_model.triggered.connect(self.openTestWindow)
         self.actionTrain_Model.triggered.connect(self.openTrainWindow)
+        self.actionSimulate_Model.triggered.connect(self.openLoadWindow)
+        self.pushButton_2.clicked.connect(self.openTestWindow)
+
 
     def openTestWindow(self):
         self.window = QtWidgets.QWidget()
@@ -400,13 +422,19 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.ui.SubmitButton.clicked.connect(self.updateMainWindow)
 
     def openTrainWindow(self):
-        self.window = QtWidgets.QWidget()
-        self.ui = training_page.Ui_Form()
-        self.ui.setupUi(self.window)
+        self.window = QtWidgets.QMainWindow()
+        self.window = training_page.MyWindow()
         self.window.show()
-
+    def openLoadWindow(self):
+        self.window = QtWidgets.QMainWindow()
+        self.window = load_model.MyWindow()
+        self.window.show()
     def updateMainWindow(self):
+        self.actionSave_as.setEnabled(True)
+        self.actionExtract_Image.setEnabled(True)
         self.pushButton.setStyleSheet("background-image : url(temp.png);border :2px solid black;")
+        self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton.clicked.connect(self.ExtractImage)
         file = open('Variables.txt', 'r')
         item = QtWidgets.QTableWidgetItem()
         item.setFlags(QtCore.Qt.ItemIsEnabled)
@@ -512,9 +540,6 @@ if __name__ == "__main__":
     import sys
 
     app = QtWidgets.QApplication(sys.argv)
-    #    MainWindow = QtWidgets.QMainWindow()
-    #    ui = Ui_MainWindow()
-    #    ui.setupUi(MainWindow)
     MainWindow = MyWindow()
     MainWindow.show()
     sys.exit(app.exec_())

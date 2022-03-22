@@ -13,37 +13,36 @@ import math
 def get_image():
     return ProducedImageTensor
 def load_model(data):
-    #print(data)
+    file = open("Path.txt", 'r')
+    FileName = file.readline().strip()
+    file.close()
+    # print(data)
     model = Net()
-    model.load_state_dict(torch.load('savetesting'))
+    model.load_state_dict(torch.load(FileName))
     model.eval()
     global ProducedImageTensor
-    ProducedImageTensor = model(data.float(),120,160)
+    ProducedImageTensor = model(data.float(), 120, 160)
     pltTensor = ProducedImageTensor.cpu().detach().numpy()
     plt.imshow(pltTensor[0])
     plt.show()
     ProducedImageTensor = ProducedImageTensor.squeeze(0)
     save_image_from_tensor(ProducedImageTensor)
     return ProducedImageTensor
-    #produced_image_tensor = model(data.float(),120,160)
-    #print(produced_image_tensor)
+    # produced_image_tensor = model(data.float(),120,160)
+    # print(produced_image_tensor)
 
-#Saves a single tensor as an image to file
-def save_image_from_tensor(image_tensor, height = 500, width = 666):
-
-    #swap tensor axes so 'channels' is first
-    image_tensor = image_tensor.swapaxes(2,1)
-    image_tensor = image_tensor.swapaxes(1,0)
+# Saves a single tensor as an image to file
+def save_image_from_tensor(image_tensor, height=500, width=666):
+    # swap tensor axes so 'channels' is first
+    image_tensor = image_tensor.swapaxes(2, 1)
+    image_tensor = image_tensor.swapaxes(1, 0)
     save_image(image_tensor,"temp2.png")
     print('Before conversion {}'.format(image_tensor.dtype))
-
-    #resize image to 666 * 500
+    # resize image to 666 * 500
     image_tensor = F.interpolate(image_tensor.unsqueeze(0).float(), size=(height, width), mode='nearest').squeeze(0).float()
-
-    #name of the saved file
+    # name of the saved file
     file_name = 'temp.png'
-
-    #save image
+    # save image
     print('After conversion {}'.format(image_tensor.dtype))
     save_image(image_tensor, file_name)
 

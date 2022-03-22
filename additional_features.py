@@ -7,7 +7,6 @@ import numpy
 from matplotlib.widgets import Button
 from torchvision import transforms
 import os
-import python_math as math
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 import torch.nn.functional as F
@@ -198,7 +197,7 @@ global draw_line
 draw_line = LineBuilder(fig, ax)
 axButn1 = plt.axes([0.91, 0.01, 0.1, 0.1])
 global btn1
-btn1 = Button(axButn1, label="Home", color='pink', hovercolor='tomato')
+btn1 = Button(axButn1, label="Draw\nLine", color='pink', hovercolor='tomato')
 btn1.on_clicked(plot_lines)
 
 
