@@ -16,9 +16,11 @@ def load_model(data):
     file = open("Path.txt", 'r')
     FileName = file.readline().strip()
     file.close()
-    # print(data)
     model = Net()
-    model.load_state_dict(torch.load(FileName))
+    try:
+        model.load_state_dict(torch.load(FileName, map_location=torch.device('cpu')), strict=False)
+    except:
+        print("Model could not be loaded. Please verify that the file is a trained neural network.")
     model.eval()
     global ProducedImageTensor
     ProducedImageTensor = model(data.float(), 120, 160)
