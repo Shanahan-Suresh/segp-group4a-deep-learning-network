@@ -9,33 +9,111 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QObject
+from PyQt5.QtWidgets import QFileDialog
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(1019, 592)
-        self.label = QtWidgets.QLabel(Form)
-        self.label.setGeometry(QtCore.QRect(410, 220, 141, 101))
-        font = QtGui.QFont()
-        font.setPointSize(16)
-        self.label.setFont(font)
+class Ui_MainWindow(QObject):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(366, 235)
+        MainWindow.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(30, 80, 47, 13))
         self.label.setObjectName("label")
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setGeometry(QtCore.QRect(30, 110, 81, 16))
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(self.centralwidget)
+        self.label_5.setGeometry(QtCore.QRect(30, 150, 71, 16))
+        self.label_5.setObjectName("label_5")
+        self.doubleSpinBox = QtWidgets.QDoubleSpinBox(self.centralwidget)
+        self.doubleSpinBox.setGeometry(QtCore.QRect(90, 80, 62, 22))
+        self.doubleSpinBox.setObjectName("doubleSpinBox")
+        self.comboBox = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox.setGeometry(QtCore.QRect(110, 110, 69, 22))
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.doubleSpinBox_2 = QtWidgets.QDoubleSpinBox(self.centralwidget)
+        self.doubleSpinBox_2.setGeometry(QtCore.QRect(110, 150, 62, 22))
+        self.doubleSpinBox_2.setObjectName("doubleSpinBox_2")
+        self.StartTrainingButton = QtWidgets.QPushButton(self.centralwidget)
+        self.StartTrainingButton.setGeometry(QtCore.QRect(20, 190, 101, 23))
+        self.StartTrainingButton.setObjectName("pushButton_2")
+        self.doubleSpinBox_3 = QtWidgets.QDoubleSpinBox(self.centralwidget)
+        self.doubleSpinBox_3.setGeometry(QtCore.QRect(290, 120, 62, 22))
+        self.doubleSpinBox_3.setObjectName("doubleSpinBox_3")
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(210, 90, 71, 16))
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(220, 120, 61, 16))
+        self.label_3.setObjectName("label_3")
+        self.doubleSpinBox_4 = QtWidgets.QDoubleSpinBox(self.centralwidget)
+        self.doubleSpinBox_4.setGeometry(QtCore.QRect(290, 90, 62, 22))
+        self.doubleSpinBox_4.setObjectName("doubleSpinBox_4")
+        self.line = QtWidgets.QFrame(self.centralwidget)
+        self.line.setGeometry(QtCore.QRect(183, 70, 20, 151))
+        self.line.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setGeometry(QtCore.QRect(230, 70, 101, 16))
+        self.label_6.setObjectName("label_6")
+        self.ImportDataButton = QtWidgets.QPushButton(self.centralwidget)
+        self.ImportDataButton.setGeometry(QtCore.QRect(10, 10, 75, 23))
+        self.ImportDataButton.setObjectName("pushButton")
+        self.ImportImageButton = QtWidgets.QPushButton(self.centralwidget)
+        self.ImportImageButton.setGeometry(QtCore.QRect(10, 40, 91, 23))
+        self.ImportImageButton.setObjectName("pushButton_3")
+        MainWindow.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.label.setText(_translate("Form", "Training Page"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.label.setText(_translate("MainWindow", "Epoch: "))
+        self.label_4.setText(_translate("MainWindow", "Training mode:"))
+        self.label_5.setText(_translate("MainWindow", "Training ratio: "))
+        self.comboBox.setItemText(0, _translate("MainWindow", "CPU"))
+        self.comboBox.setItemText(1, _translate("MainWindow", "GPU"))
+        self.StartTrainingButton.setText(_translate("MainWindow", "Start training"))
+        self.label_2.setText(_translate("MainWindow", "Learning rate:"))
+        self.label_3.setText(_translate("MainWindow", "Momentum:"))
+        self.label_6.setText(_translate("MainWindow", "Advanced Options"))
+        self.ImportDataButton.setText(_translate("MainWindow", "Import Data"))
+        self.ImportImageButton.setText(_translate("MainWindow", "Import Images"))
+
+
+class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.ImportDataButton.clicked.connect(self.ImportData)
+        self.ImportImageButton.clicked.connect(self.ImportImages)
+        self.StartTrainingButton.clicked.connect(self.StartTraining)
+
+    def ImportData(self):
+        filename = QFileDialog.getOpenFileName(None, "Open Model",
+                                               "", " Excel File *.xlsx")
+
+    def ImportImages(self):
+        filename = QFileDialog.getOpenFileName(None, "Open Model",
+                                               "", " Image Folder *.File")
+
+    def StartTraining(self):
+        self.close()
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
-    ui = Ui_Form()
-    ui.setupUi(Form)
-    Form.show()
+    MainWindow = MyWindow()
+    MainWindow.show()
     sys.exit(app.exec_())
