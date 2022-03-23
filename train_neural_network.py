@@ -81,7 +81,7 @@ def training(training_data, epoch_num, model_name, mode):
     if mode == 2:
         model = model.to(device) #CUDA CODE
     class_instance = model.float()
-    optimizer = optim.SGD(class_instance.parameters(), lr=0.009, momentum=0.9)
+    optimizer = optim.SGD(class_instance.parameters(), lr=0.005, momentum=0.9)
     loss_function = nn.L1Loss()
     total_loss = 0
     count = 0
@@ -104,13 +104,28 @@ def training(training_data, epoch_num, model_name, mode):
             #OriginalImagewidth = OriginalImageTensor.shape[1]
             OriginalImageTensor = OriginalImageTensor.unsqueeze(0)
             
-            if mode == 2:
-                OriginalImageTensor = OriginalImageTensor.to(device) #CUDA CODE
+			#Flipped Horizontally
+            FlippedRTImageTensor = np.rot90(OriginalImageTensor, 2, axes=(0,2))
+
+            #Flipped Vertically
+            FlippedLRImageTensor = np.fliplr(OriginalImageTensor)
+
+            #Flipped Horizontally and Vertically
+            FlippedRT2ImageTensor = np.rot90(OriginalImageTensor, 2, axes=(1,2))
+
+            FlippedRTImageTensor = torch.from_numpy(np.flip(FlippedRTImageTensor,axis=0).copy())
+            FlippedLRImageTensor = torch.from_numpy(np.flip(FlippedLRImageTensor,axis=0).copy())
+            FlippedRT2ImageTensor = torch.from_numpy(np.flip(FlippedRT2ImageTensor,axis=0).copy())
+            
+            OriginalImageTensor = OriginalImageTensor.to(device) #CUDA CODE
+            FlippedRTImageTensor = FlippedRTImageTensor.to(device) #CUDA CODE
+            FlippedLRImageTensor = FlippedLRImageTensor.to(device) #CUDA CODE
+            FlippedRT2ImageTensor = FlippedRT2ImageTensor.to(device) #CUDA CODE
+            
 
             #produce tensor of neural network image using previous dimensions
             ProducedImageTensor = class_instance(tensor.float(),120,160) #tensor of the produced image
-            if mode == 2:
-                ProducedImageTensor = ProducedImageTensor.to(device) #CUDA CODE
+            ProducedImageTensor = ProducedImageTensor.to(device) #CUDA CODE
 
             #loss functions
             optimizer.zero_grad()
@@ -118,6 +133,40 @@ def training(training_data, epoch_num, model_name, mode):
             total_loss += loss
             loss.backward()
             optimizer.step() #optimizer
+
+            #produce tensor of neural network image using previous dimensions
+            ProducedImageTensor2 = class_instance(tensor.float(),120,160) #tensor of the produced image
+            ProducedImageTensor2 = ProducedImageTensor2.to(device) #CUDA CODE
+
+            #loss functions
+            optimizer.zero_grad()
+            loss = loss_function(ProducedImageTensor2, FlippedRTImageTensor)
+            total_loss += loss
+            loss.backward()
+            optimizer.step() #optimizer
+
+            #produce tensor of neural network image using previous dimensions
+            ProducedImageTensor3 = class_instance(tensor.float(),120,160) #tensor of the produced image
+            ProducedImageTensor3 = ProducedImageTensor3.to(device) #CUDA CODE
+
+            #loss functions
+            optimizer.zero_grad()
+            loss = loss_function(ProducedImageTensor3, FlippedRTImageTensor)
+            total_loss += loss
+            loss.backward()
+            optimizer.step() #optimizer
+
+            #produce tensor of neural network image using previous dimensions
+            ProducedImageTensor4 = class_instance(tensor.float(),120,160) #tensor of the produced image
+            ProducedImageTensor4 = ProducedImageTensor4.to(device) #CUDA CODE
+
+            #loss functions
+            optimizer.zero_grad()
+            loss = loss_function(ProducedImageTensor4, FlippedRT2ImageTensor)
+            total_loss += loss
+            loss.backward()
+            optimizer.step() #optimizer
+
             
             #print comparisons
             if epoch == (epoch_num-1):
@@ -125,6 +174,22 @@ def training(training_data, epoch_num, model_name, mode):
                     OriginalImageTensor = OriginalImageTensor.cpu().detach().numpy()
                     plt.imshow(OriginalImageTensor[0])
                     plt.show()
+
+					#Flipped Horizontally
+                    FlippedRTImageTensor = FlippedRTImageTensor.cpu().detach().numpy()
+                    plt.imshow(FlippedRTImageTensor[0])
+                    plt.show()
+
+                    #Flipped Vertically
+                    FlippedLRImageTensor = FlippedLRImageTensor.cpu().detach().numpy()
+                    plt.imshow(FlippedLRImageTensor[0])
+                    plt.show()
+
+                    #Flipped Horizontally and Vertically
+                    FlippedRT2ImageTensor = FlippedRT2ImageTensor.cpu().detach().numpy()
+                    plt.imshow(FlippedRT2ImageTensor[0])
+                    plt.show()
+
                     ProducedImageTensor = ProducedImageTensor.cpu().detach().numpy()
                     plt.imshow(ProducedImageTensor[0])
                     plt.show()
@@ -381,5 +446,32 @@ if device.type == 'cuda':
     print('Memory Usage:')
     print('Allocated:', round(torch.cuda.memory_allocated(0)/1024**3,1), 'GB')
     print('Cached:   ', round(torch.cuda.memory_reserved(0)/1024**3,1), 'GB\n\n')
+
+#Failed implementation of modular train_net function
+def learn_net(value_tensor, image_tensor):
+                optimizer = optim.SGD(class_instance.parameters(), lr=0.009, momentum=0.9)
+                loss_function = nn.L1Loss()
+
+                #produce tensor of neural network image using previous dimensions
+                ProducedImageTensor = class_instance(value_tensor.float(),120,160) #tensor of the produced image
+                ProducedImageTensor = ProducedImageTensor.to(device) #CUDA CODE
+
+                #loss functions
+                optimizer.zero_grad()
+                loss = loss_function(ProducedImageTensor, image_tensor)
+                loss.backward()
+                optimizer.step() #optimizer
+
+                return ProducedImageTensor, loss
+
+
+            ProducedOriginalImageTensor, loss = learn_net(tensor, OriginalImageTensor)
+            total_loss += loss
+            ProducedFlippedRTImageTensor, loss = learn_net(tensor, FlippedRTImageTensor)
+            total_loss += loss
+            ProducedFlippedLRImageTensor, loss = learn_net(tensor, FlippedLRImageTensor)
+            total_loss += loss
+            ProducedFlippedRT2Tensor, loss = learn_net(tensor, FlippedRT2ImageTensor)
+            total_loss += loss
 
 '''
