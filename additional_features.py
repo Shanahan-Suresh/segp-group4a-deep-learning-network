@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageOps
 from matplotlib import pyplot as plt
 import numpy as np
 import datetime as dt
@@ -36,7 +36,7 @@ class LineBuilder(object):
         if not event.inaxes:
             return
         #left click
-        if event.button == 1 and 0 <= event.xdata <= 160 and 0 <= event.ydata <= 120 :
+        if event.button == 1 and 0 <= event.xdata <= 666 and 0 <= event.ydata <= 500 :
 
             self.xs.append(event.xdata)
             self.ys.append(event.ydata)
@@ -99,16 +99,33 @@ class Points():
         self.get_all_coordinates()
     def get_all_coordinates(self):
         arr = []
-        m = (self.end_point_y - self.start_point_y) / (self.end_point_x - self.start_point_x)
+        x_diff = self.end_point_x - self.start_point_x
+        y_diff = self.end_point_y - self.start_point_y
+        if x_diff == 0 or y_diff == 0:
+            m = 0
+        else:
+            m = (self.end_point_y - self.start_point_y) / (self.end_point_x - self.start_point_x)
+        print(m)
         c = self.end_point_y - m * self.end_point_x
         if (self.start_point_x > self.end_point_x):
             for x in range (int(self.start_point_x),int(self.end_point_x+1), -1):
                 y = m * x + c
                 arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
+
+
+        if(self.end_point_x == self.start_point_x):
+            x = self.start_point_x
+            if(self.start_point_y > self.end_point_y):
+                for y in range(int(numpy.ceil(self.start_point_y)),int(numpy.floor(self.end_point_y)),-1):
+                    arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
+            else:
+                for y in range(int(numpy.ceil(self.start_point_y)),int(numpy.floor(self.end_point_y)),1):
+                    arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
         else:
             for x in range (int(self.start_point_x),int(self.end_point_x+1)):
                 y = m * x + c
                 arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
+
 
 
         print(arr)
@@ -122,6 +139,7 @@ def calculate(arr):
     for x in range(len(arr)):
         x_coordinate = arr[x][0]
         y_coordinate = arr[x][1]
+        print(image_tensor.shape)
         red_channel = image_tensor[y_coordinate][x_coordinate][0]
         green_channel = image_tensor[y_coordinate][x_coordinate][1]
         blue_channel = image_tensor[y_coordinate][x_coordinate][2]
@@ -134,17 +152,23 @@ def calculate(arr):
 def calculate_temperature(array):
     temp = []
     for x in range(len(array)):
+
         if array[x][0] > 0.45 and array[x][1] >= 0.45:
+            print("hi")
             temp.append((round((13*array[x][0] + 8*array[x][1] + 5.6*array[x][2]),2)))
+            continue
         if array[x][0] < 0.1 and array[x][1] >= array[x][2] :
             if(array[x][1] - array[x][2] >= 0.2):
                 temp.append((round((15*array[x][0] + 14*array[x][1] + 5*array[x][2]),2)))
             else:
                 temp.append((round((15*array[x][0] + 12*array[x][1] + 4*array[x][2]),2)))
+            continue
         else:
+            print("hello")
             temp.append((round((23*array[x][0] + 10*array[x][1] + 6*array[x][2]),2)))
+            continue
 
-
+    print(temp)
     plot_graph(temp)
 def plot_graph(temp_array):
     n = len(temp_array)
@@ -173,16 +197,17 @@ def plot_lines(event):
 
 
 
-file_path1 = "temp2.png"
+file_path1 = "temp.png"
 file_path1 = Image.open(file_path1)
+file_path1 = ImageOps.flip(file_path1)
 convert_tensor = transforms.ToTensor()
 
 file_path1 = convert_tensor(file_path1)
-
+'''
 file_path1 = F.interpolate(file_path1, 160, mode = 'nearest')
 file_path1 = file_path1.swapaxes(2,1)
 file_path1 = F.interpolate(file_path1, 120, mode = 'nearest')
-file_path1 = file_path1.swapaxes(2,1)
+file_path1 = file_path1.swapaxes(2,1)'''
 file_path1 = file_path1.swapaxes(1,0)
 file_path1 = file_path1.swapaxes(2,1)
 global image_tensor
@@ -191,7 +216,9 @@ print(file_path1.shape)
 global fig
 global ax
 fig, ax = plt.subplots()
+ax.set_ylim([0,500])
 tmp = ax.imshow(file_path1)
+
 tmp.format_cursor_data = format_cursor_data
 global draw_line
 draw_line = LineBuilder(fig, ax)
