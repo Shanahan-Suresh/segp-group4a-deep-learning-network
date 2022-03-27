@@ -11,6 +11,8 @@ from glob import glob
 from torchvision import transforms
 from PIL import Image
 import math
+from torchvision.utils import save_image
+
 import extract_data as extract
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
@@ -71,7 +73,7 @@ def getOriginalImage(file_num):
 
 
 #Trains the neural network to convert data into an image
-def training(training_data, epoch_num, model_name, mode):
+def training(training_data,testing_data,epoch_num, model_name, mode):
 
     #set up loss functions
     criterion = nn.CrossEntropyLoss()
@@ -83,9 +85,11 @@ def training(training_data, epoch_num, model_name, mode):
     class_instance = model.float()
     optimizer = optim.SGD(class_instance.parameters(), lr=0.009, momentum=0.9)
     loss_function = nn.L1Loss()
-    total_loss = 0
+    total_training_loss = 0
+    total_validation_loss = 0
     count = 0
-
+    training_loss_arr = []
+    validation_loss_arr = []
     #trains network for each image (non-epoch)
     for epoch in range(epoch_num):
 
@@ -93,8 +97,7 @@ def training(training_data, epoch_num, model_name, mode):
             tensor = torch.tensor(training_data.iloc[i].values)
             if mode == 2:
                 tensor = tensor.to(device) #CUDA CODE
-            OriginalImageTensor = getOriginalImage(finaldf['SR file number'].iloc[i])#tensor of the original image
-
+            OriginalImageTensor = getOriginalImage(SR_file_number.iloc[i])#tensor of the original image
             #skip if empty image
             if OriginalImageTensor == [0,0,0]:
                 continue
@@ -115,11 +118,9 @@ def training(training_data, epoch_num, model_name, mode):
             #loss functions
             optimizer.zero_grad()
             loss = loss_function(ProducedImageTensor, OriginalImageTensor)
-            total_loss += loss
+            total_training_loss += loss
             loss.backward()
             optimizer.step() #optimizer
-            
-            #print comparisons
             if epoch == (epoch_num-1):
                 if count == 50 :
                     OriginalImageTensor = OriginalImageTensor.cpu().detach().numpy()
@@ -130,13 +131,40 @@ def training(training_data, epoch_num, model_name, mode):
                     plt.show()
                     count = 0
                 count += 1
-
+        if(epoch % 10 == 0):
+            total_training_loss = total_training_loss.detach().numpy()
+            average_training_loss = (total_training_loss/len(training_data))
+            training_loss_arr.append(average_training_loss)
+            for i in range(len(testing_data)):
+                location = SR_file_number.iloc[len(training_data)+i]
+                OriginalImage_TestData = getOriginalImage(location)
+                if OriginalImage_TestData == [0,0,0]:
+                    continue
+                print(OriginalImage_TestData.shape)
+                print(location)
+                OriginalImage_TestData = OriginalImage_TestData.unsqueeze(0)
+                test_tensor = torch.tensor(testing_data.iloc[i].values)
+                ProducedImage_TestData = class_instance(test_tensor.float(),120,160)
+                validation_loss  = loss_function(ProducedImage_TestData,OriginalImage_TestData)
+                total_validation_loss = total_validation_loss + validation_loss
+            total_validation_loss = total_validation_loss.detach().numpy()
+            validation_loss_arr.append(total_validation_loss/len(testing_data))
+        #print comparisons
         print("Epoch number:" + str(epoch+1))
         print("Current epoch loss : {}".format(loss))
-        print("Total loss : {}\n".format(total_loss/len(training_data)))
-        total_loss = 0
+        print("Total training loss : {}\n".format(total_training_loss/len(training_data)))
+        total_training_loss = 0
+        total_validation_loss = 0
 
     print("Training completed")
+    x = list(range(0,epoch_num+1,10))
+    plt.plot(x,training_loss_arr,color = 'r', label = 'training loss')
+    plt.plot(x,validation_loss_arr, color = 'g', label = 'validation loss')
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.title("Training Loss and Validation Loss")
+    plt.legend()
+    plt.show()
     save_model(class_instance, model_name)
 
     main()
@@ -265,7 +293,7 @@ def performance_evaluation(test_data, training_data_count, model_name):
 
     for i in range(len(test_data)):
         
-        OriginalImageTensor = getOriginalImage(finaldf['SR file number'].iloc[training_data_count + i])#tensor of the original test image
+        OriginalImageTensor = getOriginalImage(SR_file_number.iloc[training_data_count + i])#tensor of the original test image
         if OriginalImageTensor == [0,0,0]:
                 continue
 
@@ -299,8 +327,8 @@ def menu_msg():
     return choice
 
 def main():
-    global finaldf
-    data, finaldf = extract.main() #data and final dataframe(pandas format) obtained from extract_data function
+    global SR_file_number
+    data, SR_file_number = extract.main() #data and final dataframe(pandas format) obtained from extract_data function
 
     normalized_data = create_dataset(data)
     training_data, test_data = split_dataset(normalized_data)
@@ -312,7 +340,7 @@ def main():
         epoch_num = int(input("Please insert the number of epochs to train the model with: "))
         model_name = input("Please set the name of the model: ")
         mode = int(input("Will you be training on CPU or GPU ?\n1.CPU\n2.GPU (CUDA)\n"))
-        training(training_data, epoch_num, model_name, mode)
+        training(training_data,test_data, epoch_num, model_name, mode)
 
     elif choice == 2:
         print(">>>Evaluating Performance\n")
