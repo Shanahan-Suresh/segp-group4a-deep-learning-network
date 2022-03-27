@@ -77,7 +77,7 @@ def get_chemicals(initial_row,initial_column):
         #exits loop if next cell is empty
         if next_cell_value == None :
             blank_row = True
-            
+
         rows = rows +1
 
         chemicals = dict(zip(properties_tag, chemical_names)) #combine the two arrays into a dictionary structure
@@ -163,8 +163,13 @@ def modifyDataset():
         elif finaldf.loc[i, 'Parafin Wax'] == 1:
             finaldf.loc[i, 'Parafin Wax Composition'] = finaldf._get_value(i,'Composition, g')
 
-    data = finaldf.drop(["Chemicals","Composition, g","SR file number"], axis=1)
-    return data
+    data = finaldf.drop(["Chemicals","Composition, g"], axis=1)
+    shuffle_data =  data.sample(frac=1)
+
+    shuffle_data.to_excel("Shuffled.xlsx")
+    SR_file_numbers = shuffle_data.loc[:,'SR file number']
+    data = shuffle_data.drop(["SR file number"],axis = 1)
+    return data,SR_file_numbers
 
 #Main Function
 def main():
@@ -172,8 +177,7 @@ def main():
     global sheet #sheet set as global value
     sheet = open_sheet()
     findParameterData()
-    data = modifyDataset()
-
-    return data, finaldf #returns to neural_network function
+    data,SR_file_number = modifyDataset()
+    return data, SR_file_number #returns to neural_network function
 
 main()
