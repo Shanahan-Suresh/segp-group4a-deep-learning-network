@@ -157,7 +157,7 @@ def training(training_data,testing_data,epoch_num, model_name, mode):
         total_validation_loss = 0
 
     print("Training completed")
-    x = list(range(0,epoch_num+1,10))
+    x = list(range(0,epoch_num,10))
     plt.plot(x,training_loss_arr,color = 'r', label = 'training loss')
     plt.plot(x,validation_loss_arr, color = 'g', label = 'validation loss')
     plt.xlabel("Epoch")
