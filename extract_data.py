@@ -4,11 +4,12 @@ pd.options.display.max_columns = None
 pd.options.display.max_rows = None
 
 #Opens an excel sheet
-def open_sheet():
+
+def open_sheet(excel):
     import openpyxl
 
     #saves excel file as a 'workbook' object, wb
-    wb = openpyxl.load_workbook('Data.xlsx', data_only=True)
+    wb = openpyxl.load_workbook(excel, data_only=True)
 
     #retuns the contents of the first sheet in workbook
     return wb[('Sheet1')]
@@ -172,12 +173,11 @@ def modifyDataset():
     return data,SR_file_numbers
 
 #Main Function
-def main():
+def main(excel):
 
     global sheet #sheet set as global value
-    sheet = open_sheet()
+    sheet = open_sheet(excel)
     findParameterData()
     data,SR_file_number = modifyDataset()
     return data, SR_file_number #returns to neural_network function
 
-main()
