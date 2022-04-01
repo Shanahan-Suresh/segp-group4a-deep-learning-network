@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'InputPopUp.ui'
+# Form implementation generated from reading ui file 'InputPopUp1.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -30,43 +30,40 @@ class Ui_Form(object):
             file.write(self.StearicAcidWaxComp.text() + "\n")
             file.write(self.ParafinWaxComp.text() + "\n")
         file.close()
-
     def setupUi(self, Form):
-        Form.setWindowTitle("Test Model")
-        Form.setFixedSize(690, 389)
         Form.setObjectName("Form")
         Form.resize(690, 389)
         Form.setStyleSheet("background-color: rgb(223, 223, 223);")
         self.SubmitButton = QtWidgets.QPushButton(Form)
         self.SubmitButton.setGeometry(QtCore.QRect(520, 350, 141, 31))
-        self.SubmitButton.setStyleSheet("QPushButton {\n"
-                                        "color: #000;\n"
-                                        "border: 2px solid #555;\n"
-                                        "border-radius: 20px;\n"
-                                        "border-style: outset;\n"
-                                        "background: qradialgradient(\n"
-                                        "cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
-                                        "radius: 1.35, stop: 0 #fff, stop: 1 #888\n"
-                                        ");\n"
-                                        "padding: 1px;\n"
-                                        "}\n"
-                                        "\n"
-                                        "QPushButton:hover {\n"
-                                        "background: qradialgradient(\n"
-                                        "cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
-                                        "radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
-                                        ");\n"
-                                        "}\n"
-                                        "\n"
-                                        "QPushButton:pressed {\n"
-                                        "border-style: inset;\n"
-                                        "background: qradialgradient(\n"
-                                        "cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
-                                        "radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
-                                        ");\n"
-                                        "}")
-        self.SubmitButton.setObjectName("SubmitButton")
         self.SubmitButton.clicked.connect(self.SubmitAction)
+        self.SubmitButton.setStyleSheet("QPushButton {\n"
+"color: #000;\n"
+"border: 2px solid #555;\n"
+"border-radius: 20px;\n"
+"border-style: outset;\n"
+"background: qradialgradient(\n"
+"cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"radius: 1.35, stop: 0 #fff, stop: 1 #888\n"
+");\n"
+"padding: 1px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"background: qradialgradient(\n"
+"cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4,\n"
+"radius: 1.35, stop: 0 #fff, stop: 1 #bbb\n"
+");\n"
+"}\n"
+"\n"
+"QPushButton:pressed {\n"
+"border-style: inset;\n"
+"background: qradialgradient(\n"
+"cx: 0.4, cy: -0.1, fx: 0.4, fy: -0.1,\n"
+"radius: 1.35, stop: 0 #fff, stop: 1 #ddd\n"
+");\n"
+"}")
+        self.SubmitButton.setObjectName("SubmitButton")
         self.label_10 = QtWidgets.QLabel(Form)
         self.label_10.setGeometry(QtCore.QRect(340, 139, 121, 21))
         font = QtGui.QFont()
@@ -102,31 +99,38 @@ class Ui_Form(object):
         self.WindSpeed = QtWidgets.QSpinBox(Form)
         self.WindSpeed.setGeometry(QtCore.QRect(120, 129, 61, 31))
         self.WindSpeed.setStyleSheet("QSpinBox\n"
-                                     "{\n"
-                                     "border : 2px solid black;\n"
-                                     "background : lightgrey;\n"
-                                     "}\n"
-                                     "\n"
-                                     "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"\n"
+"")
+        self.WindSpeed.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.WindSpeed.setAccelerated(True)
         self.WindSpeed.setMaximum(99)
         self.WindSpeed.setObjectName("WindSpeed")
         self.LauricAcidComp = QtWidgets.QSpinBox(Form)
         self.LauricAcidComp.setGeometry(QtCore.QRect(560, 189, 71, 31))
         self.LauricAcidComp.setStyleSheet("QSpinBox\n"
-                                          "{\n"
-                                          "border : 2px solid black;\n"
-                                          "background : lightgrey;\n"
-                                          "}\n"
-                                          "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"")
+        self.LauricAcidComp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.LauricAcidComp.setAccelerated(True)
+        self.LauricAcidComp.setMaximum(3)
         self.LauricAcidComp.setObjectName("LauricAcidComp")
         self.LauricAcid = QtWidgets.QSpinBox(Form)
         self.LauricAcid.setGeometry(QtCore.QRect(460, 9, 71, 31))
         self.LauricAcid.setStyleSheet("QSpinBox\n"
-                                      "{\n"
-                                      "border : 2px solid black;\n"
-                                      "background : lightgrey;\n"
-                                      "}\n"
-                                      "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"")
+        self.LauricAcid.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.LauricAcid.setAccelerated(True)
         self.LauricAcid.setObjectName("LauricAcid")
         self.label_7 = QtWidgets.QLabel(Form)
         self.label_7.setGeometry(QtCore.QRect(10, 319, 201, 21))
@@ -139,11 +143,14 @@ class Ui_Form(object):
         self.ParafinWaxComp = QtWidgets.QSpinBox(Form)
         self.ParafinWaxComp.setGeometry(QtCore.QRect(570, 310, 71, 31))
         self.ParafinWaxComp.setStyleSheet("QSpinBox\n"
-                                          "{\n"
-                                          "border : 2px solid black;\n"
-                                          "background : lightgrey;\n"
-                                          "}\n"
-                                          "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"")
+        self.ParafinWaxComp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.ParafinWaxComp.setAccelerated(True)
+        self.ParafinWaxComp.setMaximum(3)
         self.ParafinWaxComp.setObjectName("ParafinWaxComp")
         self.label_9 = QtWidgets.QLabel(Form)
         self.label_9.setGeometry(QtCore.QRect(340, 79, 111, 21))
@@ -156,12 +163,15 @@ class Ui_Form(object):
         self.Humidity = QtWidgets.QDoubleSpinBox(Form)
         self.Humidity.setGeometry(QtCore.QRect(110, 79, 71, 31))
         self.Humidity.setStyleSheet("QDoubleSpinBox\n"
-                                    "{\n"
-                                    "border : 2px solid black;\n"
-                                    "background : lightgrey;\n"
-                                    "}\n"
-                                    "\n"
-                                    "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"\n"
+"")
+        self.Humidity.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.Humidity.setAccelerated(True)
+        self.Humidity.setDecimals(1)
         self.Humidity.setObjectName("Humidity")
         self.label_4 = QtWidgets.QLabel(Form)
         self.label_4.setGeometry(QtCore.QRect(10, 139, 101, 21))
@@ -182,11 +192,14 @@ class Ui_Form(object):
         self.StearicAcidWaxComp = QtWidgets.QSpinBox(Form)
         self.StearicAcidWaxComp.setGeometry(QtCore.QRect(610, 249, 71, 31))
         self.StearicAcidWaxComp.setStyleSheet("QSpinBox\n"
-                                              "{\n"
-                                              "border : 2px solid black;\n"
-                                              "background : lightgrey;\n"
-                                              "}\n"
-                                              "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"")
+        self.StearicAcidWaxComp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.StearicAcidWaxComp.setAccelerated(True)
+        self.StearicAcidWaxComp.setMaximum(3)
         self.StearicAcidWaxComp.setObjectName("StearicAcidWaxComp")
         self.label_5 = QtWidgets.QLabel(Form)
         self.label_5.setGeometry(QtCore.QRect(10, 199, 141, 21))
@@ -199,22 +212,33 @@ class Ui_Form(object):
         self.ChemicalTemp = QtWidgets.QDoubleSpinBox(Form)
         self.ChemicalTemp.setGeometry(QtCore.QRect(220, 309, 71, 31))
         self.ChemicalTemp.setStyleSheet("QDoubleSpinBox\n"
-                                        "{\n"
-                                        "border : 2px solid black;\n"
-                                        "background : lightgrey;\n"
-                                        "}\n"
-                                        "\n"
-                                        "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"\n"
+"")
+        self.ChemicalTemp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.ChemicalTemp.setAccelerated(True)
+        self.ChemicalTemp.setDecimals(1)
+        self.ChemicalTemp.setMinimum(15.0)
+        self.ChemicalTemp.setMaximum(55.0)
         self.ChemicalTemp.setObjectName("ChemicalTemp")
         self.Temperature = QtWidgets.QDoubleSpinBox(Form)
         self.Temperature.setGeometry(QtCore.QRect(140, 19, 71, 31))
         self.Temperature.setStyleSheet("QDoubleSpinBox\n"
-                                       "{\n"
-                                       "border : 2px solid black;\n"
-                                       "background : lightgrey;\n"
-                                       "}\n"
-                                       "\n"
-                                       "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"\n"
+"")
+        self.Temperature.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.Temperature.setAccelerated(True)
+        self.Temperature.setDecimals(1)
+        self.Temperature.setMinimum(15.0)
+        self.Temperature.setMaximum(45.0)
+        self.Temperature.setProperty("value", 15.0)
         self.Temperature.setObjectName("Temperature")
         self.label_3 = QtWidgets.QLabel(Form)
         self.label_3.setGeometry(QtCore.QRect(10, 79, 91, 41))
@@ -235,11 +259,13 @@ class Ui_Form(object):
         self.ParafinWax = QtWidgets.QSpinBox(Form)
         self.ParafinWax.setGeometry(QtCore.QRect(470, 129, 71, 31))
         self.ParafinWax.setStyleSheet("QSpinBox\n"
-                                      "{\n"
-                                      "border : 2px solid black;\n"
-                                      "background : lightgrey;\n"
-                                      "}\n"
-                                      "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"")
+        self.ParafinWax.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.ParafinWax.setAccelerated(True)
         self.ParafinWax.setObjectName("ParafinWax")
         self.label_11 = QtWidgets.QLabel(Form)
         self.label_11.setGeometry(QtCore.QRect(340, 199, 211, 21))
@@ -252,30 +278,40 @@ class Ui_Form(object):
         self.AluminiumTemp = QtWidgets.QDoubleSpinBox(Form)
         self.AluminiumTemp.setGeometry(QtCore.QRect(230, 249, 71, 31))
         self.AluminiumTemp.setStyleSheet("QDoubleSpinBox\n"
-                                         "{\n"
-                                         "border : 2px solid black;\n"
-                                         "background : lightgrey;\n"
-                                         "}\n"
-                                         "\n"
-                                         "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"\n"
+"")
+        self.AluminiumTemp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.AluminiumTemp.setAccelerated(True)
+        self.AluminiumTemp.setDecimals(1)
+        self.AluminiumTemp.setMinimum(15.0)
+        self.AluminiumTemp.setMaximum(55.0)
+        self.AluminiumTemp.setProperty("value", 15.0)
         self.AluminiumTemp.setObjectName("AluminiumTemp")
         self.StearicAcid = QtWidgets.QSpinBox(Form)
         self.StearicAcid.setGeometry(QtCore.QRect(460, 69, 71, 31))
         self.StearicAcid.setStyleSheet("QSpinBox\n"
-                                       "{\n"
-                                       "border : 2px solid black;\n"
-                                       "background : lightgrey;\n"
-                                       "}\n"
-                                       "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"")
+        self.StearicAcid.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.StearicAcid.setAccelerated(True)
         self.StearicAcid.setObjectName("StearicAcid")
         self.SRFileNo = QtWidgets.QSpinBox(Form)
         self.SRFileNo.setGeometry(QtCore.QRect(160, 189, 71, 31))
         self.SRFileNo.setStyleSheet("QSpinBox\n"
-                                    "{\n"
-                                    "border : 2px solid black;\n"
-                                    "background : lightgrey;\n"
-                                    "}\n"
-                                    "")
+"{\n"
+"border : 2px solid black;\n"
+"background : lightgrey;\n"
+"}\n"
+"")
+        self.SRFileNo.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
+        self.SRFileNo.setAccelerated(True)
         self.SRFileNo.setObjectName("SRFileNo")
 
         self.retranslateUi(Form)
@@ -283,6 +319,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Form"))
         self.SubmitButton.setText(_translate("Form", "Submit"))
         self.label_10.setText(_translate("Form", "Parafin Wax :"))
         self.label_2.setText(_translate("Form", "Temperature :"))
@@ -300,7 +337,6 @@ class Ui_Form(object):
 
 if __name__ == "__main__":
     import sys
-
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
