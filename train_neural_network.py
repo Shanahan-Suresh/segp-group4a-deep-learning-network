@@ -13,7 +13,7 @@ from PIL import Image
 import math
 from torchvision.utils import save_image
 
-import extract_data as extract
+import Extract_Data_Train as extract
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -27,13 +27,14 @@ def create_dataset(data):
 
 
 #Splits dataframe into subsets and returns the values
-def split_dataset(data):
+def split_dataset(data,training_ratio):
     rows = len(data.index)
-    split_percentage = math.floor(rows *(90/100)) #split amount
+    training_ratio = int(float(training_ratio))
+    split_percentage = math.floor(rows*(training_ratio/100)) #split amount
 
     training_set = data.iloc[:split_percentage , :] #all rows before the split index
-    test_set = data.iloc[split_percentage: , :] #all rows after the split index
 
+    test_set = data.iloc[split_percentage: , :] #all rows after the split index
     return (training_set, test_set)
 
 
@@ -42,8 +43,8 @@ def getOriginalImage(file_num):
 
 
     #hardcoded path name and file type
-    file_path1 = "Raw Data/1.0/SR000" + str(file_num) + ".BMT"
-    file_path2 = "Raw Data/1.0/SR00" + str(file_num) + ".BMT"
+    file_path1 = original_image + "/1.0/SR000" + str(file_num) + ".BMT"
+    file_path2 = original_image + "/1.0/SR00" + str(file_num) + ".BMT"
     file_exist1 = exists(file_path1)
     file_exist2 = exists(file_path2)
     if file_exist1:
@@ -65,7 +66,7 @@ def getOriginalImage(file_num):
 
 
 
-    #print(OriginalImageTensor.shape)
+    print(OriginalImageTensor.shape)
 
     OriginalImageTensor = OriginalImageTensor.swapaxes(0,1)
     OriginalImageTensor = OriginalImageTensor.swapaxes(1,2)
@@ -73,8 +74,10 @@ def getOriginalImage(file_num):
 
 
 #Trains the neural network to convert data into an image
-def training(training_data,testing_data,epoch_num, model_name, mode):
-
+def training(training_data,testing_data,epoch_num, mode,learning_rate,momentum):
+    learning_rate = int(float(learning_rate))
+    momentum = int(float(momentum))
+    epoch_num = int(float(epoch_num))
     #set up loss functions
     criterion = nn.CrossEntropyLoss()
 
@@ -83,13 +86,14 @@ def training(training_data,testing_data,epoch_num, model_name, mode):
     if mode == 2:
         model = model.to(device) #CUDA CODE
     class_instance = model.float()
-    optimizer = optim.SGD(class_instance.parameters(), lr=0.009, momentum=0.9)
+    optimizer = optim.SGD(class_instance.parameters(), lr=learning_rate, momentum=momentum)
     loss_function = nn.L1Loss()
     total_training_loss = 0
     total_validation_loss = 0
     count = 0
     training_loss_arr = []
     validation_loss_arr = []
+
     #trains network for each image (non-epoch)
     for epoch in range(epoch_num):
 
@@ -165,9 +169,7 @@ def training(training_data,testing_data,epoch_num, model_name, mode):
     plt.title("Training Loss and Validation Loss")
     plt.legend()
     plt.show()
-    save_model(class_instance, model_name)
 
-    main()
 
 #Saves the current neural network model
 def save_model(model, model_name):
@@ -260,6 +262,8 @@ class Net(nn.Module):
 
         #last layer
         test_shape = self.Convolution4(test_shape)
+        m = nn.MaxPool2d(3, stride=1, padding=1)
+        test_shape = m(test_shape)
         #test_shape=leakRelu(test_shape)
         test_shape = test_shape.swapaxes(1,2) #reverse order to 'width, height, channels'
         test_shape = test_shape.swapaxes(2,3)
@@ -272,7 +276,7 @@ def save_image_from_tensor(image_tensor, image_size = 500):
     image_tensor = image_tensor.swapaxes(2,1)
     image_tensor = image_tensor.swapaxes(1,0)
 
-    #resize image
+    #resize imagez
     transform = transforms.Compose([
     transforms.ToPILImage(),
     transforms.Resize(size=500),
@@ -326,13 +330,24 @@ def menu_msg():
     choice = int(input(""))
     return choice
 
-def main():
+def main(excel_path,orignial_image_path,epoch_num,mode,training_ratio,learning_rate,momentum):
     global SR_file_number
-    data, SR_file_number = extract.main() #data and final dataframe(pandas format) obtained from extract_data function
+    data, SR_file_number = extract.main(excel_path) #data and final dataframe(pandas format) obtained from extract_data function
+    global original_image
+    original_image = orignial_image_path
 
     normalized_data = create_dataset(data)
-    training_data, test_data = split_dataset(normalized_data)
 
+    training_data, test_data = split_dataset(normalized_data,training_ratio)
+
+    if(mode == "CPU"):
+        mode_int = 1
+
+    else:
+        mode_int = 2
+    training(training_data,test_data, epoch_num,mode_int,learning_rate,momentum)
+
+'''
     choice = menu_msg()
 
     if choice == 1:
@@ -357,9 +372,9 @@ def main():
         main()
 
 
-main()
 
-'''------------------ Unused Code Area ------------------
+
+------------------ Unused Code Area ------------------
 
         #Individual Shape Viewing Commands
         
@@ -409,5 +424,4 @@ if device.type == 'cuda':
     print('Memory Usage:')
     print('Allocated:', round(torch.cuda.memory_allocated(0)/1024**3,1), 'GB')
     print('Cached:   ', round(torch.cuda.memory_reserved(0)/1024**3,1), 'GB\n\n')
-
 '''
