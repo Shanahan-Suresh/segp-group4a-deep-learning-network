@@ -13,22 +13,10 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QHeaderView, QFileDialog
 from PyQt5.QtGui import QIcon
 from fpdf import FPDF
-from matplotlib import pyplot as plt
-from test_neural_network import get_image
 import input_pop_up
 import training_page
 import load_model
-
-
-def format_cursor_data(data):
-    if data[0] > 0.45 and data[1] >= 0.45:
-        return "[" + str(round((13 * data[0] + 8 * data[1] + 5.6 * data[2]), 2)) + "]"
-    if data[0] < 0.1 and data[1] >= data[2]:
-        if (data[1] - data[2] >= 0.2):
-            return "[" + str(round((15 * data[0] + 14 * data[1] + 5 * data[2]), 2)) + "]"
-        else:
-            return "[" + str(round((15 * data[0] + 12 * data[1] + 4 * data[2]), 2)) + "]"
-    return "[" + str(round((23 * data[0] + 10 * data[1] + 6 * data[2]), 2)) + "]"
+from additional_features import main as  additional_features_main
 
 
 def ConvertToPdf():
@@ -125,7 +113,7 @@ def ConvertToPdf():
 
 class Ui_MainWindow(QObject):
     def ExtractImage(self):
-        import additional_features
+        additional_features_main()
 
     def setupUi(self, MainWindow):
         self.ClearFile()
@@ -288,7 +276,7 @@ class Ui_MainWindow(QObject):
         self.pushButton_2.setText("")
         self.pushButton_2.setObjectName("pushButton_2")
         self.pushButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.pushButton.clicked.connect(self.ExtractImage)
+
         self.NottinghamLogo = QtWidgets.QLabel(self.centralwidget)
         self.NottinghamLogo.setGeometry(QtCore.QRect(-20, 10, 321, 101))
         self.NottinghamLogo.setStyleSheet("image: url(:/newPrefix/nottingham logo.jpg);")
