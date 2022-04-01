@@ -192,43 +192,36 @@ def plot_lines(event):
 
 
 
+def main():
+    file_path1 = "temp.png"
+    file_path1 = Image.open(file_path1)
+    file_path1 = ImageOps.flip(file_path1)
+    convert_tensor = transforms.ToTensor()
 
+    file_path1 = convert_tensor(file_path1)
+    '''
+    file_path1 = F.interpolate(file_path1, 160, mode = 'nearest')
+    file_path1 = file_path1.swapaxes(2,1)
+    file_path1 = F.interpolate(file_path1, 120, mode = 'nearest')
+    file_path1 = file_path1.swapaxes(2,1)'''
+    file_path1 = file_path1.swapaxes(1,0)
+    file_path1 = file_path1.swapaxes(2,1)
+    global image_tensor
+    image_tensor = file_path1
+    global fig
+    global ax
+    fig, ax = plt.subplots()
+    ax.set_ylim([0,500])
+    tmp = ax.imshow(file_path1)
 
-
-
-
-file_path1 = "temp.png"
-file_path1 = Image.open(file_path1)
-file_path1 = ImageOps.flip(file_path1)
-convert_tensor = transforms.ToTensor()
-
-file_path1 = convert_tensor(file_path1)
-'''
-file_path1 = F.interpolate(file_path1, 160, mode = 'nearest')
-file_path1 = file_path1.swapaxes(2,1)
-file_path1 = F.interpolate(file_path1, 120, mode = 'nearest')
-file_path1 = file_path1.swapaxes(2,1)'''
-file_path1 = file_path1.swapaxes(1,0)
-file_path1 = file_path1.swapaxes(2,1)
-global image_tensor
-image_tensor = file_path1
-print(file_path1.shape)
-global fig
-global ax
-fig, ax = plt.subplots()
-ax.set_ylim([0,500])
-tmp = ax.imshow(file_path1)
-
-tmp.format_cursor_data = format_cursor_data
-global draw_line
-draw_line = LineBuilder(fig, ax)
-axButn1 = plt.axes([0.91, 0.01, 0.1, 0.1])
-global btn1
-btn1 = Button(axButn1, label="Draw\nLine", color='pink', hovercolor='tomato')
-btn1.on_clicked(plot_lines)
-
-
-plt.show()
+    tmp.format_cursor_data = format_cursor_data
+    global draw_line
+    draw_line = LineBuilder(fig, ax)
+    axButn1 = plt.axes([0.91, 0.01, 0.1, 0.1])
+    global btn1
+    btn1 = Button(axButn1, label="Draw\nLine", color='pink', hovercolor='tomato')
+    btn1.on_clicked(plot_lines)
+    plt.show()
 
 
 
