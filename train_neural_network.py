@@ -13,7 +13,7 @@ from PIL import Image
 import math
 from torchvision.utils import save_image
 
-import Extract_Data_Train as extract
+import extract_data as extract
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
