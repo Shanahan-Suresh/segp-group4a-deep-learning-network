@@ -13,7 +13,7 @@ import integration
 
 class Ui_Form(object):
     def SubmitAction(self):
-        integration.main()
+        integration.main('Data.xlsx')
         integration.set_data(self.Temperature.text(),self.Humidity.text(),self.WindSpeed.text(),self.SRFileNo.text(),self.AluminiumTemp.text(),self.ChemicalTemp.text(),self.LauricAcid.text(),self.StearicAcid.text(),
         self.ParafinWax.text(),self.LauricAcidComp.text(),self.StearicAcidWaxComp.text(),self.ParafinWaxComp.text())
         with open("Variables.txt", 'w') as file:
