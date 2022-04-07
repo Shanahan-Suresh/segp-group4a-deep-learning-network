@@ -11,7 +11,7 @@ from torchvision import transforms
 from PIL import Image
 import math
 from torchvision.utils import save_image
-from Training_Page_Integration import get_image,refresh_image
+from Training_Page_Integration import get_image,refresh_image,update_progress_bar,update_loss_bar
 import extract_data as extract
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -63,7 +63,7 @@ def getOriginalImage(file_num):
 
 
 # Trains the neural network to convert data into an image
-def training(training_data, testing_data, epoch_num, mode, learning_rate, momentum,preview_image):
+def training(training_data, testing_data, epoch_num, mode, learning_rate, momentum,preview_image,original_image_widget,progress_bar,epoch_loss_widget,total_loss_widget):
     learning_rate = int(float(learning_rate))
     momentum = int(float(momentum))
     epoch_num = int(float(epoch_num))
@@ -71,6 +71,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     criterion = nn.CrossEntropyLoss()
 
     device = torch.device('cuda' if (torch.cuda.is_available() and mode == 2) else 'cpu')
+    global model
     model = Net()
     if mode == 2:
         model = model.to(device)  # CUDA CODE
@@ -80,7 +81,9 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     total_training_loss = 0
     total_validation_loss = 0
     count = 0
+    global training_loss_arr
     training_loss_arr = []
+    global validation_loss_arr
     validation_loss_arr = []
 
     # trains network for each image (non-epoch)
@@ -115,7 +118,9 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             loss.backward()
             optimizer.step()  # optimizer
             if(i == 0):
-                display_image = ProducedImageTensor
+                display_produced_image = ProducedImageTensor
+                display_original_image = OriginalImageTensor
+
 
         if (epoch % 10 == 0):
             total_training_loss = total_training_loss.detach().numpy()
@@ -134,8 +139,10 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             total_validation_loss = total_validation_loss.detach().numpy()
             validation_loss_arr.append(total_validation_loss / len(testing_data))
         # print comparisons
-        get_image(display_image)
-        refresh_image(preview_image)
+        update_progress_bar(progress_bar,epoch,epoch_num)
+        get_image(display_produced_image,display_original_image)
+        refresh_image(preview_image,original_image_widget)
+        update_loss_bar(loss,(total_training_loss / len(training_data)),epoch_loss_widget,total_loss_widget)
         print("Epoch number:" + str(epoch + 1))
         print("Current epoch loss : {}".format(loss))
         print("Total training loss : {}\n".format(total_training_loss / len(training_data)))
@@ -143,18 +150,18 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
         total_validation_loss = 0
 
     print("Training completed")
+
+    print(validation_loss_arr)
+    print(training_loss_arr)
+    global x
     x = list(range(0, epoch_num, 10))
-    plt.plot(x, training_loss_arr, color='r', label='training loss')
-    plt.plot(x, validation_loss_arr, color='g', label='validation loss')
-    plt.xlabel("Epoch")
-    plt.ylabel("Loss")
-    plt.title("Training Loss and Validation Loss")
-    plt.legend()
-    plt.show()
+    print(x)
 
 
+def get_graph():
+    return x,training_loss_arr,validation_loss_arr
 # Saves the current neural network model
-def save_model(model, model_name):
+def save_model(model_name):
     torch.save(model.state_dict(), model_name)
     print('Model saved as {}'.format(model_name))
 
@@ -178,21 +185,21 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         self.fc1 = nn.Linear(11, 2048)
-        self.batchnorm1 = nn.BatchNorm2d(64)
+        self.batchnorm1 = nn.BatchNorm2d(3)
         self.relu = nn.ReLU()
         self.dropout1 = nn.Dropout(0.25)
-        self.batchnorm2 = nn.BatchNorm2d(128)
+        self.batchnorm2 = nn.BatchNorm2d(3)
 
         self.dropout2 = nn.Dropout2d(0.25)
 
         self.fc2 = nn.Linear(2048, 9600)
 
-        self.Convolution1 = nn.Conv2d(36, 64, (3, 3), padding=1)
+        self.Convolution1 = nn.Conv2d(36,3, (3, 3), padding=1)
         self.dropout3 = nn.Dropout2d(0.25)
-        self.batchnorm3 = nn.BatchNorm2d(64)
-        self.Convolution2 = nn.Conv2d(64, 128, (3, 3), padding=1)
-        self.Convolution3 = nn.Conv2d(128, 64, (3, 3), padding=1)
-        self.Convolution4 = nn.Conv2d(64, 3, (3, 3), padding=1)
+        self.batchnorm3 = nn.BatchNorm2d(3)
+        self.Convolution2 = nn.Conv2d(3, 3, (3, 3), padding=1)
+        self.Convolution3 = nn.Conv2d(3, 3, (3, 3), padding=1)
+        self.Convolution4 = nn.Conv2d(3, 3, (3, 3), padding=1)
 
     # x represents our data
     def forward(self, x, originalimageheight, originalimagewidth):
@@ -311,7 +318,7 @@ def menu_msg():
     return choice
 
 
-def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum,preview_image):
+def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum,preview_image,original_image_widget,progress_bar,epoch_loss_widget,total_loss_widget):
     global SR_file_number
     data, SR_file_number = extract.main(
         excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
@@ -327,7 +334,7 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
 
     else:
         mode_int = 2
-    training(training_data, test_data, epoch_num, mode_int, learning_rate, momentum,preview_image)
+    training(training_data, test_data, epoch_num, mode_int, learning_rate, momentum,preview_image,original_image_widget,progress_bar,epoch_loss_widget,total_loss_widget)
 
 
 '''
