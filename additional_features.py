@@ -1,15 +1,13 @@
-from PIL import Image, ImageOps
-from matplotlib import pyplot as plt
-import numpy as np
-import datetime as dt
-import pandas_datareader.data as web
-import numpy
-from matplotlib.widgets import Button
-from torchvision import transforms
 import os
 
+import numpy
+import numpy as np
+from PIL import Image, ImageOps
+from matplotlib import pyplot as plt
+from matplotlib.widgets import Button
+from torchvision import transforms
+
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
-import torch.nn.functional as F
 
 global button_clicked_count
 

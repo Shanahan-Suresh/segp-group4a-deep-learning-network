@@ -1,15 +1,15 @@
 import pandas as pd
 import torch
 
+import extract_data as extract
 from test_neural_network import load_model
 
-import extract_data as extract
-import numpy as np
+
 def normalize_data(data):
     normalized_data = (data-data.min()) / (data.max() - data.min())
     return normalized_data
 
-def set_data(temperature,humidity,windpseed,srfile,aluminium_temp,chemical_temp,lauric_acid,stearic_acid,parafin_wax,lac,sac,pwc):
+def set_data(temperature,humidity,windpseed,aluminium_temp,chemical_temp,lauric_acid,stearic_acid,parafin_wax,lac,sac,pwc):
 
     dataframe = pd.DataFrame()
     dataframe["Temperature,℃\n  "] = [temperature]
@@ -74,4 +74,3 @@ def main(excel):
     global data
     data,finaldf = extract.main(excel)
     #normalized_data = dataset_function.create_dataset(data)
-
