@@ -267,9 +267,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
                              self.StearicAcid.text(),
                              self.ParafinWax.text(), self.LauricAcidComp.text(), self.StearicAcidWaxComp.text(),
                              self.ParafinWaxComp.text())
+
         file = open("CorrectFileReceived.txt", 'r')
         CorrectFileReceived = file.read()
         file.close()
+
         if CorrectFileReceived == '0':
             self.window = QtWidgets.QMainWindow()
             self.window = ErrorPopUp.MyWindow()

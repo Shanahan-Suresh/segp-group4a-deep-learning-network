@@ -355,7 +355,7 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
         if fname.endswith('.BMT'):
             break
         else:
-            raise Exception('Folder does not contain any BMT files')
+            print('Folder does not contain any BMT files')
             import sys
             sys.exit(1)
 

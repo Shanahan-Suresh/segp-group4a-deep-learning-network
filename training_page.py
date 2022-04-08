@@ -230,14 +230,14 @@ class Ui_MainWindow(object):
         self.label.setFont(font)
         self.label.setObjectName("label")
 
-        self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(265, 30, 91, 31))
+        self.GeneratedImage = QtWidgets.QLabel(self.centralwidget)
+        self.GeneratedImage.setGeometry(QtCore.QRect(245, 30, 131, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
-        self.label_2.setFont(font)
-        self.label_2.setObjectName("label_2")
+        self.GeneratedImage.setFont(font)
+        self.GeneratedImage.setObjectName("label_2")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -261,7 +261,7 @@ class Ui_MainWindow(object):
         self.TotalTrainingLoss.setText(_translate("MainWindow", "Total training loss:"))
         self.ModelNameText.setText(_translate("MainWindow", "Model Name:"))
         self.label.setText(_translate("MainWindow", "Original Image"))
-        self.label_2.setText(_translate("MainWindow", "New Image"))
+        self.GeneratedImage.setText(_translate("MainWindow", "Generated Image"))
 
 
 class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
