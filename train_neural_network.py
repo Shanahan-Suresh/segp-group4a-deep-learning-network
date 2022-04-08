@@ -38,8 +38,8 @@ def split_dataset(data, training_ratio):
 # Opens and accesses the data of the raw data files in order to convert them into tensor
 def getOriginalImage(file_num):
     # hardcoded path name and file type
-    file_path1 = original_image + "/1.0/SR000" + str(file_num) + ".BMT"
-    file_path2 = original_image + "/1.0/SR00" + str(file_num) + ".BMT"
+    file_path1 = original_image + "/SR000" + str(file_num) + ".BMT"
+    file_path2 = original_image + "/SR00" + str(file_num) + ".BMT"
     file_exist1 = exists(file_path1)
     file_exist2 = exists(file_path2)
     if file_exist1:
@@ -97,7 +97,6 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             OriginalImageTensor = getOriginalImage(SR_file_number.iloc[i])  # tensor of the original image
             # skip if empty image
             if OriginalImageTensor == [0, 0, 0]:
-                print("I ran")
                 continue
 
             # get the dimensions of the original image
@@ -122,7 +121,6 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             if(i == 0):
                 display_produced_image = ProducedImageTensor
                 display_original_image = OriginalImageTensor
-                print("I ran2")
 
 
         if (epoch % 10 == 0):
@@ -333,11 +331,26 @@ def menu_msg():
 
 
 def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum,preview_image,original_image_widget,progress_bar,epoch_loss_widget,total_loss_widget):
-    global SR_file_number
-    data, SR_file_number = extract.main(
-        excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
+    
+    #Excel file exception handling
+    try:
+        global SR_file_number
+        data, SR_file_number = extract.main(excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
+        
+    except:
+        print("Could not load data from given Excel file.")
+    
     global original_image
     original_image = original_image_path
+
+    #Image path exception handling
+    for fname in os.listdir(original_image_path):
+        if fname.endswith('.BMT'):
+            break
+        else:
+            raise Exception('Folder does not contain any BMT files')
+            import sys
+            sys.exit(1)
 
     normalized_data = create_dataset(data)
 
