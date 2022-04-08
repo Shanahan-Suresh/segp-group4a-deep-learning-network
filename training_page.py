@@ -29,6 +29,7 @@ class MainBackgroundThread(QThread):
 
 
 class Ui_MainWindow(object):
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(852, 539)
@@ -51,6 +52,9 @@ class Ui_MainWindow(object):
 
         self.Epoch = QtWidgets.QSpinBox(self.centralwidget)
         self.Epoch.setGeometry(QtCore.QRect(120, 310, 62, 22))
+        self.Epoch.setAccelerated(True)
+        self.Epoch.setMinimum(1)
+        self.Epoch.setMaximum(10000)
         self.Epoch.setObjectName("Epoch")
         self.Epoch.setStyleSheet(CSS.QSpinBoxCSS)
 
@@ -63,11 +67,17 @@ class Ui_MainWindow(object):
 
         self.TrainingRatio = QtWidgets.QSpinBox(self.centralwidget)
         self.TrainingRatio.setGeometry(QtCore.QRect(120, 390, 62, 22))
+        self.TrainingRatio.setAccelerated(True)
+        self.TrainingRatio.setMinimum(1)
+        self.TrainingRatio.setMaximum(100)
         self.TrainingRatio.setObjectName("TrainingRatio")
         self.TrainingRatio.setStyleSheet(CSS.QSpinBoxCSS)
 
         self.Momentum = QtWidgets.QDoubleSpinBox(self.centralwidget)
         self.Momentum.setDecimals(4)
+        self.Momentum.setAccelerated(True)
+        self.Momentum.setSingleStep(0.0001)
+        self.Momentum.setMinimum(0.0001)
         self.Momentum.setGeometry(QtCore.QRect(320, 360, 62, 22))
         self.Momentum.setObjectName("Momentum")
         self.Momentum.setStyleSheet(CSS.QDoubleSpinBoxCSS)
@@ -82,6 +92,9 @@ class Ui_MainWindow(object):
 
         self.LearningRate = QtWidgets.QDoubleSpinBox(self.centralwidget)
         self.LearningRate.setDecimals(4)
+        self.LearningRate.setAccelerated(True)
+        self.LearningRate.setSingleStep(0.0001)
+        self.LearningRate.setMinimum(0.0001)
         self.LearningRate.setGeometry(QtCore.QRect(320, 330, 62, 22))
         self.LearningRate.setObjectName("LearningRate")
         self.LearningRate.setStyleSheet(CSS.QDoubleSpinBoxCSS)
@@ -260,6 +273,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.ImportImagesButton.clicked.connect(self.ImportImages)
         self.StartButton.clicked.connect(self.StartTraining)
         self.SaveModelButton.clicked.connect(self.SaveModel)
+        self.progressBar.valueChanged.connect(self.updateLockVariables)
 
     def ImportData(self):
         filename = QFileDialog.getOpenFileName(None, "Open Model",
@@ -272,21 +286,30 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         path = filename
         self.ImportImagesPath.setText(path)
 
+    def updateLockVariables(self):
+
+        if self.progressBar.value() == 0:
+            self.enableVariables(True)
+        else:
+            self.enableVariables(False)
+
+        if self.progressBar.value() == 100:
+            self.progressBar.setValue(0)
+
     def StartTraining(self):
-        self.lockVariables(False)
+        self.enableVariables(False)
         self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(), self.Epoch.text(),
                                            self.TrainingMode.currentText(), self.TrainingRatio.text(),
                                            self.LearningRate.text(),
                                            self.Momentum.text(), self.NewImage, self.OriginalImage, self.progressBar,
                                            self.Graph, self.EpochLoss, self.TotalTrainingLoss)
-
         print("hi")
         self.worker.start()
 
     def SaveModel(self):
         save_model(self.ModelName.text())
 
-    def lockVariables(self,boolean):
+    def enableVariables(self, boolean):
         self.Epoch.setEnabled(boolean)
         self.TrainingMode.setEnabled(boolean)
         self.TrainingRatio.setEnabled(boolean)
