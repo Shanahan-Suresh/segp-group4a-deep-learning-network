@@ -88,6 +88,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
 
     # trains network for each image (non-epoch)
     for epoch in range(epoch_num):
+        torch.cuda.empty_cache()
 
         for i in range(len(training_data)):
             tensor = torch.tensor(training_data.iloc[i].values)
@@ -96,6 +97,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             OriginalImageTensor = getOriginalImage(SR_file_number.iloc[i])  # tensor of the original image
             # skip if empty image
             if OriginalImageTensor == [0, 0, 0]:
+                print("I ran")
                 continue
 
             # get the dimensions of the original image
@@ -120,24 +122,36 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             if(i == 0):
                 display_produced_image = ProducedImageTensor
                 display_original_image = OriginalImageTensor
+                print("I ran2")
 
 
         if (epoch % 10 == 0):
-            total_training_loss = total_training_loss.detach().numpy()
+            total_training_loss = total_training_loss.cpu().detach().numpy()
             average_training_loss = (total_training_loss / len(training_data))
             training_loss_arr.append(average_training_loss)
             for i in range(len(testing_data)):
-                location = SR_file_number.iloc[len(training_data) + i]
+                location = SR_file_number.iloc[len(training_data)+i]
                 OriginalImage_TestData = getOriginalImage(location)
-                if OriginalImage_TestData == [0, 0, 0]:
+                if OriginalImage_TestData == [0,0,0]:
                     continue
+
                 OriginalImage_TestData = OriginalImage_TestData.unsqueeze(0)
+                if mode == 2:
+                    OriginalImage_TestData = OriginalImage_TestData.to(device) #CUDA CODE
+
                 test_tensor = torch.tensor(testing_data.iloc[i].values)
-                ProducedImage_TestData = class_instance(test_tensor.float(), 120, 160)
-                validation_loss = loss_function(ProducedImage_TestData, OriginalImage_TestData)
+                if mode == 2:
+                    test_tensor = test_tensor.to(device) #CUDA CODE
+                ProducedImage_TestData = class_instance(test_tensor.float(),120,160)
+                if mode == 2:
+                    ProducedImage_TestData = ProducedImage_TestData.to(device) #CUDA CODE
+
+                validation_loss  = loss_function(ProducedImage_TestData,OriginalImage_TestData)
                 total_validation_loss = total_validation_loss + validation_loss
-            total_validation_loss = total_validation_loss.detach().numpy()
-            validation_loss_arr.append(total_validation_loss / len(testing_data))
+
+            total_validation_loss = total_validation_loss.cpu().detach().numpy()
+            validation_loss_arr.append(total_validation_loss/len(testing_data))
+
         # print comparisons
         update_progress_bar(progress_bar,epoch,epoch_num)
         get_image(display_produced_image,display_original_image)
@@ -288,11 +302,11 @@ def performance_evaluation(test_data, training_data_count, model_name):
             continue
 
         OriginalImageTensor = OriginalImageTensor.squeeze(0)
-        OriginalImageTensor = OriginalImageTensor.detach().numpy()
+        OriginalImageTensor = OriginalImageTensor.cpu().detach().numpy()
         original_images.append(OriginalImageTensor)
 
         test_tensor = torch.tensor(test_data.iloc[i].values)
-        predicted_images.append((load_model(test_tensor, model_name)).detach().numpy())
+        predicted_images.append((load_model(test_tensor, model_name)).cpu().detach().numpy())
 
     # Code for shape tests
     origianal_img_shape_test = np.array(original_images)

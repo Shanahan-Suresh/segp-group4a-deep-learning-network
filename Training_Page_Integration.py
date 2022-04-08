@@ -23,6 +23,6 @@ def refresh_image(preview_image,original_image_widget):
 def update_progress_bar(progress_bar,epoch,epoch_num):
     progress_bar.setValue(((epoch+1)/epoch_num)*100)
 def update_loss_bar(epoch_loss,total_loss, epoch_loss_widget, total_loss_widget):
-    epoch_loss = epoch_loss.detach().numpy()
+    epoch_loss = epoch_loss.cpu().detach().numpy()
     epoch_loss_widget.setText("Epoch Loss : " + str(epoch_loss))
     total_loss_widget.setText("Training Loss : " + str(total_loss.item()))
