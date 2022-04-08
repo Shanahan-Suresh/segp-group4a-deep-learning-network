@@ -210,18 +210,6 @@ class Ui_MainWindow(object):
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
 
-        self.TrainingLossTable = QtWidgets.QPushButton(self.centralwidget)
-        self.TrainingLossTable.setGeometry(QtCore.QRect(485, 110, 331, 341))
-        self.TrainingLossTable.setStyleSheet("    background-color: transparent;\n"
-                                             "    background-repeat: no-repeat;\n"
-                                             "    border: none;\n"
-                                             "    cursor: pointer;\n"
-                                             "    overflow: hidden;\n"
-                                             "    outline: none;\n"
-                                             "    border :1px solid black")
-        self.TrainingLossTable.setText("")
-        self.TrainingLossTable.setObjectName("TrainingLossTable")
-
         self.SaveModelButton = QtWidgets.QPushButton(self.centralwidget)
         self.SaveModelButton.setGeometry(QtCore.QRect(780, 480, 41, 31))
         self.SaveModelButton.setObjectName("SaveButton")
