@@ -25,6 +25,7 @@ class MainBackgroundThread(QThread):
               self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
               self.Epoch_loss, self.Total_loss)
 
+        plt.cla()
         x, training_loss_arr, validation_loss_arr = get_graph()
         plt.plot(x, training_loss_arr, color='r', label='training loss')
         plt.plot(x, validation_loss_arr, color='g', label='validation loss')
@@ -275,7 +276,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.ImportDataButton.clicked.connect(self.ImportData)
         self.ImportImagesButton.clicked.connect(self.ImportImages)
         self.StartButton.clicked.connect(self.StartTraining)
-        self.SaveModelButton.clicked.connect(self.ValidateModelName)
+        self.SaveModelButton.clicked.connect(self.SaveModel)
         self.progressBar.valueChanged.connect(self.updateLockVariables)
 
     def ImportData(self):
@@ -365,7 +366,10 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.window.show()
 
     def SaveModel(self):
-        save_model(self.ModelName.text())
+        if self.ModelName.text().isalnum():
+            save_model(self.ModelName.text())
+        else:
+            print("not valid name")
 
     def ValidateModelName(self):
         if self.ModelName.text() == '':
