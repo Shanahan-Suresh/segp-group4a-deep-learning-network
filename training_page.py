@@ -18,6 +18,7 @@ class MainBackgroundThread(QThread):
         train(self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio,
               self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
               self.Epoch_loss, self.Total_loss)
+
         file = open("CorrectImportFilesRecieved.txt", "r")
         CorrectDataSet = file.readline().strip()
         CorrectImageFolder = file.readline().strip()
