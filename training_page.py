@@ -1,12 +1,16 @@
+import os
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
-import time
+
 import CSS
 import TrainingPageDataErrorPopUp
 import WrongFileImportedError
-from train_neural_network import main as train, get_graph, save_model,check_path
+from train_neural_network import main as train, get_graph, save_model
+import extract_data as extract
+
 
 class MainBackgroundThread(QThread):
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
@@ -15,26 +19,19 @@ class MainBackgroundThread(QThread):
         self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio, self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar, self.Graph, self.Epoch_loss, self.Total_loss = ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum, preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget
 
     def run(self):
-        check_path(self.ImportDataPath,self.ImportImagesPath)
-        file = open("CorrectImportFilesRecieved.txt", "r")
-        CorrectDataSet = file.readline().strip()
-        CorrectImageFolder = file.readline().strip()
-        file.close()
+        train(self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio,
+              self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
+              self.Epoch_loss, self.Total_loss)
 
-        if CorrectDataSet == "1" and CorrectImageFolder == "1":
-            train(self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio,
-                self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
-                self.Epoch_loss, self.Total_loss)
-            self.sleep(1)
-            x, training_loss_arr, validation_loss_arr = get_graph()
-            plt.plot(x, training_loss_arr, color='r', label='training loss')
-            plt.plot(x, validation_loss_arr, color='g', label='validation loss')
-            plt.xlabel("Epoch")
-            plt.ylabel("Loss")
-            plt.title("Training Loss and Validation Loss")
-            plt.legend()
-            plt.savefig("loss_graph")
-            self.Graph.setStyleSheet("image: url(loss_graph.png);border :1px solid black;")
+        x, training_loss_arr, validation_loss_arr = get_graph()
+        plt.plot(x, training_loss_arr, color='r', label='training loss')
+        plt.plot(x, validation_loss_arr, color='g', label='validation loss')
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+        plt.title("Training Loss and Validation Loss")
+        plt.legend()
+        plt.savefig("loss_graph")
+        self.Graph.setStyleSheet("image: url(loss_graph.png);border :1px solid black;")
 
 
 class Ui_MainWindow(object):
@@ -78,7 +75,7 @@ class Ui_MainWindow(object):
         self.TrainingRatio = QtWidgets.QSpinBox(self.centralwidget)
         self.TrainingRatio.setGeometry(QtCore.QRect(120, 390, 62, 22))
         self.TrainingRatio.setAccelerated(True)
-        self.TrainingRatio.setMinimum(1)
+        self.TrainingRatio.setMinimum(5)
         self.TrainingRatio.setValue(90)
         self.TrainingRatio.setMaximum(95)
         self.TrainingRatio.setObjectName("TrainingRatio")
@@ -305,7 +302,47 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             self.DataErrorPopUp()
             self.enableVariables(True)
         else:
+            self.ValidateFiles()
             self.enableVariables(False)
+
+            file = open("CorrectImportFilesRecieved.txt", "r")
+            CorrectDataSet = file.readline().strip()
+            CorrectImageFolder = file.readline().strip()
+            print("CorrectDataSet" + CorrectDataSet)
+            print("CorrectImageFolder" + CorrectImageFolder)
+            file.close()
+
+            if CorrectDataSet == "0" or CorrectImageFolder == "0":
+                self.error()
+                self.enableVariables(True)
+
+    def ValidateFiles(self):
+        file = open("CorrectImportFilesRecieved.txt", "w")
+        # Excel file exception handling
+        try:
+            extract.main(
+                self.ImportDataPath.text())  # data and final dataframe(pandas format) obtained from extract_data function
+            CorrectDataPath = 1
+        except:
+            print("Could not load data from given Excel file.")
+            CorrectDataPath = 0
+
+        # Image path exception handling
+        for fname in os.listdir(self.ImportImagesPath.text()):
+            if fname.endswith('.BMT'):
+                CorrectImagePath = 1
+                break
+            else:
+                print('Folder does not contain any BMT files')
+                CorrectImagePath = 0
+                break
+        print(CorrectDataPath)
+        print(CorrectImagePath)
+        file.write(str(CorrectDataPath) + "\n")
+        file.write(str(CorrectImagePath) + "\n")
+        file.close()
+
+        if CorrectImagePath == 1 and CorrectDataPath == 1:
             self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(),
                                                self.Epoch.text(),
                                                self.TrainingMode.currentText(), self.TrainingRatio.text(),
@@ -313,7 +350,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
                                                self.Momentum.text(), self.NewImage, self.OriginalImage,
                                                self.progressBar,
                                                self.Graph, self.EpochLoss, self.TotalTrainingLoss)
-            print("hi")
             self.worker.start()
 
     def DataErrorPopUp(self):
@@ -322,7 +358,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.window.show()
 
     def error(self):
-        print("errorrrr ")
         self.window = QtWidgets.QMainWindow()
         self.window = WrongFileImportedError.MyWindow()
         self.window.show()

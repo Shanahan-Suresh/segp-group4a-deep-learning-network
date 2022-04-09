@@ -332,53 +332,30 @@ def menu_msg():
     choice = int(input(""))
     return choice
 
-def check_path(excel_path,original_image_path):
-    global CorrectImagePath
-    global CorrectDataPath
-    print("hello")
-    try:
-        global data
-        global SR_file_number
-        data, SR_file_number = extract.main(
-            excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
-        CorrectDataPath = 1
 
-    except:
-        print("Could not load data from given Excel file.")
-        CorrectDataPath = 0
+def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
+         original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
+    file = open("CorrectImportFilesRecieved.txt", "w")
+    # Excel file exception handling
+    global SR_file_number
+    data, SR_file_number = extract.main(
+        excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
 
     global original_image
     original_image = original_image_path
 
-    # Image path exception handling
-    for fname in os.listdir(original_image_path):
-        if fname.endswith('.BMT'):
-            CorrectImagePath = 1
-            break
-        else:
-            print('Folder does not contain any BMT files')
-            CorrectImagePath = 0
-            break
-    file = open("CorrectImportFilesRecieved.txt", "w")
-    file.write(str(CorrectDataPath) + "\n")
-    file.write(str(CorrectImagePath) + "\n")
-    file.close()
-def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
-         original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
-    # Excel file exception handling
 
-    if CorrectImagePath == 1 and CorrectDataPath == 1:
-        normalized_data = create_dataset(data)
+    normalized_data = create_dataset(data)
 
-        training_data, test_data = split_dataset(normalized_data, training_ratio)
+    training_data, test_data = split_dataset(normalized_data, training_ratio)
 
-        if (mode == "CPU"):
-            mode_int = 1
+    if (mode == "CPU"):
+        mode_int = 1
 
-        else:
-            mode_int = 2
-        training(training_data, test_data, epoch_num, mode_int, learning_rate, momentum, preview_image,
-                 original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget)
+    else:
+        mode_int = 2
+    training(training_data, test_data, epoch_num, mode_int, learning_rate, momentum, preview_image,
+             original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget)
 
 
 '''
