@@ -335,18 +335,15 @@ def menu_msg():
 
 def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
          original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
-    file = open("CorrectImportFilesRecieved.txt", "w")
     # Excel file exception handling
     try:
         global SR_file_number
         data, SR_file_number = extract.main(
             excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
         CorrectDataPath = 1
-        file.write('1' + "\n")
 
     except:
         print("Could not load data from given Excel file.")
-        file.write('0' + "\n")
         CorrectDataPath = 0
 
     global original_image
@@ -355,16 +352,18 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
     # Image path exception handling
     for fname in os.listdir(original_image_path):
         if fname.endswith('.BMT'):
-            file.write('1' + "\n")
             CorrectImagePath = 1
             break
         else:
             print('Folder does not contain any BMT files')
-            file.write('0' + "\n")
             CorrectImagePath = 0
+            break
+    file = open("CorrectImportFilesRecieved.txt", "w")
+    file.write(str(CorrectDataPath) + "\n")
+    file.write(str(CorrectImagePath) + "\n")
     file.close()
 
-    if CorrectImagePath==1 and CorrectDataPath ==1:
+    if CorrectImagePath == 1 and CorrectDataPath == 1:
         normalized_data = create_dataset(data)
 
         training_data, test_data = split_dataset(normalized_data, training_ratio)

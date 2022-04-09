@@ -5,8 +5,8 @@ from matplotlib import pyplot as plt
 
 import CSS
 import TrainingPageDataErrorPopUp
+import WrongFileImportedError
 from train_neural_network import main as train, get_graph, save_model
-
 
 class MainBackgroundThread(QThread):
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
@@ -23,9 +23,7 @@ class MainBackgroundThread(QThread):
         CorrectImageFolder = file.readline().strip()
         file.close()
 
-        if CorrectDataSet == "0" or CorrectImageFolder == "0":
-            print("Wrong files imported")
-        else:
+        if CorrectDataSet == "1" and CorrectImageFolder == "1":
             x, training_loss_arr, validation_loss_arr = get_graph()
             plt.plot(x, training_loss_arr, color='r', label='training loss')
             plt.plot(x, validation_loss_arr, color='g', label='validation loss')
@@ -301,22 +299,42 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             self.progressBar.setValue(0)
 
     def StartTraining(self):
-        if self.ImportDataPath.text()=="" or self.ImportImagesPath.text()=="":
+        if self.ImportDataPath.text() == "" or self.ImportImagesPath.text() == "":
             self.DataErrorPopUp()
             self.enableVariables(True)
         else:
             self.enableVariables(False)
-            self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(), self.Epoch.text(),
+            self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(),
+                                               self.Epoch.text(),
                                                self.TrainingMode.currentText(), self.TrainingRatio.text(),
                                                self.LearningRate.text(),
-                                               self.Momentum.text(), self.NewImage, self.OriginalImage, self.progressBar,
+                                               self.Momentum.text(), self.NewImage, self.OriginalImage,
+                                               self.progressBar,
                                                self.Graph, self.EpochLoss, self.TotalTrainingLoss)
             print("hi")
             self.worker.start()
 
+            file = open("CorrectImportFilesRecieved.txt", "r")
+            CorrectDataSet = file.readline().strip()
+            CorrectImageFolder = file.readline().strip()
+            print("CorrectDataSet" + CorrectDataSet)
+            print("CorrectImageFolder" + CorrectImageFolder)
+            file.close()
+
+            if CorrectDataSet == "0" or CorrectImageFolder == "0":
+                self.error()
+                self.enableVariables(True)
+
+
     def DataErrorPopUp(self):
         self.window = QtWidgets.QMainWindow()
         self.window = TrainingPageDataErrorPopUp.MyWindow()
+        self.window.show()
+
+    def error(self):
+        print("errorrrr ")
+        self.window = QtWidgets.QMainWindow()
+        self.window = WrongFileImportedError.MyWindow()
         self.window.show()
 
     def SaveModel(self):
