@@ -2,6 +2,7 @@ import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
 
@@ -10,6 +11,7 @@ import TrainingPageDataErrorPopUp
 import WrongFileImportedError
 from train_neural_network import main as train, get_graph, save_model
 import extract_data as extract
+
 
 
 class MainBackgroundThread(QThread):
@@ -75,7 +77,7 @@ class Ui_MainWindow(object):
         self.TrainingRatio = QtWidgets.QSpinBox(self.centralwidget)
         self.TrainingRatio.setGeometry(QtCore.QRect(120, 390, 62, 22))
         self.TrainingRatio.setAccelerated(True)
-        self.TrainingRatio.setMinimum(5)
+        self.TrainingRatio.setMinimum(1)
         self.TrainingRatio.setValue(90)
         self.TrainingRatio.setMaximum(95)
         self.TrainingRatio.setObjectName("TrainingRatio")
@@ -245,7 +247,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Train model"))
         self.EpochText.setText(_translate("MainWindow", "Epoch: "))
         self.TrainModeText.setText(_translate("MainWindow", "Training mode:"))
         self.TrainingRatioText.setText(_translate("MainWindow", "Training ratio: "))
@@ -269,6 +271,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         super().__init__()
         self.setupUi(self)
         self.setStyleSheet(CSS.BackgroundCSS)
+        self.setWindowIcon(QIcon('TrainingIcon.png'))
         self.ImportDataButton.clicked.connect(self.ImportData)
         self.ImportImagesButton.clicked.connect(self.ImportImages)
         self.StartButton.clicked.connect(self.StartTraining)
@@ -321,7 +324,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         # Excel file exception handling
         try:
             extract.main(
-                self.ImportDataPath.text())  # data and final dataframe(pandas format) obtained from extract_data function
+                self.ImportDataPath.text())
             CorrectDataPath = 1
         except:
             print("Could not load data from given Excel file.")
@@ -341,7 +344,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         file.write(str(CorrectDataPath) + "\n")
         file.write(str(CorrectImagePath) + "\n")
         file.close()
-
         if CorrectImagePath == 1 and CorrectDataPath == 1:
             self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(),
                                                self.Epoch.text(),

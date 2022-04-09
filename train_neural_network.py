@@ -1,3 +1,5 @@
+import time
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -335,7 +337,6 @@ def menu_msg():
 
 def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
          original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
-    file = open("CorrectImportFilesRecieved.txt", "w")
     # Excel file exception handling
     global SR_file_number
     data, SR_file_number = extract.main(
