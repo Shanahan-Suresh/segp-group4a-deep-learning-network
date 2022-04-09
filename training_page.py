@@ -2,11 +2,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
-
+import time
 import CSS
 import TrainingPageDataErrorPopUp
 import WrongFileImportedError
-from train_neural_network import main as train, get_graph, save_model
+from train_neural_network import main as train, get_graph, save_model,check_path
 
 class MainBackgroundThread(QThread):
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
@@ -15,16 +15,17 @@ class MainBackgroundThread(QThread):
         self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio, self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar, self.Graph, self.Epoch_loss, self.Total_loss = ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum, preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget
 
     def run(self):
-        train(self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio,
-              self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
-              self.Epoch_loss, self.Total_loss)
-
+        check_path(self.ImportDataPath,self.ImportImagesPath)
         file = open("CorrectImportFilesRecieved.txt", "r")
         CorrectDataSet = file.readline().strip()
         CorrectImageFolder = file.readline().strip()
         file.close()
 
         if CorrectDataSet == "1" and CorrectImageFolder == "1":
+            train(self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio,
+                self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
+                self.Epoch_loss, self.Total_loss)
+            self.sleep(1)
             x, training_loss_arr, validation_loss_arr = get_graph()
             plt.plot(x, training_loss_arr, color='r', label='training loss')
             plt.plot(x, validation_loss_arr, color='g', label='validation loss')
@@ -77,7 +78,7 @@ class Ui_MainWindow(object):
         self.TrainingRatio = QtWidgets.QSpinBox(self.centralwidget)
         self.TrainingRatio.setGeometry(QtCore.QRect(120, 390, 62, 22))
         self.TrainingRatio.setAccelerated(True)
-        self.TrainingRatio.setMinimum(50)
+        self.TrainingRatio.setMinimum(1)
         self.TrainingRatio.setValue(90)
         self.TrainingRatio.setMaximum(95)
         self.TrainingRatio.setObjectName("TrainingRatio")
@@ -314,18 +315,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
                                                self.Graph, self.EpochLoss, self.TotalTrainingLoss)
             print("hi")
             self.worker.start()
-
-            file = open("CorrectImportFilesRecieved.txt", "r")
-            CorrectDataSet = file.readline().strip()
-            CorrectImageFolder = file.readline().strip()
-            print("CorrectDataSet" + CorrectDataSet)
-            print("CorrectImageFolder" + CorrectImageFolder)
-            file.close()
-
-            if CorrectDataSet == "0" or CorrectImageFolder == "0":
-                self.error()
-                self.enableVariables(True)
-
 
     def DataErrorPopUp(self):
         self.window = QtWidgets.QMainWindow()
