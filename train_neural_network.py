@@ -332,11 +332,12 @@ def menu_msg():
     choice = int(input(""))
     return choice
 
-
-def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
-         original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
-    # Excel file exception handling
+def check_path(excel_path,original_image_path):
+    global CorrectImagePath
+    global CorrectDataPath
+    print("hello")
     try:
+        global data
         global SR_file_number
         data, SR_file_number = extract.main(
             excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
@@ -362,6 +363,9 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
     file.write(str(CorrectDataPath) + "\n")
     file.write(str(CorrectImagePath) + "\n")
     file.close()
+def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
+         original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
+    # Excel file exception handling
 
     if CorrectImagePath == 1 and CorrectDataPath == 1:
         normalized_data = create_dataset(data)
