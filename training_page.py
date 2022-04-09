@@ -17,15 +17,23 @@ class MainBackgroundThread(QThread):
         train(self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio,
               self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
               self.Epoch_loss, self.Total_loss)
-        x, training_loss_arr, validation_loss_arr = get_graph()
-        plt.plot(x, training_loss_arr, color='r', label='training loss')
-        plt.plot(x, validation_loss_arr, color='g', label='validation loss')
-        plt.xlabel("Epoch")
-        plt.ylabel("Loss")
-        plt.title("Training Loss and Validation Loss")
-        plt.legend()
-        plt.savefig("loss_graph")
-        self.Graph.setStyleSheet("image: url(loss_graph.png);border :1px solid black;")
+        file = open("CorrectImportFilesRecieved.txt", "r")
+        CorrectDataSet = file.readline().strip()
+        CorrectImageFolder = file.readline().strip()
+        file.close()
+
+        if CorrectDataSet == "0" or CorrectImageFolder == "0":
+            print("Wrong files imported")
+        else:
+            x, training_loss_arr, validation_loss_arr = get_graph()
+            plt.plot(x, training_loss_arr, color='r', label='training loss')
+            plt.plot(x, validation_loss_arr, color='g', label='validation loss')
+            plt.xlabel("Epoch")
+            plt.ylabel("Loss")
+            plt.title("Training Loss and Validation Loss")
+            plt.legend()
+            plt.savefig("loss_graph")
+            self.Graph.setStyleSheet("image: url(loss_graph.png);border :1px solid black;")
 
 
 class Ui_MainWindow(object):
@@ -266,7 +274,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.ImportDataButton.clicked.connect(self.ImportData)
         self.ImportImagesButton.clicked.connect(self.ImportImages)
         self.StartButton.clicked.connect(self.StartTraining)
-        self.SaveModelButton.clicked.connect(self.SaveModel)
+        self.SaveModelButton.clicked.connect(self.ValidateModelName)
         self.progressBar.valueChanged.connect(self.updateLockVariables)
 
     def ImportData(self):
@@ -278,6 +286,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
     def ImportImages(self):
         filename = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         path = filename
+        print(path)
         self.ImportImagesPath.setText(path)
 
     def updateLockVariables(self):
@@ -291,17 +300,28 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             self.progressBar.setValue(0)
 
     def StartTraining(self):
-        self.enableVariables(False)
-        self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(), self.Epoch.text(),
-                                           self.TrainingMode.currentText(), self.TrainingRatio.text(),
-                                           self.LearningRate.text(),
-                                           self.Momentum.text(), self.NewImage, self.OriginalImage, self.progressBar,
-                                           self.Graph, self.EpochLoss, self.TotalTrainingLoss)
-        print("hi")
-        self.worker.start()
+        if self.ImportDataPath.text()=="" or self.ImportImagesPath.text()=="":
+            print("select files first")
+            self.enableVariables(True)
+        else:
+            self.enableVariables(False)
+            self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(), self.Epoch.text(),
+                                               self.TrainingMode.currentText(), self.TrainingRatio.text(),
+                                               self.LearningRate.text(),
+                                               self.Momentum.text(), self.NewImage, self.OriginalImage, self.progressBar,
+                                               self.Graph, self.EpochLoss, self.TotalTrainingLoss)
+            print("hi")
+            self.worker.start()
 
     def SaveModel(self):
         save_model(self.ModelName.text())
+
+    def ValidateModelName(self):
+        if self.ModelName.text() == '':
+            print("empty")
+        else:
+            print("given")
+            self.SaveModel
 
     def enableVariables(self, boolean):
         self.Epoch.setEnabled(boolean)

@@ -11,8 +11,9 @@ from torchvision import transforms
 from PIL import Image
 import math
 from torchvision.utils import save_image
-from Training_Page_Integration import get_image,refresh_image,update_progress_bar,update_loss_bar
+from Training_Page_Integration import get_image, refresh_image, update_progress_bar, update_loss_bar
 import extract_data as extract
+
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 
@@ -63,7 +64,8 @@ def getOriginalImage(file_num):
 
 
 # Trains the neural network to convert data into an image
-def training(training_data, testing_data, epoch_num, mode, learning_rate, momentum,preview_image,original_image_widget,progress_bar,epoch_loss_widget,total_loss_widget):
+def training(training_data, testing_data, epoch_num, mode, learning_rate, momentum, preview_image,
+             original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
     learning_rate = int(float(learning_rate))
     momentum = int(float(momentum))
     epoch_num = int(float(epoch_num))
@@ -118,43 +120,42 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             total_training_loss += loss
             loss.backward()
             optimizer.step()  # optimizer
-            if(i == 0):
+            if (i == 0):
                 display_produced_image = ProducedImageTensor
                 display_original_image = OriginalImageTensor
-
 
         if (epoch % 10 == 0):
             total_training_loss = total_training_loss.cpu().detach().numpy()
             average_training_loss = (total_training_loss / len(training_data))
             training_loss_arr.append(average_training_loss)
             for i in range(len(testing_data)):
-                location = SR_file_number.iloc[len(training_data)+i]
+                location = SR_file_number.iloc[len(training_data) + i]
                 OriginalImage_TestData = getOriginalImage(location)
-                if OriginalImage_TestData == [0,0,0]:
+                if OriginalImage_TestData == [0, 0, 0]:
                     continue
 
                 OriginalImage_TestData = OriginalImage_TestData.unsqueeze(0)
                 if mode == 2:
-                    OriginalImage_TestData = OriginalImage_TestData.to(device) #CUDA CODE
+                    OriginalImage_TestData = OriginalImage_TestData.to(device)  # CUDA CODE
 
                 test_tensor = torch.tensor(testing_data.iloc[i].values)
                 if mode == 2:
-                    test_tensor = test_tensor.to(device) #CUDA CODE
-                ProducedImage_TestData = class_instance(test_tensor.float(),120,160)
+                    test_tensor = test_tensor.to(device)  # CUDA CODE
+                ProducedImage_TestData = class_instance(test_tensor.float(), 120, 160)
                 if mode == 2:
-                    ProducedImage_TestData = ProducedImage_TestData.to(device) #CUDA CODE
+                    ProducedImage_TestData = ProducedImage_TestData.to(device)  # CUDA CODE
 
-                validation_loss  = loss_function(ProducedImage_TestData,OriginalImage_TestData)
+                validation_loss = loss_function(ProducedImage_TestData, OriginalImage_TestData)
                 total_validation_loss = total_validation_loss + validation_loss
 
             total_validation_loss = total_validation_loss.cpu().detach().numpy()
-            validation_loss_arr.append(total_validation_loss/len(testing_data))
+            validation_loss_arr.append(total_validation_loss / len(testing_data))
 
         # print comparisons
-        update_progress_bar(progress_bar,epoch,epoch_num)
-        get_image(display_produced_image,display_original_image)
-        refresh_image(preview_image,original_image_widget)
-        update_loss_bar(loss,(total_training_loss / len(training_data)),epoch_loss_widget,total_loss_widget)
+        update_progress_bar(progress_bar, epoch, epoch_num)
+        get_image(display_produced_image, display_original_image)
+        refresh_image(preview_image, original_image_widget)
+        update_loss_bar(loss, (total_training_loss / len(training_data)), epoch_loss_widget, total_loss_widget)
         print("Epoch number:" + str(epoch + 1))
         print("Current epoch loss : {}".format(loss))
         print("Total training loss : {}\n".format(total_training_loss / len(training_data)))
@@ -171,7 +172,9 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
 
 
 def get_graph():
-    return x,training_loss_arr,validation_loss_arr
+    return x, training_loss_arr, validation_loss_arr
+
+
 # Saves the current neural network model
 def save_model(model_name):
     torch.save(model.state_dict(), model_name)
@@ -193,7 +196,7 @@ def load_model(data, model_name):
 # Neural Network
 class Net(nn.Module):
 
-    #Below are the layers applied during training
+    # Below are the layers applied during training
     def __init__(self):
         super(Net, self).__init__()
         self.fc1 = nn.Linear(11, 2000)
@@ -204,72 +207,65 @@ class Net(nn.Module):
 
         self.dropout2 = nn.Dropout2d(0.25)
 
-        self.fc2 = nn.Linear(2000,19200)
+        self.fc2 = nn.Linear(2000, 19200)
 
-        self.Convolution1 = nn.Conv2d(36,64, (3, 3), padding=1, bias = True)
+        self.Convolution1 = nn.Conv2d(36, 64, (3, 3), padding=1, bias=True)
         self.dropout3 = nn.Dropout2d(0.25)
         self.batchnorm3 = nn.BatchNorm2d(64)
-        self.Convolution2 = nn.Conv2d(64, 128, (3, 3), padding=1, bias = True)
-        self.Convolution3 = nn.Conv2d(128, 64, (3, 3), padding = 1, bias = True)
-        self.Convolution4 = nn.Conv2d(64, 3, (3, 3), padding = 1, bias = True)
-
-
-
+        self.Convolution2 = nn.Conv2d(64, 128, (3, 3), padding=1, bias=True)
+        self.Convolution3 = nn.Conv2d(128, 64, (3, 3), padding=1, bias=True)
+        self.Convolution4 = nn.Conv2d(64, 3, (3, 3), padding=1, bias=True)
 
     # x represents our data
     def forward(self, x, originalimageheight, originalimagewidth):
-
-
         torch.set_printoptions(threshold=10_000)
 
         out = self.fc1(x)
         leakRelu = nn.ReLU()
         out = leakRelu(out)
-        #out = self.dropout1(out)
+        # out = self.dropout1(out)
         out = self.fc2(out)
 
-        test_shape = torch.reshape(out, (12,40,40)) #Formula : input_size = channels * sqr_root(dimension)
+        test_shape = torch.reshape(out, (12, 40, 40))  # Formula : input_size = channels * sqr_root(dimension)
 
-
-        #changes the shape of the data
-        test_shape = F.interpolate(test_shape,originalimagewidth, mode='linear', align_corners = True)
-        test_shape = test_shape.permute(0,2,1)
-        test_shape = F.interpolate(test_shape,originalimageheight, mode='linear', align_corners = True)
-        test_shape = test_shape.permute(2,1,0)
-        test_shape = F.interpolate(test_shape,36)
-        test_shape = test_shape.permute(2,1,0)
-        test_shape = test_shape.permute(0,2,1)
+        # changes the shape of the data
+        test_shape = F.interpolate(test_shape, originalimagewidth, mode='linear', align_corners=True)
+        test_shape = test_shape.permute(0, 2, 1)
+        test_shape = F.interpolate(test_shape, originalimageheight, mode='linear', align_corners=True)
+        test_shape = test_shape.permute(2, 1, 0)
+        test_shape = F.interpolate(test_shape, 36)
+        test_shape = test_shape.permute(2, 1, 0)
+        test_shape = test_shape.permute(0, 2, 1)
 
         test_shape = test_shape.unsqueeze(0)
 
-        #1st Convolutional Layer
-        test_shape=self.Convolution1(test_shape)
-        #test_shape=self.batchnorm1(test_shape)
+        # 1st Convolutional Layer
+        test_shape = self.Convolution1(test_shape)
+        # test_shape=self.batchnorm1(test_shape)
         leakRelu = nn.ReLU()
-        test_shape=leakRelu(test_shape)
-        #test_shape=self.dropout3(test_shape)
+        test_shape = leakRelu(test_shape)
+        # test_shape=self.dropout3(test_shape)
 
-        #2nd Convolutional Layer
-        test_shape=self.Convolution2(test_shape)
-       # test_shape=self.batchnorm2(test_shape)
+        # 2nd Convolutional Layer
+        test_shape = self.Convolution2(test_shape)
+        # test_shape=self.batchnorm2(test_shape)
         leakRelu = nn.ReLU()
-        test_shape=leakRelu(test_shape)
-        #test_shape=self.dropout3(test_shape)
+        test_shape = leakRelu(test_shape)
+        # test_shape=self.dropout3(test_shape)
 
-
-        #Last Convolutional Layer
+        # Last Convolutional Layer
         test_shape = self.Convolution3(test_shape)
-        #test_shape = self.batchnorm3(test_shape)
+        # test_shape = self.batchnorm3(test_shape)
         leakRelu = nn.ReLU()
         test_shape = leakRelu(test_shape)
 
-        #last layer
+        # last layer
         test_shape = self.Convolution4(test_shape)
-        #m = nn.MaxPool2d(3, stride=1, padding=1)
-        #test_shape = m(test_shape)
-        #test_shape=leakRelu(test_shape)
-        test_shape = test_shape.swapaxes(1,2) #reverse order to 'width, height, channels'
-        test_shape = test_shape.swapaxes(2,3)
+        # m = nn.MaxPool2d(3, stride=1, padding=1)
+        # test_shape = m(test_shape)
+        # test_shape=leakRelu(test_shape)
+        test_shape = test_shape.swapaxes(1, 2)  # reverse order to 'width, height, channels'
+        test_shape = test_shape.swapaxes(2, 3)
         return test_shape
 
 
@@ -337,38 +333,49 @@ def menu_msg():
     return choice
 
 
-def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum,preview_image,original_image_widget,progress_bar,epoch_loss_widget,total_loss_widget):
-    
-    #Excel file exception handling
+def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
+         original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
+    file = open("CorrectImportFilesRecieved.txt", "w")
+    # Excel file exception handling
     try:
         global SR_file_number
-        data, SR_file_number = extract.main(excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
-        
+        data, SR_file_number = extract.main(
+            excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
+        CorrectDataPath = 1
+        file.write('1' + "\n")
+
     except:
         print("Could not load data from given Excel file.")
-    
+        file.write('0' + "\n")
+        CorrectDataPath = 0
+
     global original_image
     original_image = original_image_path
 
-    #Image path exception handling
+    # Image path exception handling
     for fname in os.listdir(original_image_path):
         if fname.endswith('.BMT'):
+            file.write('1' + "\n")
+            CorrectImagePath = 1
             break
         else:
             print('Folder does not contain any BMT files')
-            import sys
-            sys.exit(1)
+            file.write('0' + "\n")
+            CorrectImagePath = 0
+    file.close()
 
-    normalized_data = create_dataset(data)
+    if CorrectImagePath==1 and CorrectDataPath ==1:
+        normalized_data = create_dataset(data)
 
-    training_data, test_data = split_dataset(normalized_data, training_ratio)
+        training_data, test_data = split_dataset(normalized_data, training_ratio)
 
-    if (mode == "CPU"):
-        mode_int = 1
+        if (mode == "CPU"):
+            mode_int = 1
 
-    else:
-        mode_int = 2
-    training(training_data, test_data, epoch_num, mode_int, learning_rate, momentum,preview_image,original_image_widget,progress_bar,epoch_loss_widget,total_loss_widget)
+        else:
+            mode_int = 2
+        training(training_data, test_data, epoch_num, mode_int, learning_rate, momentum, preview_image,
+                 original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget)
 
 
 '''
