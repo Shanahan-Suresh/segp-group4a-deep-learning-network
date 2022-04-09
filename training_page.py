@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
 
 import CSS
+import TrainingPageDataErrorPopUp
 from train_neural_network import main as train, get_graph, save_model
 
 
@@ -301,7 +302,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
 
     def StartTraining(self):
         if self.ImportDataPath.text()=="" or self.ImportImagesPath.text()=="":
-            print("select files first")
+            self.DataErrorPopUp()
             self.enableVariables(True)
         else:
             self.enableVariables(False)
@@ -312,6 +313,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
                                                self.Graph, self.EpochLoss, self.TotalTrainingLoss)
             print("hi")
             self.worker.start()
+
+    def DataErrorPopUp(self):
+        self.window = QtWidgets.QMainWindow()
+        self.window = TrainingPageDataErrorPopUp.MyWindow()
+        self.window.show()
 
     def SaveModel(self):
         save_model(self.ModelName.text())
