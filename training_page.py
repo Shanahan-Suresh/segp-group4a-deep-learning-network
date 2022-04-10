@@ -274,6 +274,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.setupUi(self)
         self.setStyleSheet(CSS.BackgroundCSS)
         self.setWindowIcon(QIcon('TrainingIcon.png'))
+        self.enableVariables(True)
+        self.ModelName.setEnabled(False)
+        self.SaveModelButton.setEnabled(False)
         self.ImportDataButton.clicked.connect(self.ImportData)
         self.ImportImagesButton.clicked.connect(self.ImportImages)
         self.StartButton.clicked.connect(self.StartTraining)
@@ -300,6 +303,8 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             self.enableVariables(False)
 
         if self.progressBar.value() == 100:
+            self.ModelName.setEnabled(True)
+            self.SaveModelButton.setEnabled(True)
             self.progressBar.setValue(0)
 
     def StartTraining(self):
@@ -394,7 +399,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.Momentum.setEnabled(boolean)
         self.ImportImagesButton.setEnabled(boolean)
         self.ImportDataButton.setEnabled(boolean)
-        self.ModelName.setEnabled(boolean)
 
 
 
