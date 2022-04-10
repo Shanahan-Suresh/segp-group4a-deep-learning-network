@@ -378,6 +378,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
 
     def SaveModel(self):
         if self.ModelName.text().isalnum():
+            save_model(self.ModelName.text())
             file=open("ModelName.txt","w")
             file.write(self.ModelName.text())
             file.close()
