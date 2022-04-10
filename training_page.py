@@ -389,6 +389,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.ModelName.setEnabled(boolean)
 
 
+
 if __name__ == "__main__":
     import sys
 

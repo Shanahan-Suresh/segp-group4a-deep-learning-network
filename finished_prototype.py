@@ -13,18 +13,6 @@ from additional_features import main as additional_features_main
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
-
-def format_cursor_data(data):
-    if data[0] > 0.45 and data[1] >= 0.45:
-        return "[" + str(round((13 * data[0] + 8 * data[1] + 5.6 * data[2]), 2)) + "]"
-    if data[0] < 0.1 and data[1] >= data[2]:
-        if (data[1] - data[2] >= 0.2):
-            return "[" + str(round((15 * data[0] + 14 * data[1] + 5 * data[2]), 2)) + "]"
-        else:
-            return "[" + str(round((15 * data[0] + 12 * data[1] + 4 * data[2]), 2)) + "]"
-    return "[" + str(round((23 * data[0] + 10 * data[1] + 6 * data[2]), 2)) + "]"
-
-
 def ConvertToPdf():
     pdf = FPDF()
 

@@ -31,6 +31,7 @@ def load_model(data):
     global ProducedImageTensor
     ProducedImageTensor = model(data.float(), 120, 160)
     pltTensor = ProducedImageTensor.cpu().detach().numpy()
+    plt.cla()
     plt.imshow(pltTensor[0])
     plt.show()
     ProducedImageTensor = ProducedImageTensor.squeeze(0)
