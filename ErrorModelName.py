@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
+from PyQt5.QtGui import QIcon
 
 import CSS
 
@@ -19,6 +20,7 @@ class Ui_MainWindow(QObject):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(231, 77)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)
+        MainWindow.setWindowIcon(QIcon('ErrorIcon.png'))
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -44,7 +46,7 @@ class Ui_MainWindow(QObject):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Error"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Error!"))
         self.ErrorText.setText(_translate("MainWindow", "Please enter a valid model name!"))
         self.CloseButton.setText(_translate("MainWindow", "Close"))
 

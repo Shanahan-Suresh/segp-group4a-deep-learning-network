@@ -249,7 +249,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Train model"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Train Model"))
         self.EpochText.setText(_translate("MainWindow", "Epoch: "))
         self.TrainModeText.setText(_translate("MainWindow", "Training mode:"))
         self.TrainingRatioText.setText(_translate("MainWindow", "Training ratio: "))

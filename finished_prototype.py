@@ -123,6 +123,7 @@ class Ui_MainWindow(QObject):
         self.editButton.setStyleSheet(CSS.EditIconCSS)
         self.editButton.setText("")
         self.editButton.setObjectName("LoadModelButton")
+        self.editButton.setStatusTip("Test Model")
 
         self.NottinghamLogo = QtWidgets.QLabel(self.centralwidget)
         self.NottinghamLogo.setGeometry(QtCore.QRect(-20, 0, 1171, 101))
@@ -249,8 +250,10 @@ class Ui_MainWindow(QObject):
         self.actionSave_Image.setText(_translate("MainWindow", "Save Image"))
         self.actionSave_Image.setStatusTip(_translate("MainWindow", "Save Image"))
         self.actionTrain_Model.setText(_translate("MainWindow", "Train Model"))
+        self.actionTrain_Model.setShortcut(_translate("MainWindow", "Alt+T"))
         self.actionTrain_Model.setStatusTip(_translate("MainWindow", "Train Model"))
         self.selectModel.setText(_translate("MainWindow", "Select Model"))
+        self.selectModel.setShortcut(_translate("MainWindow", "Alt+S"))
         self.selectModel.setStatusTip(_translate("MainWindow", "Select Model"))
 
 
@@ -301,7 +304,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.heatMapButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
             self.heatMapButton.setStyleSheet(CSS.HeatMapCSS)
             self.heatMapButton.clicked.connect(self.ExtractImage)
+            self.heatMapButton.setStatusTip("Extract Image")
         else:
+            self.heatMapButton.setStatusTip("")
             self.heatMapButton.setStyleSheet(CSS.DefaultHeatmapCSS)
             file = open('Variables.txt', 'w')
             file.close()

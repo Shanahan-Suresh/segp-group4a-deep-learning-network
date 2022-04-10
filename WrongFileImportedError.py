@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
+from PyQt5.QtGui import QIcon
 
 import CSS
 
@@ -17,19 +18,26 @@ import CSS
 class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.setFixedSize(248, 115)
+        MainWindow.setFixedSize(260, 115)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)
+        MainWindow.setWindowIcon(QIcon('ErrorIcon.png'))
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
+        self.ErrorIcon = QtWidgets.QLabel(self.centralwidget)
+        self.ErrorIcon.setGeometry(QtCore.QRect(0, 10, 51, 41))
+        self.ErrorIcon.setStyleSheet(CSS.ErrorIconCSS)
+        self.ErrorIcon.setObjectName("ErrorIcon")
+
         self.problem2 = QtWidgets.QLabel(self.centralwidget)
-        self.problem2.setGeometry(QtCore.QRect(10, 60, 211, 16))
+        self.problem2.setGeometry(QtCore.QRect(50, 60, 211, 16))
         self.problem2.setObjectName("problem2")
         self.problem1 = QtWidgets.QLabel(self.centralwidget)
-        self.problem1.setGeometry(QtCore.QRect(10, 40, 211, 16))
+        self.problem1.setGeometry(QtCore.QRect(50, 40, 211, 16))
         self.problem1.setObjectName("problem1")
         self.ErrorMessage = QtWidgets.QLabel(self.centralwidget)
-        self.ErrorMessage.setGeometry(QtCore.QRect(10, 10, 211, 21))
+        self.ErrorMessage.setGeometry(QtCore.QRect(50, 10, 211, 21))
         font = QtGui.QFont()
         font.setPointSize(11)
         font.setBold(True)
@@ -38,7 +46,7 @@ class Ui_MainWindow(QObject):
         self.ErrorMessage.setObjectName("ErrorMessage")
 
         self.CloseButton = QtWidgets.QPushButton(self.centralwidget)
-        self.CloseButton.setGeometry(QtCore.QRect(160, 80, 75, 23))
+        self.CloseButton.setGeometry(QtCore.QRect(170, 80, 75, 23))
         self.CloseButton.setObjectName("CloseButton")
         self.CloseButton.setStyleSheet(CSS.QPushButtonCSS)
         self.CloseButton.clicked.connect(self.close)
@@ -50,7 +58,7 @@ class Ui_MainWindow(QObject):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Error!"))
         self.ErrorMessage.setText(_translate("MainWindow", "Following problem(s):"))
         self.CloseButton.setText(_translate("MainWindow", "Close"))
 

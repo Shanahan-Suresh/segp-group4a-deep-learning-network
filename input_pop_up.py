@@ -16,7 +16,7 @@ class Ui_MainWindow(QObject):
         Form.setStyleSheet(CSS.BackgroundCSS)
 
         self.SubmitButton = QtWidgets.QPushButton(Form)
-        self.SubmitButton.setGeometry(QtCore.QRect(520, 350, 141, 31))
+        self.SubmitButton.setGeometry(QtCore.QRect(530, 350, 141, 31))
         self.SubmitButton.clicked.connect(self.SubmitAction)
         self.SubmitButton.setStyleSheet(CSS.QPushButtonCSS)
         self.SubmitButton.setObjectName("SubmitButton")
