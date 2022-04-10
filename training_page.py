@@ -79,7 +79,7 @@ class Ui_MainWindow(object):
         self.TrainingRatio = QtWidgets.QSpinBox(self.centralwidget)
         self.TrainingRatio.setGeometry(QtCore.QRect(120, 390, 62, 22))
         self.TrainingRatio.setAccelerated(True)
-        self.TrainingRatio.setMinimum(1)
+        self.TrainingRatio.setMinimum(50)
         self.TrainingRatio.setValue(90)
         self.TrainingRatio.setMaximum(95)
         self.TrainingRatio.setObjectName("TrainingRatio")
@@ -110,7 +110,7 @@ class Ui_MainWindow(object):
         self.LearningRate.setSingleStep(0.0001)
         self.LearningRate.setMinimum(0.0001)
         self.LearningRate.setValue(0.009)
-        self.LearningRate.setMaximum(0.99)
+        self.LearningRate.setMaximum(0.9999)
         self.LearningRate.setGeometry(QtCore.QRect(320, 330, 62, 22))
         self.LearningRate.setObjectName("LearningRate")
         self.LearningRate.setStyleSheet(CSS.QDoubleSpinBoxCSS)
@@ -277,6 +277,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.enableVariables(True)
         self.ModelName.setEnabled(False)
         self.SaveModelButton.setEnabled(False)
+        self.ModelNameText.setEnabled(False)
         self.ImportDataButton.clicked.connect(self.ImportData)
         self.ImportImagesButton.clicked.connect(self.ImportImages)
         self.StartButton.clicked.connect(self.StartTraining)
@@ -305,6 +306,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         if self.progressBar.value() == 100:
             self.ModelName.setEnabled(True)
             self.SaveModelButton.setEnabled(True)
+            self.ModelNameText.setEnabled(True)
             self.progressBar.setValue(0)
 
     def StartTraining(self):
