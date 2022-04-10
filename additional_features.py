@@ -191,6 +191,7 @@ def plot_lines(event):
 
 
 def main():
+    plt.close()
     file_path1 = "temp.png"
     file_path1 = Image.open(file_path1)
     file_path1 = ImageOps.flip(file_path1)
@@ -205,6 +206,7 @@ def main():
     file_path1 = file_path1.swapaxes(1,0)
     file_path1 = file_path1.swapaxes(2,1)
     global image_tensor
+    plt.close()
     image_tensor = file_path1
     global fig
     global ax
@@ -220,6 +222,4 @@ def main():
     btn1 = Button(axButn1, label="Draw\nLine", color='pink', hovercolor='tomato')
     btn1.on_clicked(plot_lines)
     plt.show()
-
-
 
