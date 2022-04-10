@@ -4,103 +4,15 @@ import CSS
 import load_model
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QHeaderView, QFileDialog, QApplication
+from PyQt5.QtWidgets import QHeaderView,QApplication
 from PyQt5.QtGui import QIcon
-from fpdf import FPDF
 import input_pop_up
 import training_page
 from additional_features import main as additional_features_main
+from ConvertToPDF import main as ConvertToPdf
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
-def ConvertToPdf():
-    pdf = FPDF()
-
-    # Add a page
-    pdf.add_page()
-
-    # set style and size of font
-    # that you want in the pdf
-    pdf.set_font("Arial", size=15)
-
-    # create a cell
-    pdf.cell(200, 10, txt="Heat Map",  # main title
-             ln=1, align='C')
-
-    pdf.image(name="temp.png", x=50, y=20, w=110, h=80)
-
-    # ***************************************
-
-    # Effective page width, or just epw
-    epw = pdf.w - 2 * pdf.l_margin
-
-    # Set column width to 1/4 of effective page width to distribute content
-    # evenly across table and page
-    col_width = epw / 2
-
-    # Since we do not need to draw lines anymore, there is no need to separate
-    # headers from data matrix.
-    file = open('Variables.txt', 'r')
-    Temperature = file.readline().strip()
-    Humidity = file.readline().strip()
-    WindSpeed = file.readline().strip()
-    AluminumTemperature = file.readline().strip()
-    ChemicalTemperature = file.readline().strip()
-    LauricAcid = file.readline().strip()
-    StearicAcid = file.readline().strip()
-    ParafinWax = file.readline().strip()
-    LauricAcidComposition = file.readline().strip()
-    StearicAcidWaxComposition = file.readline().strip()
-    ParafinWaxComposition = file.readline().strip()
-    file.close()
-    data = [['Temperature', Temperature],
-            ['Humidity', Humidity],
-            ['WindSpeed', WindSpeed],
-            ['Aluminum Temperature', AluminumTemperature],
-            ['Chemical Temperature', ChemicalTemperature],
-            ['Lauric Acid', LauricAcid],
-            ['Stearic Acid', StearicAcid],
-            ['Parafin Wax', ParafinWax],
-            ['Lauric Acid Composition', LauricAcidComposition],
-            ['Stearic Acid Wax Composition', StearicAcidWaxComposition],
-            ['Parafin Wax Composition', ParafinWaxComposition]
-            ]
-    # Document title centered, 'B'old, 14 pt
-    pdf.set_font('Times', 'B', 14.0)
-    pdf.set_font('Times', '', 10.0)
-    pdf.ln(0.5)
-
-    # Text height is the same as current font size
-    th = pdf.font_size
-
-    # Line break equivalent to 4 lines
-    pdf.ln(20 * th)
-
-    # Line break equivalent to 4 lines
-    pdf.ln(4 * th)
-
-    pdf.set_font('Times', 'B', 14.0)
-    pdf.cell(epw, 0.0, 'Report', align='C')
-    pdf.ln(th)
-    pdf.set_font('Times', '', 10.0)
-    pdf.ln(0.5)
-
-    # Here we add more padding by passing 2*th as height
-    for row in data:
-        for datum in row:
-            # Enter data in colums
-            pdf.cell(col_width, 2 * th, str(datum), border=1)
-
-        pdf.ln(2 * th)
-
-    # ***************************************
-    # save the pdf with name .pdf
-    PDFfile, check = QFileDialog.getSaveFileName(None, "Save As Report",
-                                                 "", "PDF (*.pdf)")
-    if check:
-        print(PDFfile)
-        pdf.output(PDFfile, 'F')
-        os.startfile(PDFfile)
 
 class Ui_MainWindow(QObject):
 
