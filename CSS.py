@@ -29,6 +29,10 @@ TableCSS = "QTableWidget {background-color: rgb(255,255,255);}"
 
 LoadIconCSS = "QPushButton{image: url(LoadIcon.png);border :1px solid black;background : white;}"
 
+ErrorIconCSS = "image: url(ErrorIcon.png);"
+
+HappyIconCSS= "image: url(HappyIcon.png);"
+
 QComboBoxCSS = "QComboBox{background : white;}"
 
 PreviewImageCSS = "image: url(train_image.png);border :1px solid black;"

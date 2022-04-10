@@ -116,13 +116,13 @@ class Ui_MainWindow(QObject):
         self.heatMapButton = QtWidgets.QPushButton(self.centralwidget)
         self.heatMapButton.setGeometry(QtCore.QRect(460, 120, 666, 500))
         self.heatMapButton.setStyleSheet(CSS.DefaultHeatmapCSS)
-        self.heatMapButton.setObjectName("pushButton")
+        self.heatMapButton.setObjectName("CloseButton")
 
         self.editButton = QtWidgets.QPushButton(self.centralwidget)
         self.editButton.setGeometry(QtCore.QRect(10, 620, 51, 41))
         self.editButton.setStyleSheet(CSS.EditIconCSS)
         self.editButton.setText("")
-        self.editButton.setObjectName("pushButton_2")
+        self.editButton.setObjectName("LoadModelButton")
 
         self.NottinghamLogo = QtWidgets.QLabel(self.centralwidget)
         self.NottinghamLogo.setGeometry(QtCore.QRect(-20, 0, 1171, 101))

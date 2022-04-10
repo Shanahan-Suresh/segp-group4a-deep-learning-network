@@ -5,8 +5,9 @@ from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
-
 import CSS
+import ErrorModelName
+import SaveModelPopUp
 import TrainingPageDataErrorPopUp
 import WrongFileImportedError
 from train_neural_network import main as train, get_graph, save_model
@@ -231,7 +232,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.label.setFont(font)
-        self.label.setObjectName("label")
+        self.label.setObjectName("SaveAsText")
 
         self.GeneratedImage = QtWidgets.QLabel(self.centralwidget)
         self.GeneratedImage.setGeometry(QtCore.QRect(245, 30, 131, 31))
@@ -240,7 +241,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.GeneratedImage.setFont(font)
-        self.GeneratedImage.setObjectName("label_2")
+        self.GeneratedImage.setObjectName("HappyIcon")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -365,18 +366,24 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.window = WrongFileImportedError.MyWindow()
         self.window.show()
 
+    def ModelNameError(self):
+        self.window = QtWidgets.QMainWindow()
+        self.window = ErrorModelName.MyWindow()
+        self.window.show()
+
+    def OpenSaveModelPopUp(self):
+        self.window = QtWidgets.QMainWindow()
+        self.window = SaveModelPopUp.MyWindow()
+        self.window.show()
+
     def SaveModel(self):
         if self.ModelName.text().isalnum():
-            save_model(self.ModelName.text())
+            file=open("ModelName.txt","w")
+            file.write(self.ModelName.text())
+            file.close()
+            self.OpenSaveModelPopUp()
         else:
-            print("not valid name")
-
-    def ValidateModelName(self):
-        if self.ModelName.text() == '':
-            print("empty")
-        else:
-            print("given")
-            self.SaveModel
+            self.ModelNameError()
 
     def enableVariables(self, boolean):
         self.Epoch.setEnabled(boolean)
