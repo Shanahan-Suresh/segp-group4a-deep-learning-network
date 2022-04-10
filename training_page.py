@@ -14,7 +14,6 @@ from train_neural_network import main as train, get_graph, save_model
 import extract_data as extract
 
 
-
 class MainBackgroundThread(QThread):
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
                  preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget):
@@ -285,13 +284,13 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.progressBar.valueChanged.connect(self.updateLockVariables)
 
     def ImportData(self):
-        filename = QFileDialog.getOpenFileName(None, "Open Model",
+        filename = QFileDialog.getOpenFileName(None, "Import data",
                                                "", " Excel File *.xlsx")
         path = filename[0]
         self.ImportDataPath.setText(path)
 
     def ImportImages(self):
-        filename = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        filename = str(QFileDialog.getExistingDirectory(self, "Import images"))
         path = filename
         print(path)
         self.ImportImagesPath.setText(path)
@@ -330,7 +329,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
 
     def ValidateFiles(self):
         file = open("CorrectImportFilesRecieved.txt", "w")
-        # Excel file exception handling
         try:
             extract.main(
                 self.ImportDataPath.text())
@@ -339,7 +337,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             print("Could not load data from given Excel file.")
             CorrectDataPath = 0
 
-        # Image path exception handling
         for fname in os.listdir(self.ImportImagesPath.text()):
             if fname.endswith('.BMT'):
                 CorrectImagePath = 1
@@ -386,7 +383,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
     def SaveModel(self):
         if self.ModelName.text().isalnum():
             save_model(self.ModelName.text())
-            file=open("ModelName.txt","w")
+            file = open("ModelName.txt", "w")
             file.write(self.ModelName.text())
             file.close()
             self.OpenSaveModelPopUp()
@@ -401,7 +398,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.Momentum.setEnabled(boolean)
         self.ImportImagesButton.setEnabled(boolean)
         self.ImportDataButton.setEnabled(boolean)
-
 
 
 if __name__ == "__main__":
