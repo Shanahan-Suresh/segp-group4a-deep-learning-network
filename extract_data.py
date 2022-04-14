@@ -4,7 +4,6 @@ pd.options.display.max_columns = None
 pd.options.display.max_rows = None
 
 #Opens an excel sheet
-
 def open_sheet(excel):
     import openpyxl
 
