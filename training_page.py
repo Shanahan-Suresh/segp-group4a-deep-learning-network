@@ -280,6 +280,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.ImportDataButton.clicked.connect(self.ImportData)
         self.ImportImagesButton.clicked.connect(self.ImportImages)
         self.StartButton.clicked.connect(self.StartTraining)
+        self.StopButton.clicked.connect(self.StopTraining)
         self.SaveModelButton.clicked.connect(self.SaveModel)
         self.progressBar.valueChanged.connect(self.updateLockVariables)
 
@@ -326,7 +327,8 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             if CorrectDataSet == "0" or CorrectImageFolder == "0":
                 self.error()
                 self.enableVariables(True)
-
+    def StopTraining(self):
+        super().window().close()
     def ValidateFiles(self):
         file = open("CorrectImportFilesRecieved.txt", "w")
         try:
