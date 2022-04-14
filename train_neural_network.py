@@ -1,5 +1,4 @@
 import time
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -20,9 +19,8 @@ import extract_data as extract
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 
-# Normalise the dataset
+# Normalise the dataset to be in between range [0,1]
 def create_dataset(data):
-    # normalize the data to be in range [0,1]
     NormData = (data - data.min()) / (data.max() - data.min())
     return NormData
 
@@ -41,17 +39,21 @@ def split_dataset(data, training_ratio):
 
 # Opens and accesses the data of the raw data files in order to convert them into tensor
 def getOriginalImage(file_num):
-    # hardcoded path name and file type
+
+    #hardcoded file name start and file type
     file_path1 = original_image + "/SR000" + str(file_num) + ".BMT"
     file_path2 = original_image + "/SR00" + str(file_num) + ".BMT"
     file_exist1 = exists(file_path1)
     file_exist2 = exists(file_path2)
+
+    #two alternate file name starts
     if file_exist1:
         img = Image.open(file_path1)
     elif file_exist2:
         img = Image.open(file_path2)
     else:
         return [0, 0, 0]
+
     convert_tensor = transforms.ToTensor()
     OriginalImageTensor = convert_tensor(img)
 
@@ -69,22 +71,35 @@ def getOriginalImage(file_num):
 # Trains the neural network to convert data into an image
 def training(training_data, testing_data, epoch_num, mode, learning_rate, momentum, preview_image,
              original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
+
     learning_rate = int(float(learning_rate))
     momentum = int(float(momentum))
     epoch_num = int(float(epoch_num))
-    # set up loss functions
+
+    # set up loss function
     criterion = nn.CrossEntropyLoss()
 
+    #move device to GPU if user selected and if possible
     device = torch.device('cuda' if (torch.cuda.is_available() and mode == 2) else 'cpu')
+
     global model
     model = Net()
+
     if mode == 2:
         model = model.to(device)  # CUDA CODE
+
+    #class instance
     class_instance = model.float()
+
+    #optimizer
     optimizer = optim.SGD(class_instance.parameters(), lr=0.009, momentum=0.9)
+
+    # set up loss function
     loss_function = nn.L1Loss()
     total_training_loss = 0
     total_validation_loss = 0
+
+    # set up training loss and validation loss arrays
     count = 0
     global training_loss_arr
     training_loss_arr = []
@@ -93,26 +108,25 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
 
     # trains network for each image (non-epoch)
     for epoch in range(epoch_num):
-        torch.cuda.empty_cache()
-
-        print("Flag at {}".format(stop_training_flag))
+        torch.cuda.empty_cache()    
         
+        #stops training if user closes main thread
         if stop_training_flag == 1:
-            "Stop"
+            print("Training Stopped")
             return
 
         for i in range(len(training_data)):
             tensor = torch.tensor(training_data.iloc[i].values)
             if mode == 2:
                 tensor = tensor.to(device)  # CUDA CODE
+
             OriginalImageTensor = getOriginalImage(SR_file_number.iloc[i])  # tensor of the original image
+
             # skip if empty image
             if OriginalImageTensor == [0, 0, 0]:
                 continue
 
-            # get the dimensions of the original image
-            # OriginalImageheight = OriginalImageTensor.shape[0]
-            # OriginalImagewidth = OriginalImageTensor.shape[1]
+            # get the dimensions of the original image          
             OriginalImageTensor = OriginalImageTensor.unsqueeze(0)
 
             if mode == 2:
@@ -123,7 +137,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             if mode == 2:
                 ProducedImageTensor = ProducedImageTensor.to(device)  # CUDA CODE
 
-            # loss functions
+            # apply loss functions
             optimizer.zero_grad()
             loss = loss_function(ProducedImageTensor, OriginalImageTensor)
             total_training_loss += loss
@@ -133,13 +147,16 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
                 display_produced_image = ProducedImageTensor
                 display_original_image = OriginalImageTensor
 
+        #plot training and validation loss graphs
         if (epoch % 10 == 0):
             total_training_loss = total_training_loss.cpu().detach().numpy()
             average_training_loss = (total_training_loss / len(training_data))
             training_loss_arr.append(average_training_loss)
+
             for i in range(len(testing_data)):
                 location = SR_file_number.iloc[len(training_data) + i]
                 OriginalImage_TestData = getOriginalImage(location)
+
                 if OriginalImage_TestData == [0, 0, 0]:
                     continue
 
@@ -150,6 +167,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
                 test_tensor = torch.tensor(testing_data.iloc[i].values)
                 if mode == 2:
                     test_tensor = test_tensor.to(device)  # CUDA CODE
+
                 ProducedImage_TestData = class_instance(test_tensor.float(), 120, 160)
                 if mode == 2:
                     ProducedImage_TestData = ProducedImage_TestData.to(device)  # CUDA CODE
@@ -160,11 +178,13 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             total_validation_loss = total_validation_loss.cpu().detach().numpy()
             validation_loss_arr.append(total_validation_loss / len(testing_data))
 
-        # print comparisons
+        # update progress bar value
         update_progress_bar(progress_bar, epoch, epoch_num)
         get_image(display_produced_image, display_original_image)
         refresh_image(preview_image, original_image_widget)
         update_loss_bar(loss, (total_training_loss / len(training_data)), epoch_loss_widget, total_loss_widget)
+
+        # print losses
         print("Epoch number:" + str(epoch + 1))
         print("Current epoch loss : {}".format(loss))
         print("Total training loss : {}\n".format(total_training_loss / len(training_data)))
@@ -173,13 +193,12 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
 
     print("Training completed")
 
-    print(validation_loss_arr)
-    print(training_loss_arr)
+    #set validation and training loss arrays
     global x
     x = list(range(0, epoch_num, 10))
-    print(x)
 
 
+#function to get values useable to plot validation and training loss graph
 def get_graph():
     return x, training_loss_arr, validation_loss_arr
 
@@ -192,13 +211,10 @@ def save_model(model_name):
 
 # Loads a trained neural network model
 def load_model(data, model_name):
-    # print(data)
     model = Net()
     model.load_state_dict(torch.load(model_name))
-    # model.eval()
     ProducedImageTensor = model(data.float(), 120, 160)
     ProducedImageTensor = ProducedImageTensor.squeeze(0)
-    # save_image_from_tensor(ProducedImageTensor)
     return ProducedImageTensor
 
 
@@ -262,13 +278,13 @@ class Net(nn.Module):
         test_shape = leakRelu(test_shape)
         # test_shape=self.dropout3(test_shape)
 
-        # Last Convolutional Layer
+        # 3rd Convolutional Layer
         test_shape = self.Convolution3(test_shape)
         # test_shape = self.batchnorm3(test_shape)
         leakRelu = nn.ReLU()
         test_shape = leakRelu(test_shape)
 
-        # last layer
+        # Last Convolutional layer
         test_shape = self.Convolution4(test_shape)
         # m = nn.MaxPool2d(3, stride=1, padding=1)
         # test_shape = m(test_shape)
@@ -341,13 +357,15 @@ def menu_msg():
     choice = int(input(""))
     return choice
 
+#Calls stop flag in training thread
 def set_stop_flag():
     global stop_training_flag
-    stop_training_flag = 1
+    stop_training_flag = 1 #set stop flag for main thread
 
 def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
          original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
-    # Excel file exception handling
+
+    #global variables set up
     global SR_file_number
     data, SR_file_number = extract.main(
         excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
@@ -358,95 +376,16 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
     global stop_training_flag
     stop_training_flag = 0
 
-
+    #normalize data
     normalized_data = create_dataset(data)
-
     training_data, test_data = split_dataset(normalized_data, training_ratio)
 
+    #determine cpu or gpu training mode
     if (mode == "CPU"):
         mode_int = 1
 
     else:
         mode_int = 2
+
     training(training_data, test_data, epoch_num, mode_int, learning_rate, momentum, preview_image,
              original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget)
-
-
-'''
-    choice = menu_msg()
-
-    if choice == 1:
-        print(">>>Training\n")
-        epoch_num = int(input("Please insert the number of epochs to train the model with: "))
-        model_name = input("Please set the name of the model: ")
-        mode = int(input("Will you be training on CPU or GPU ?\n1.CPU\n2.GPU (CUDA)\n"))
-        training(training_data,test_data, epoch_num, model_name, mode)
-
-    elif choice == 2:
-        print(">>>Evaluating Performance\n")
-        model_name = input("Please state the name of the model you wish to load: ")
-        training_data_count = len(training_data)
-        performance_evaluation(test_data, training_data_count, model_name)
-
-    elif choice == 3:
-        print(">>>Terminating console...")
-        return
-
-    else:
-        print(">>>Unrecognized command\n")
-        main()
-
-
-
-
------------------- Unused Code Area ------------------
-
-        #Individual Shape Viewing Commands
-
-        #ProducedImagenumpy = ProducedImageTensor.detach().numpy()
-        #OriginalImagenumpy = OriginalImageTensor.detach().numpy()
-        #print(OriginalImageTensor.shape)
-        #print(ProducedImageTensor.shape)
-
-        #Display Image commands
-        #plt.imshow(test_shape[0])
-        #plt.show()
-
-
-#Returns a list of tensors from BMT images located in current directory (and sub-dirs)
-def get_original_image_tensors():
-    original_image_tensors = []
-
-    images_dir = "**"
-    images_list = glob(os.path.join(images_dir, "*.BMT"))
-
-
-    for img_filename in images_list:
-        img_path = os.path.join(images_dir, img_filename)
-        original_image_tensors.append(getOriginalImage(img_filename))
-
-    return original_image_tensors
-
-
-#Converts a single image into a tensor
-def getOriginalImage(image_name):
-    img = Image.open(image_name)
-    convert_tensor = transforms.ToTensor()
-    OriginalImageTensor = convert_tensor(img)
-    OriginalImageTensor = OriginalImageTensor.permute(1, 2, 0)
-
-    return OriginalImageTensor
-
-#CUDA CODE
-# setting device on GPU if available, else CPU
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        print('Using device:', device)
-        print()
-
-#Additional Info when using cuda
-if device.type == 'cuda':
-    print(torch.cuda.get_device_name(0))
-    print('Memory Usage:')
-    print('Allocated:', round(torch.cuda.memory_allocated(0)/1024**3,1), 'GB')
-    print('Cached:   ', round(torch.cuda.memory_reserved(0)/1024**3,1), 'GB\n\n')
-'''
