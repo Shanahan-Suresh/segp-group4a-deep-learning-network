@@ -1,5 +1,4 @@
 import os
-
 import numpy
 import numpy as np
 from PIL import Image, ImageOps
@@ -11,16 +10,23 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 global button_clicked_count
 
-
+#Function to normalize data received from cursor position
 def format_cursor_data(data):
+
     if data[0] > 0.45 and data [1] >= 0.45:
         return "[" + str(round((13*data[0] + 8*data[1] + 5.6*data[2]),2)) + "]"
+
     if data[0] < 0.1 and data[1] >= data[2] :
+
         if(data[1] - data[2] >= 0.2):
             return "[" + str(round((15*data[0] + 14*data[1] + 5*data[2]),2)) + "]"
+
         else:
             return "[" + str(round((15*data[0] + 12*data[1] + 4*data[2]),2)) + "]"
+
     return "[" + str(round((23*data[0] + 10*data[1] + 6*data[2]),2)) + "]"
+
+#Control draw line objects
 class LineBuilder(object):
     def __init__(self, fig, ax):
         self.xs = []
@@ -29,10 +35,10 @@ class LineBuilder(object):
         self.fig = fig
         self.points = Points()
 
-    def mouse_click(self, event):
-        print('click', event)
+    def mouse_click(self, event):       
         if not event.inaxes:
             return
+
         #left click
         if event.button == 1 and 0 <= event.xdata <= 666 and 0 <= event.ydata <= 500 :
 
@@ -41,9 +47,9 @@ class LineBuilder(object):
             if len(self.xs) % 2 == 1:
                 self.points.x_start_point(event.xdata)
                 self.points.y_start_point(event.ydata)
+
             #add a line to plot if it has 2 points
             if len(self.xs) % 2 == 0:
-
 
                 self.points.x_end_point(event.xdata)
                 self.points.y_end_point(event.ydata)
@@ -57,25 +63,29 @@ class LineBuilder(object):
             if len(self.xs) > 0:
                 self.xs.pop()
                 self.ys.pop()
-            #delete last line drawn if the line is missing a point,
-            #never delete the original stock plot
+
+            #delete last line drawn if the line is missing a point, never deletes the original stock plot
             if len(self.xs) % 2 == 1 and len(self.ax.lines) > 1:
                 self.ax.lines.pop()
                 fig.canvas.mpl_disconnect(cid1)
                 fig.canvas.mpl_disconnect(cid2)
+
             #refresh plot
             self.fig.canvas.draw()
 
+
+    #dtaws a temporary line from a single point to the mouse position
     def mouse_move(self, event):
         if not event.inaxes:
             return
-        #dtaw a temporary line from a single point to the mouse position
+
         #delete the temporary line when mouse move to another position
         if len(self.xs) % 2 == 1:
             line, =self.ax.plot([self.xs[-1], event.xdata], [self.ys[-1], event.ydata], 'r')
             line.figure.canvas.draw()
             self.ax.lines.pop()
 
+#Mouse point class definition
 class Points():
     def __init__(self):
         self.start_point_x = 0
@@ -103,8 +113,9 @@ class Points():
             m = 0
         else:
             m = (self.end_point_y - self.start_point_y) / (self.end_point_x - self.start_point_x)
-        print(m)
+        
         c = self.end_point_y - m * self.end_point_x
+
         if (self.start_point_x > self.end_point_x):
             for x in range (int(self.start_point_x),int(self.end_point_x+1), -1):
                 y = m * x + c
@@ -123,51 +134,49 @@ class Points():
             for x in range (int(self.start_point_x),int(self.end_point_x+1)):
                 y = m * x + c
                 arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
-
-
-
-        print(arr)
+      
         calculate(arr)
 
 
 
-
+#Obtain data value from given rgb value 
 def calculate(arr):
     rgb = []
     for x in range(len(arr)):
         x_coordinate = arr[x][0]
-        y_coordinate = arr[x][1]
-        print(image_tensor.shape)
+        y_coordinate = arr[x][1]       
         red_channel = image_tensor[y_coordinate][x_coordinate][0]
         green_channel = image_tensor[y_coordinate][x_coordinate][1]
         blue_channel = image_tensor[y_coordinate][x_coordinate][2]
 
         rgb.append([red_channel.numpy(),green_channel.numpy(),blue_channel.numpy()])
-
-    print(rgb)
+    
     calculate_temperature(rgb)
 
+#Calculate normalized temperature based from given data value
 def calculate_temperature(array):
     temp = []
     for x in range(len(array)):
 
-        if array[x][0] > 0.45 and array[x][1] >= 0.45:
-            print("hi")
+        if array[x][0] > 0.45 and array[x][1] >= 0.45:     
             temp.append((round((13*array[x][0] + 8*array[x][1] + 5.6*array[x][2]),2)))
             continue
+
         if array[x][0] < 0.1 and array[x][1] >= array[x][2] :
+
             if(array[x][1] - array[x][2] >= 0.2):
                 temp.append((round((15*array[x][0] + 14*array[x][1] + 5*array[x][2]),2)))
             else:
                 temp.append((round((15*array[x][0] + 12*array[x][1] + 4*array[x][2]),2)))
             continue
-        else:
-            print("hello")
+
+        else:           
             temp.append((round((23*array[x][0] + 10*array[x][1] + 6*array[x][2]),2)))
             continue
-
-    print(temp)
+    
     plot_graph(temp)
+
+#Plot graph based on array values
 def plot_graph(temp_array):
     n = len(temp_array)
     x = np.arange(n)
@@ -175,19 +184,17 @@ def plot_graph(temp_array):
     ax1.plot(x,temp_array)
     plt.show()
 
+#Remove canvas
 def donecallback(cid1,cid2):
     fig.canvas.mpl_disconnect(cid1)
     fig.canvas.mpl_disconnect(cid2)
-    print("hi")
+    
+#Plot lines between two points
 def plot_lines(event):
-
     global cid1
     global cid2
     cid1 = fig.canvas.mpl_connect('button_press_event', draw_line.mouse_click)
     cid2 = fig.canvas.mpl_connect('motion_notify_event', draw_line.mouse_move)
-
-
-
 
 
 def main():
@@ -198,28 +205,27 @@ def main():
     convert_tensor = transforms.ToTensor()
 
     file_path1 = convert_tensor(file_path1)
-    '''
-    file_path1 = F.interpolate(file_path1, 160, mode = 'nearest')
-    file_path1 = file_path1.swapaxes(2,1)
-    file_path1 = F.interpolate(file_path1, 120, mode = 'nearest')
-    file_path1 = file_path1.swapaxes(2,1)'''
     file_path1 = file_path1.swapaxes(1,0)
     file_path1 = file_path1.swapaxes(2,1)
+
     global image_tensor
     plt.close()
     image_tensor = file_path1
+
     global fig
     global ax
     fig, ax = plt.subplots()
     ax.set_ylim([0,500])
     tmp = ax.imshow(file_path1)
-
     tmp.format_cursor_data = format_cursor_data
+
     global draw_line
     draw_line = LineBuilder(fig, ax)
     axButn1 = plt.axes([0.91, 0.01, 0.1, 0.1])
+
     global btn1
     btn1 = Button(axButn1, label="Draw\nLine", color='pink', hovercolor='tomato')
     btn1.on_clicked(plot_lines)
+
     plt.show()
 
