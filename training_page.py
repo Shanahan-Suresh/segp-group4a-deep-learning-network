@@ -3,7 +3,7 @@ import os
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QApplication
 from matplotlib import pyplot as plt
 import CSS
 import ErrorModelName
@@ -388,6 +388,32 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.Momentum.setEnabled(boolean)
         self.ImportImagesButton.setEnabled(boolean)
         self.ImportDataButton.setEnabled(boolean)
+
+    def closeEvent(self, event):
+        close = QtWidgets.QMessageBox.question(self,
+                                               "QUIT",
+                                               "Are you sure want to stop process?",
+                                               QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+        if close == QtWidgets.QMessageBox.Yes:
+            event.accept()
+
+            self.window = QtWidgets.QMainWindow()
+            self.window = TrainingPageDataErrorPopUp.MyWindow()
+            self.window.close()
+
+            self.window = QtWidgets.QMainWindow()
+            self.window = WrongFileImportedError.MyWindow()
+            self.window.close()
+
+            self.window = QtWidgets.QMainWindow()
+            self.window = ErrorModelName.MyWindow()
+            self.window.close()
+
+            self.window = QtWidgets.QMainWindow()
+            self.window = SaveModelPopUp.MyWindow()
+            self.window.close()
+        else:
+            event.ignore()
 
 
 if __name__ == "__main__":
