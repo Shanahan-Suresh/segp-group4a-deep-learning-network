@@ -44,6 +44,7 @@ class MainBackgroundThread(QThread):
 class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
+        MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(852, 539)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)
@@ -252,7 +253,7 @@ class Ui_MainWindow(object):
         self.GeneratedImage.setText(_translate("MainWindow", "Generated Image"))
 
 
-class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
+class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -267,7 +268,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.StartButton.clicked.connect(self.StartTraining)
         self.StopButton.clicked.connect(self.StopTraining)
         self.SaveModelButton.clicked.connect(self.SaveModel)
-        self.progressBar.valueChanged.connect(self.updateLockVariables)
+        self.progressBar.valueChanged.connect(self.updateVariablesStatus)
 
     def ImportData(self):
         filename = QFileDialog.getOpenFileName(None, "Import data",
@@ -281,8 +282,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         print(path)
         self.ImportImagesPath.setText(path)
 
-    def updateLockVariables(self):
-
+    def updateVariablesStatus(self):
         if self.progressBar.value() == 0:
             self.enableVariables(True)
         else:
@@ -290,18 +290,22 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
 
         if self.progressBar.value() == 100:
             self.ModelName.setEnabled(True)
+            self.ModelNameText.setEnabled(True)
             self.SaveModelButton.setEnabled(True)
             self.ModelNameText.setEnabled(True)
             self.progressBar.setValue(0)
 
     def StartTraining(self):
+        self.SaveModelButton.setEnabled(False)
+        self.ModelNameText.setEnabled(False)
+        self.ModelName.setText("")
+        self.ModelName.setEnabled(False)
         if self.ImportDataPath.text() == "" or self.ImportImagesPath.text() == "":
             self.DataErrorPopUp()
             self.enableVariables(True)
         else:
             self.ValidateFiles()
             self.enableVariables(False)
-
             file = open("CorrectImportFilesRecieved.txt", "r")
             CorrectDataSet = file.readline().strip()
             CorrectImageFolder = file.readline().strip()
@@ -390,30 +394,21 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         self.ImportDataButton.setEnabled(boolean)
 
     def closeEvent(self, event):
-        close = QtWidgets.QMessageBox.question(self,
-                                               "QUIT",
-                                               "Are you sure want to stop process?",
-                                               QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-        if close == QtWidgets.QMessageBox.Yes:
-            event.accept()
+        self.window = QtWidgets.QMainWindow()
+        self.window = TrainingPageDataErrorPopUp.MyWindow()
+        self.window.close()
 
-            self.window = QtWidgets.QMainWindow()
-            self.window = TrainingPageDataErrorPopUp.MyWindow()
-            self.window.close()
+        self.window = QtWidgets.QMainWindow()
+        self.window = WrongFileImportedError.MyWindow()
+        self.window.close()
 
-            self.window = QtWidgets.QMainWindow()
-            self.window = WrongFileImportedError.MyWindow()
-            self.window.close()
+        self.window = QtWidgets.QMainWindow()
+        self.window = ErrorModelName.MyWindow()
+        self.window.close()
 
-            self.window = QtWidgets.QMainWindow()
-            self.window = ErrorModelName.MyWindow()
-            self.window.close()
-
-            self.window = QtWidgets.QMainWindow()
-            self.window = SaveModelPopUp.MyWindow()
-            self.window.close()
-        else:
-            event.ignore()
+        self.window = QtWidgets.QMainWindow()
+        self.window = SaveModelPopUp.MyWindow()
+        self.window.close()
 
 
 if __name__ == "__main__":
