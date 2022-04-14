@@ -12,6 +12,7 @@ from glob import glob
 from torchvision import transforms
 from PIL import Image
 import math
+import sys
 from torchvision.utils import save_image
 from Training_Page_Integration import get_image, refresh_image, update_progress_bar, update_loss_bar
 import extract_data as extract
@@ -93,6 +94,12 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     # trains network for each image (non-epoch)
     for epoch in range(epoch_num):
         torch.cuda.empty_cache()
+
+        print("Flag at {}".format(stop_training_flag))
+        
+        if stop_training_flag == 1:
+            "Stop"
+            return
 
         for i in range(len(training_data)):
             tensor = torch.tensor(training_data.iloc[i].values)
@@ -334,6 +341,9 @@ def menu_msg():
     choice = int(input(""))
     return choice
 
+def set_stop_flag():
+    global stop_training_flag
+    stop_training_flag = 1
 
 def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
          original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
@@ -344,6 +354,9 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
 
     global original_image
     original_image = original_image_path
+
+    global stop_training_flag
+    stop_training_flag = 0
 
 
     normalized_data = create_dataset(data)

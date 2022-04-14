@@ -10,11 +10,13 @@ import ErrorModelName
 import SaveModelPopUp
 import TrainingPageDataErrorPopUp
 import WrongFileImportedError
-from train_neural_network import main as train, get_graph, save_model
+from train_neural_network import main as train, get_graph, save_model, set_stop_flag
 import extract_data as extract
 
 
 class MainBackgroundThread(QThread):
+    global stop_training_flag
+    stop_training_flag = 0
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
                  preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget):
         QThread.__init__(self)
@@ -25,6 +27,8 @@ class MainBackgroundThread(QThread):
               self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
               self.Epoch_loss, self.Total_loss)
 
+        if stop_training_flag == 1:
+            return
         plt.cla()
         x, training_loss_arr, validation_loss_arr = get_graph()
         plt.plot(x, training_loss_arr, color='r', label='training loss')
@@ -328,6 +332,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
                 self.error()
                 self.enableVariables(True)
     def StopTraining(self):
+        global stop_training_flag
+        stop_training_flag = 1
+        set_stop_flag()
         super().window().close()
     def ValidateFiles(self):
         file = open("CorrectImportFilesRecieved.txt", "w")
