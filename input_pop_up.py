@@ -21,26 +21,20 @@ class Ui_MainWindow(QObject):
         self.SubmitButton.setStyleSheet(CSS.QPushButtonCSS)
         self.SubmitButton.setObjectName("SubmitButton")
 
-        font = self.fontSetting()
-
         self.ParafinWaxText = QtWidgets.QLabel(Form)
-        self.ParafinWaxText.setGeometry(QtCore.QRect(470, 139, 121, 21))
-        self.ParafinWaxText.setFont(font)
+        self.ParafinWaxText.setGeometry(QtCore.QRect(520, 139, 121, 21))
         self.ParafinWaxText.setObjectName("ParafinWaxText")
 
         self.TemperatureText = QtWidgets.QLabel(Form)
-        self.TemperatureText.setGeometry(QtCore.QRect(100, 19, 121, 41))
-        self.TemperatureText.setFont(font)
+        self.TemperatureText.setGeometry(QtCore.QRect(150, 19, 121, 41))
         self.TemperatureText.setObjectName("TemperatureText")
 
         self.StearicAcidWaxCompositionText = QtWidgets.QLabel(Form)
-        self.StearicAcidWaxCompositionText.setGeometry(QtCore.QRect(330, 259, 261, 21))
-        self.StearicAcidWaxCompositionText.setFont(font)
+        self.StearicAcidWaxCompositionText.setGeometry(QtCore.QRect(440, 259, 261, 21))
         self.StearicAcidWaxCompositionText.setObjectName("StearicAcidWaxCompositionText")
 
         self.LauricAcidText = QtWidgets.QLabel(Form)
-        self.LauricAcidText.setGeometry(QtCore.QRect(490, 19, 101, 21))
-        self.LauricAcidText.setFont(font)
+        self.LauricAcidText.setGeometry(QtCore.QRect(530, 19, 101, 21))
         self.LauricAcidText.setObjectName("LauricAcidText")
 
         self.WindSpeed = QtWidgets.QSpinBox(Form)
@@ -68,8 +62,7 @@ class Ui_MainWindow(QObject):
         self.LauricAcid.setObjectName("LauricAcid")
 
         self.ChemicalTemperatureText = QtWidgets.QLabel(Form)
-        self.ChemicalTemperatureText.setGeometry(QtCore.QRect(20, 270, 201, 21))
-        self.ChemicalTemperatureText.setFont(font)
+        self.ChemicalTemperatureText.setGeometry(QtCore.QRect(100, 270, 201, 21))
         self.ChemicalTemperatureText.setObjectName("ChemicalTemperatureText")
 
         self.ParafinWaxComp = QtWidgets.QSpinBox(Form)
@@ -81,8 +74,7 @@ class Ui_MainWindow(QObject):
         self.ParafinWaxComp.setObjectName("ParafinWaxComp")
 
         self.StearicAcidText = QtWidgets.QLabel(Form)
-        self.StearicAcidText.setGeometry(QtCore.QRect(480, 79, 111, 21))
-        self.StearicAcidText.setFont(font)
+        self.StearicAcidText.setGeometry(QtCore.QRect(520, 79, 111, 21))
         self.StearicAcidText.setObjectName("StearicAcidText")
 
         self.Humidity = QtWidgets.QDoubleSpinBox(Form)
@@ -97,13 +89,11 @@ class Ui_MainWindow(QObject):
         self.Humidity.setObjectName("Humidity")
 
         self.WindSpeedText = QtWidgets.QLabel(Form)
-        self.WindSpeedText.setGeometry(QtCore.QRect(110, 150, 101, 21))
-        self.WindSpeedText.setFont(font)
+        self.WindSpeedText.setGeometry(QtCore.QRect(160, 150, 60, 21))
         self.WindSpeedText.setObjectName("WindSpeedText")
 
         self.ParafinWaxCompositionText = QtWidgets.QLabel(Form)
-        self.ParafinWaxCompositionText.setGeometry(QtCore.QRect(370, 319, 221, 21))
-        self.ParafinWaxCompositionText.setFont(font)
+        self.ParafinWaxCompositionText.setGeometry(QtCore.QRect(460, 319, 140, 21))
         self.ParafinWaxCompositionText.setObjectName("ParafinWaxCompositionText")
 
         self.StearicAcidWaxComp = QtWidgets.QSpinBox(Form)
@@ -137,13 +127,11 @@ class Ui_MainWindow(QObject):
         self.Temperature.setObjectName("Temperature")
 
         self.HumidityText = QtWidgets.QLabel(Form)
-        self.HumidityText.setGeometry(QtCore.QRect(130, 79, 91, 41))
-        self.HumidityText.setFont(font)
+        self.HumidityText.setGeometry(QtCore.QRect(170, 79, 50, 41))
         self.HumidityText.setObjectName("label_3")
 
         self.AluminiumTemperatureText = QtWidgets.QLabel(Form)
-        self.AluminiumTemperatureText.setGeometry(QtCore.QRect(10, 210, 211, 21))
-        self.AluminiumTemperatureText.setFont(font)
+        self.AluminiumTemperatureText.setGeometry(QtCore.QRect(100, 210, 211, 21))
         self.AluminiumTemperatureText.setObjectName("label_6")
 
         self.ParafinWax = QtWidgets.QSpinBox(Form)
@@ -155,8 +143,7 @@ class Ui_MainWindow(QObject):
         self.ParafinWax.setObjectName("ParafinWax")
 
         self.LauricAcidComposition = QtWidgets.QLabel(Form)
-        self.LauricAcidComposition.setGeometry(QtCore.QRect(380, 199, 211, 21))
-        self.LauricAcidComposition.setFont(font)
+        self.LauricAcidComposition.setGeometry(QtCore.QRect(470, 199, 130, 21))
         self.LauricAcidComposition.setObjectName("LauricAcidComposition")
 
         self.AluminiumTemp = QtWidgets.QDoubleSpinBox(Form)
@@ -185,14 +172,6 @@ class Ui_MainWindow(QObject):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
-    # font setting
-    def fontSetting(self):
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        return font
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate

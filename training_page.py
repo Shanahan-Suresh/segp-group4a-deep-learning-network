@@ -122,10 +122,6 @@ class Ui_MainWindow(object):
 
         self.AdvancedOptionsText = QtWidgets.QLabel(self.centralwidget)
         self.AdvancedOptionsText.setGeometry(QtCore.QRect(260, 300, 111, 16))
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setWeight(75)
-        self.AdvancedOptionsText.setFont(font)
         self.AdvancedOptionsText.setObjectName("AdvancedOptionsText")
 
         self.ImportDataButton = QtWidgets.QPushButton(self.centralwidget)
@@ -165,12 +161,7 @@ class Ui_MainWindow(object):
         self.progressBar.setObjectName("progressBar")
 
         self.ConfigureModelText = QtWidgets.QLabel(self.centralwidget)
-        self.ConfigureModelText.setGeometry(QtCore.QRect(160, 250, 161, 31))
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.ConfigureModelText.setFont(font)
+        self.ConfigureModelText.setGeometry(QtCore.QRect(180, 270, 161, 31))
         self.ConfigureModelText.setObjectName("ConfigureModelText")
 
         self.NewImage = QtWidgets.QLabel(self.centralwidget)
@@ -224,22 +215,12 @@ class Ui_MainWindow(object):
         self.SaveModelButton.setObjectName("SaveButton")
         self.SaveModelButton.setStyleSheet(CSS.SaveButtonCSS)
 
-        self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(50, 30, 121, 31))
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.label.setFont(font)
-        self.label.setObjectName("SaveAsText")
+        self.OriginalImageText = QtWidgets.QLabel(self.centralwidget)
+        self.OriginalImageText.setGeometry(QtCore.QRect(65, 40, 121, 31))
+        self.OriginalImageText.setObjectName("SaveAsText")
 
         self.GeneratedImage = QtWidgets.QLabel(self.centralwidget)
-        self.GeneratedImage.setGeometry(QtCore.QRect(245, 30, 131, 31))
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.GeneratedImage.setFont(font)
+        self.GeneratedImage.setGeometry(QtCore.QRect(270, 40, 131, 31))
         self.GeneratedImage.setObjectName("HappyIcon")
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -263,7 +244,7 @@ class Ui_MainWindow(object):
         self.EpochLoss.setText(_translate("MainWindow", "Current epoch loss :"))
         self.TotalTrainingLoss.setText(_translate("MainWindow", "Total training loss:"))
         self.ModelNameText.setText(_translate("MainWindow", "Model Name:"))
-        self.label.setText(_translate("MainWindow", "Original Image"))
+        self.OriginalImageText.setText(_translate("MainWindow", "Original Image"))
         self.GeneratedImage.setText(_translate("MainWindow", "Generated Image"))
 
 

@@ -15,7 +15,6 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 
 class Ui_MainWindow(QObject):
-
     def setupUi(self, MainWindow):
         self.ClearFile()
         MainWindow.setObjectName("MainWindow")
@@ -45,9 +44,6 @@ class Ui_MainWindow(QObject):
         self.line = QtWidgets.QFrame(self.centralwidget)
         self.line.setGeometry(QtCore.QRect(0, 100, 1154, 20))
 
-        font = QtGui.QFont()
-        font.setBold(False)
-        font.setWeight(50)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
