@@ -109,13 +109,14 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     # trains network for each image (non-epoch)
     for epoch in range(epoch_num):
         torch.cuda.empty_cache()    
-        
-        #stops training if user closes main thread
-        if stop_training_flag == 1:
-            print("Training Stopped")
-            return
 
         for i in range(len(training_data)):
+
+            #stops training if user closes main thread
+            if stop_training_flag == 1:
+                print("Training Stopped")
+                return
+
             tensor = torch.tensor(training_data.iloc[i].values)
             if mode == 2:
                 tensor = tensor.to(device)  # CUDA CODE
