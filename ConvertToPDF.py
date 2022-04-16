@@ -8,14 +8,14 @@ def main():
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", 'B', size=15)
-    pdf.image(name="nottinghamlogo.jpeg", x=5, y=5, w=70, h=25)
+    pdf.image(name="Icons/nottinghamlogo.jpeg", x=5, y=5, w=70, h=25)
     pdf.cell(0, 60, txt="Generated Heat Map",
              ln=1, align='C')
-    pdf.image(name="temp.png", x=50, y=60, w=110, h=80)
+    pdf.image(name="Temp files/temp.png", x=50, y=60, w=110, h=80)
     epw = pdf.w - 2 * pdf.l_margin
     col_width = epw / 2
 
-    file = open('Variables.txt', 'r')
+    file = open('Temp files/Variables.txt', 'r')
     Temperature = file.readline().strip()
     Humidity = file.readline().strip()
     WindSpeed = file.readline().strip()

@@ -199,7 +199,7 @@ def plot_lines(event):
 
 def main():
     plt.close()
-    file_path1 = "temp.png"
+    file_path1 = "Temp files/temp.png"
     file_path1 = Image.open(file_path1)
     file_path1 = ImageOps.flip(file_path1)
     convert_tensor = transforms.ToTensor()

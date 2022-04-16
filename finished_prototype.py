@@ -17,7 +17,7 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
         self.ClearFile()
-        MainWindow.setObjectName("HeatGen")
+        MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(1154, 723)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -115,7 +115,7 @@ class Ui_MainWindow(QObject):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "HeatGen"))
         item = self.tableWidget.verticalHeaderItem(0)
         item.setText(_translate("MainWindow", "-"))
         item = self.tableWidget.verticalHeaderItem(1)
