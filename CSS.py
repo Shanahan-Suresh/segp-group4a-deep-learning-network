@@ -33,6 +33,8 @@ ErrorIconCSS = "image: url(ErrorIcon.png);"
 
 HappyIconCSS= "image: url(HappyIcon.png);"
 
+CautionIconCSS= "image: url(CautionIcon.png);"
+
 QComboBoxCSS = "QComboBox{background : white;}"
 
 PreviewImageCSS = "image: url(train_image.png);border :1px solid black;"

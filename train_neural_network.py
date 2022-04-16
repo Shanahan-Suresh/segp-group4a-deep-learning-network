@@ -13,6 +13,8 @@ from PIL import Image
 import math
 import sys
 from torchvision.utils import save_image
+
+import TrainingStoppedPage
 from Training_Page_Integration import get_image, refresh_image, update_progress_bar, update_loss_bar
 import extract_data as extract
 
@@ -39,14 +41,13 @@ def split_dataset(data, training_ratio):
 
 # Opens and accesses the data of the raw data files in order to convert them into tensor
 def getOriginalImage(file_num):
-
-    #hardcoded file name start and file type
+    # hardcoded file name start and file type
     file_path1 = original_image + "/SR000" + str(file_num) + ".BMT"
     file_path2 = original_image + "/SR00" + str(file_num) + ".BMT"
     file_exist1 = exists(file_path1)
     file_exist2 = exists(file_path2)
 
-    #two alternate file name starts
+    # two alternate file name starts
     if file_exist1:
         img = Image.open(file_path1)
     elif file_exist2:
@@ -71,7 +72,6 @@ def getOriginalImage(file_num):
 # Trains the neural network to convert data into an image
 def training(training_data, testing_data, epoch_num, mode, learning_rate, momentum, preview_image,
              original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
-
     learning_rate = int(float(learning_rate))
     momentum = int(float(momentum))
     epoch_num = int(float(epoch_num))
@@ -79,7 +79,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     # set up loss function
     criterion = nn.CrossEntropyLoss()
 
-    #move device to GPU if user selected and if possible
+    # move device to GPU if user selected and if possible
     device = torch.device('cuda' if (torch.cuda.is_available() and mode == 2) else 'cpu')
 
     global model
@@ -88,10 +88,10 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     if mode == 2:
         model = model.to(device)  # CUDA CODE
 
-    #class instance
+    # class instance
     class_instance = model.float()
 
-    #optimizer
+    # optimizer
     optimizer = optim.SGD(class_instance.parameters(), lr=0.009, momentum=0.9)
 
     # set up loss function
@@ -108,15 +108,16 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
 
     # trains network for each image (non-epoch)
     for epoch in range(epoch_num):
-        torch.cuda.empty_cache()    
+        torch.cuda.empty_cache()
 
         for i in range(len(training_data)):
+            file = open("StopTrainingFlag.txt", "r")
 
-            #stops training if user closes main thread
-            if stop_training_flag == 1:
+            # stops training if user closes main thread
+            if file.read() == "1":
                 print("Training Stopped")
                 return
-
+            file.close()
             tensor = torch.tensor(training_data.iloc[i].values)
             if mode == 2:
                 tensor = tensor.to(device)  # CUDA CODE
@@ -148,7 +149,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
                 display_produced_image = ProducedImageTensor
                 display_original_image = OriginalImageTensor
 
-        #plot training and validation loss graphs
+        # plot training and validation loss graphs
         if (epoch % 10 == 0):
             total_training_loss = total_training_loss.cpu().detach().numpy()
             average_training_loss = (total_training_loss / len(training_data))
@@ -194,12 +195,12 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
 
     print("Training completed")
 
-    #set validation and training loss arrays
+    # set validation and training loss arrays
     global x
     x = list(range(0, epoch_num, 10))
 
 
-#function to get values useable to plot validation and training loss graph
+# function to get values useable to plot validation and training loss graph
 def get_graph():
     return x, training_loss_arr, validation_loss_arr
 
@@ -358,15 +359,19 @@ def menu_msg():
     choice = int(input(""))
     return choice
 
-#Calls stop flag in training thread
+
+# Calls stop flag in training thread
 def set_stop_flag():
     global stop_training_flag
-    stop_training_flag = 1 #set stop flag for main thread
+    stop_training_flag = 1  # set stop flag for main thread
+    file = open("StopTrainingFlag.txt", "w")
+    file.write("1")
+    file.close()
+
 
 def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
          original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
-
-    #global variables set up
+    # global variables set up
     global SR_file_number
     data, SR_file_number = extract.main(
         excel_path)  # data and final dataframe(pandas format) obtained from extract_data function
@@ -376,12 +381,15 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
 
     global stop_training_flag
     stop_training_flag = 0
+    file = open("StopTrainingFlag.txt", "w")
+    file.write("0")
+    file.close()
 
-    #normalize data
+    # normalize data
     normalized_data = create_dataset(data)
     training_data, test_data = split_dataset(normalized_data, training_ratio)
 
-    #determine cpu or gpu training mode
+    # determine cpu or gpu training mode
     if (mode == "CPU"):
         mode_int = 1
 

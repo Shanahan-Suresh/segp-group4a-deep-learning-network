@@ -1,14 +1,15 @@
 import os
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QFileDialog, QApplication
+from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
 import CSS
 import ErrorModelName
 import SaveModelPopUp
 import TrainingPageDataErrorPopUp
+import TrainingStoppedPage
 import WrongFileImportedError
 from train_neural_network import main as train, get_graph, save_model, set_stop_flag
 import extract_data as extract
@@ -17,6 +18,10 @@ import extract_data as extract
 class MainBackgroundThread(QThread):
     global stop_training_flag
     stop_training_flag = 0
+    file = open("StopTrainingFlag.txt", "w")
+    file.write("0")
+    file.close()
+
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
                  preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget):
         QThread.__init__(self)
@@ -27,8 +32,10 @@ class MainBackgroundThread(QThread):
               self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
               self.Epoch_loss, self.Total_loss)
 
-        if stop_training_flag == 1:
+        file = open("StopTrainingFlag.txt", "r")
+        if file.read() == "1":
             return
+        file.close()
         plt.cla()
         x, training_loss_arr, validation_loss_arr = get_graph()
         plt.plot(x, training_loss_arr, color='r', label='training loss')
@@ -316,11 +323,18 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if CorrectDataSet == "0" or CorrectImageFolder == "0":
                 self.error()
                 self.enableVariables(True)
+
     def StopTraining(self):
+        self.OpenTrainingStoppedPage()
+        self.progressBar.setValue(100)
+        self.updateVariablesStatus()
         global stop_training_flag
         stop_training_flag = 1
         set_stop_flag()
-        super().window().close()
+        file = open("StopTrainingFlag.txt", "w")
+        file.write("1")
+        file.close()
+
     def ValidateFiles(self):
         file = open("CorrectImportFilesRecieved.txt", "w")
         try:
@@ -372,6 +386,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def OpenSaveModelPopUp(self):
         self.window = QtWidgets.QMainWindow()
         self.window = SaveModelPopUp.MyWindow()
+        self.window.show()
+
+    def OpenTrainingStoppedPage(self):
+        self.window = QtWidgets.QMainWindow()
+        self.window = TrainingStoppedPage.MyWindow()
         self.window.show()
 
     def SaveModel(self):
