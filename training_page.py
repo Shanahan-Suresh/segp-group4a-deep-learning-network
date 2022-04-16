@@ -15,9 +15,6 @@ import WrongFileImportedError
 from train_neural_network import main as train, get_graph, save_model
 import extract_data as extract
 
-#self.statusbar = QtWidgets.QStatusBar(MainWindow)
-#self.statusbar.setObjectName("statusbar")
-#MainWindow.setStatusBar(self.statusbar)
 
 class MainBackgroundThread(QThread):
     file = open("Temp files/StopTrainingFlag.txt", "w")
@@ -308,6 +305,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.SaveModelButton.setEnabled(True)
             self.ModelNameText.setEnabled(True)
             self.progressBar.setValue(0)
+            self.StartButton.setEnabled(True)
 
     def StartTraining(self):
         self.Graph.setStyleSheet(CSS.ClearImage)
@@ -344,6 +342,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         file.close()
 
     def ValidateFiles(self):
+        self.StartButton.setEnabled(False)
         file = open("Temp files/CorrectImportFilesRecieved.txt", "w")
         try:
             extract.main(
