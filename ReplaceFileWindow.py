@@ -59,10 +59,10 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.Icon.setStyleSheet(CSS.CautionIconCSS)
         self.setWindowIcon(QIcon('Icons/CautionIcon.png'))
 
-        file=open("Temp files/ModelName.txt","r")
-        ModelName=file.read()
+        file = open("Temp files/ModelName.txt", "r")
+        ModelName = file.read()
         file.close()
-        self.ChangingText.setText(ModelName+".file already exists.")
+        self.ChangingText.setText(ModelName + ".file already exists.")
         self.NoButton.clicked.connect(self.close)
 
 
@@ -73,4 +73,3 @@ if __name__ == "__main__":
     MainWindow = MyWindow()
     MainWindow.show()
     sys.exit(app.exec_())
-

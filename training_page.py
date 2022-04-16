@@ -44,8 +44,8 @@ class MainBackgroundThread(QThread):
         plt.ylabel("Loss")
         plt.title("Training Loss and Validation Loss")
         plt.legend()
-        plt.savefig("loss_graph")
-        self.Graph.setStyleSheet("image: url(loss_graph.png);border :1px solid black;")
+        plt.savefig("Temp files/loss_graph")
+        self.Graph.setStyleSheet("image: url(Temp files/loss_graph.png);border :1px solid black;")
 
 
 class Ui_MainWindow(object):
@@ -402,6 +402,10 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.window.show()
 
     def OpenReplaceFileWindow(self):
+        file = open("Temp files/ModelName.txt", "w")
+        print(self.ModelName.text())
+        file.write(self.ModelName.text())
+        file.close()
         self.window = QtWidgets.QMainWindow()
         self.window = ReplaceFileWindow.MyWindow()
         self.window.show()
@@ -410,6 +414,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def SaveFile(self):
         save_model(self.ModelName.text())
         file = open("Temp files/ModelName.txt", "w")
+        print(self.ModelName.text())
         file.write(self.ModelName.text())
         file.close()
         self.OpenSaveModelPopUp()

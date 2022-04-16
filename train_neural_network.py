@@ -203,7 +203,7 @@ def get_graph():
 
 # Saves the current neural network model
 def save_model(model_name):
-    torch.save(model.state_dict(), "Models\\" + model_name)
+    torch.save(model.state_dict(), "Models/" + model_name)
     print('Model saved as {}'.format(model_name))
 
 
