@@ -1,7 +1,6 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
-
 import CSS
 
 
@@ -38,6 +37,7 @@ class Ui_MainWindow(QObject):
         MainWindow.setWindowTitle(_translate("MainWindow", "Stop training"))
         self.closeButton.setText(_translate("MainWindow", "Close"))
 
+
 class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
@@ -50,6 +50,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.closeButton.setStyleSheet(CSS.QPushButtonCSS)
         self.closeButton.clicked.connect(self.close)
+
 
 if __name__ == "__main__":
     import sys

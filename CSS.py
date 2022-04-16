@@ -46,3 +46,5 @@ PauseButtonCSS = "QPushButton{image: url(PauseIcon.jpg);border :1px solid black;
 SaveButtonCSS = "QPushButton{image: url(saveIcon.png);border :1px solid black;background-color:white}"
 
 DefaultPicturesCSS = "QLabel{background-color:white;border :1px solid black}"
+
+ClearImage = "background-color: white;border :1px solid black;"

@@ -35,6 +35,7 @@ class MainBackgroundThread(QThread):
         if file.read() == "1":
             return
         file.close()
+
         plt.cla()
         x, training_loss_arr, validation_loss_arr = get_graph()
         plt.plot(x, training_loss_arr, color='r', label='training loss')
@@ -88,7 +89,7 @@ class Ui_MainWindow(object):
         self.TrainingRatio = QtWidgets.QSpinBox(self.centralwidget)
         self.TrainingRatio.setGeometry(QtCore.QRect(120, 390, 62, 22))
         self.TrainingRatio.setAccelerated(True)
-        self.TrainingRatio.setMinimum(50)
+        self.TrainingRatio.setMinimum(2)
         self.TrainingRatio.setValue(90)
         self.TrainingRatio.setMaximum(95)
         self.TrainingRatio.setObjectName("TrainingRatio")
@@ -252,8 +253,8 @@ class Ui_MainWindow(object):
         self.ImportDataButton.setText(_translate("MainWindow", "Import Data"))
         self.ImportImagesButton.setText(_translate("MainWindow", "Import Images"))
         self.ConfigureModelText.setText(_translate("MainWindow", "Configure Model"))
-        self.EpochLoss.setText(_translate("MainWindow", "Current epoch loss :"))
-        self.TotalTrainingLoss.setText(_translate("MainWindow", "Total training loss:"))
+        self.EpochLoss.setText(_translate("MainWindow", "Epoch Loss:"))
+        self.TotalTrainingLoss.setText(_translate("MainWindow", "Training Loss:"))
         self.ModelNameText.setText(_translate("MainWindow", "Model Name:"))
         self.OriginalImageText.setText(_translate("MainWindow", "Original Image"))
         self.GeneratedImage.setText(_translate("MainWindow", "Generated Image"))
@@ -306,6 +307,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.progressBar.setValue(0)
 
     def StartTraining(self):
+        self.Graph.setStyleSheet(CSS.ClearImage)
+        self.OriginalImage.setStyleSheet(CSS.ClearImage)
+        self.NewImage.setStyleSheet(CSS.ClearImage)
+        self.EpochLoss.setText("Epoch Loss: ")
+        self.TotalTrainingLoss.setText("Training Loss: ")
         self.SaveModelButton.setEnabled(False)
         self.ModelNameText.setEnabled(False)
         self.ModelName.setText("")

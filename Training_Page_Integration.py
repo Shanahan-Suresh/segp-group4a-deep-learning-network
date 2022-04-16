@@ -31,5 +31,5 @@ def update_progress_bar(progress_bar,epoch,epoch_num):
 #loss bar update
 def update_loss_bar(epoch_loss,total_loss, epoch_loss_widget, total_loss_widget):
     epoch_loss = epoch_loss.cpu().detach().numpy()
-    epoch_loss_widget.setText("Epoch Loss : " + str(epoch_loss))
-    total_loss_widget.setText("Training Loss : " + str(total_loss.item()))
+    epoch_loss_widget.setText("Epoch Loss : " + str(epoch_loss)[0:6])
+    total_loss_widget.setText("Training Loss : " + str(total_loss.item())[0:6])
