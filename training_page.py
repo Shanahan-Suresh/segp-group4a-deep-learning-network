@@ -15,6 +15,9 @@ import WrongFileImportedError
 from train_neural_network import main as train, get_graph, save_model
 import extract_data as extract
 
+#self.statusbar = QtWidgets.QStatusBar(MainWindow)
+#self.statusbar.setObjectName("statusbar")
+#MainWindow.setStatusBar(self.statusbar)
 
 class MainBackgroundThread(QThread):
     file = open("Temp files/StopTrainingFlag.txt", "w")

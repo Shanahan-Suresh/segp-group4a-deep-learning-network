@@ -6,6 +6,7 @@ import CSS
 
 
 class Ui_MainWindow(QObject):
+    # Set up replace file window
     def setupUi(self, MainWindow):
         MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
@@ -64,12 +65,3 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         file.close()
         self.ChangingText.setText(ModelName + ".file already exists.")
         self.NoButton.clicked.connect(self.close)
-
-
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = MyWindow()
-    MainWindow.show()
-    sys.exit(app.exec_())

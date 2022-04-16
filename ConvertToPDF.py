@@ -3,7 +3,7 @@ import os
 from PyQt5.QtWidgets import QFileDialog
 from fpdf import FPDF
 
-
+# Code to generate the required PDF file
 def main():
     pdf = FPDF()
     pdf.add_page()

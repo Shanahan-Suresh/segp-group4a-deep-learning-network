@@ -251,7 +251,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
                              self.ParafinWaxComp.text())
 
         file = open("Temp files/CorrectFileReceived.txt", 'r')
+
         CorrectFileReceived = file.read()
+
         file.close()
 
         if CorrectFileReceived == '0':
@@ -260,6 +262,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             self.window.show()
 
         with open("Temp files/Variables.txt", 'w') as file:
+
             file.write(self.Temperature.text() + " °C" + "\n")
             file.write(self.Humidity.text() + " %" + "\n")
             file.write(self.WindSpeed.text() + " km/hr" + "\n")
@@ -271,4 +274,5 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             file.write(self.LauricAcidComp.text() + "\n")
             file.write(self.StearicAcidWaxComp.text() + "\n")
             file.write(self.ParafinWaxComp.text() + "\n")
+
         file.close()

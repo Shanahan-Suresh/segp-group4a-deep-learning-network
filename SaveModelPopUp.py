@@ -7,6 +7,7 @@ import load_model
 
 
 class Ui_MainWindow(QObject):
+    # Setup save model pop up
     def setupUi(self, MainWindow):
         MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
@@ -57,21 +58,14 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.LoadModelName()
         self.LoadModelButton.clicked.connect(self.openLoadWindow)
 
+    # Update the name of the model that has been saved.
     def LoadModelName(self):
         file = open("Temp files/ModelName.txt", "r")
-        self.SaveAsText.setText("Model saved as " + file.read() + "!")
+        self.SaveAsText.setText("Model saved as " + file.read() + ".")
         file.close()
 
+    # Open Load model window.
     def openLoadWindow(self):
         self.window = QtWidgets.QMainWindow()
         self.window = load_model.MyWindow()
         self.window.show()
-
-
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = MyWindow()
-    MainWindow.show()
-    sys.exit(app.exec_())

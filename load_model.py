@@ -7,16 +7,19 @@ from PyQt5.QtWidgets import QFileDialog
 import CSS
 
 
-def Load():
+# Load a new model
+def LoadModel():
     filename = QFileDialog.getOpenFileName(None, "Open Model",
                                            "Models", "Trained Model (*);")
     path = filename[0]
-    print(path)
+
     if not os.stat('Temp files/Path.txt').st_size == 0:
         file = open('Temp files/Path.txt', 'w')
+
         file.write(path)
+
         file.close()
-        if path=='':
+        if path == '':
             file = open('Temp files/Path.txt', 'w')
             file.write('PreInstalledModel')
             file.close()
@@ -26,30 +29,38 @@ class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
         self.setWindowIcon(QIcon('Icons/SelectModelIcon.png'))
         MainWindow.setObjectName("MainWindow")
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+
         self.SelectModel = QtWidgets.QComboBox(self.centralwidget)
         self.SelectModel.setGeometry(QtCore.QRect(70, 10, 121, 22))
         self.SelectModel.setObjectName("comboBox")
         self.SelectModel.addItem("")
         self.SelectModel.addItem("")
         self.SelectModel.setStyleSheet(CSS.QComboBoxCSS)
+
         self.ModelLabel = QtWidgets.QLabel(self.centralwidget)
         self.ModelLabel.setGeometry(QtCore.QRect(20, 20, 47, 13))
         self.ModelLabel.setObjectName("ModelLabel")
+
         self.LoadModel = QtWidgets.QPushButton(self.centralwidget)
         self.LoadModel.setGeometry(QtCore.QRect(90, 50, 51, 41))
         self.LoadModel.setStyleSheet(CSS.LoadIconCSS)
         self.LoadModel.setText("")
         self.LoadModel.setObjectName("LoadModelButton")
+
         self.LoadModelLabel = QtWidgets.QLabel(self.centralwidget)
         self.LoadModelLabel.setGeometry(QtCore.QRect(20, 60, 61, 16))
         self.LoadModelLabel.setObjectName("LoadModelLabel")
+
         self.ApplyButton = QtWidgets.QPushButton(self.centralwidget)
         self.ApplyButton.setGeometry(QtCore.QRect(10, 100, 75, 23))
         self.ApplyButton.setObjectName("CloseButton")
         self.ApplyButton.setStyleSheet(CSS.QPushButtonCSS)
+
         self.LoadModelVisible(False)
+
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -72,31 +83,25 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setFixedSize(239, 138)
         self.setStyleSheet(CSS.BackgroundCSS)
         self.SelectModel.activated.connect(self.updateMainWindow)
-        self.LoadModel.clicked.connect(Load)
-        self.ApplyButton.clicked.connect(self.Close)
+        self.LoadModel.clicked.connect(LoadModel)
+        self.ApplyButton.clicked.connect(self.Apply)
 
-    def Close(self):
-        if self.SelectModel.currentIndex() == 0:
+    # Apply changes according to what the user wants, load new model(1) or use pre-installed model(0)
+    def Apply(self):
+        if self.SelectModel.currentIndex() == 0:  # 0 is pre installed model
             file = open('Temp files/Path.txt', 'w')
             file.write('PreInstalledModel')
             file.close()
         self.close()
 
+    # Update window when user chooses whether they want to load new model(1) or use pre-installed model(0)
     def updateMainWindow(self):
         if self.SelectModel.currentIndex() == 1:
             self.LoadModelVisible(True)
         else:
             self.LoadModelVisible(False)
 
+    # Make the load icon disappear or reappear according to our needs.
     def LoadModelVisible(self, visible):
         self.LoadModelLabel.setVisible(visible)
         self.LoadModel.setVisible(visible)
-
-
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = MyWindow()
-    MainWindow.show()
-    sys.exit(app.exec_())

@@ -21,9 +21,9 @@ def ClearFile():
 
 # File containing name of pre installed model
 def LoadPreInstalledModel():
-    file1 = open("Temp files/Path.txt", 'w')
-    file1.write('PreInstalledModel')
-    file1.close()
+    file = open("Temp files/Path.txt", 'w')
+    file.write('PreInstalledModel')
+    file.close()
 
 
 # Extract image and use line to see temperature in the line

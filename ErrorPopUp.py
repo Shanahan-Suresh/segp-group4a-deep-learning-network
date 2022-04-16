@@ -53,18 +53,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.CloseButton.clicked.connect(self.close)
 
-    # method to open Load model screen
+    # Method to open Load model screen
     def LoadModel(self):
         self.close()
         self.window = QtWidgets.QMainWindow()
         self.window = load_model.MyWindow()
         self.window.show()
-
-
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = MyWindow()
-    MainWindow.show()
-    sys.exit(app.exec_())

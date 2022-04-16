@@ -5,6 +5,7 @@ import CSS
 
 
 class Ui_MainWindow(QObject):
+    # Set up training stopped page.
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(261, 77)
@@ -50,12 +51,3 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.closeButton.setStyleSheet(CSS.QPushButtonCSS)
         self.closeButton.clicked.connect(self.close)
-
-
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = MyWindow()
-    MainWindow.show()
-    sys.exit(app.exec_())
