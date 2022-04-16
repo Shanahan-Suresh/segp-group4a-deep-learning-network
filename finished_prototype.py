@@ -1,10 +1,9 @@
 import os
-
 import CSS
 import load_model
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
-from PyQt5.QtWidgets import QHeaderView,QApplication
+from PyQt5.QtWidgets import QHeaderView, QApplication
 from PyQt5.QtGui import QIcon
 import input_pop_up
 import training_page
@@ -14,20 +13,48 @@ from ConvertToPDF import main as ConvertToPdf
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 
+# Clear the variable file and add the preinstalled model to path.txt
+def ClearFile():
+    ClearVariableFile()
+    LoadPreInstalledModel()
+
+
+# File containing name of pre installed model
+def LoadPreInstalledModel():
+    file1 = open("Temp files/Path.txt", 'w')
+    file1.write('PreInstalledModel')
+    file1.close()
+
+
+# Extract image and use line to see temperature in the line
+def ExtractImage():
+    additional_features_main()
+
+
+# Deletes everything from variables file
+def ClearVariableFile():
+    file = open('Temp files/Variables.txt', 'w')
+    file.close()
+
+
 class Ui_MainWindow(QObject):
+    # Set up the main page of the gui
     def setupUi(self, MainWindow):
-        self.ClearFile()
+        ClearFile()
+
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(1154, 723)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.InitializeTable()
-        self.Table()
 
-        self.heatMapButton = QtWidgets.QPushButton(self.centralwidget)
-        self.heatMapButton.setGeometry(QtCore.QRect(460, 120, 666, 500))
-        self.heatMapButton.setStyleSheet(CSS.DefaultHeatmapCSS)
-        self.heatMapButton.setObjectName("CloseButton")
+        self.InitializeTable()
+        self.ShowUpdatedTable()
+
+        self.heatMap = QtWidgets.QPushButton(self.centralwidget)
+        self.heatMap.setGeometry(QtCore.QRect(460, 120, 666, 500))
+        self.heatMap.setStyleSheet(CSS.DefaultHeatmapCSS)
+        self.heatMap.setObjectName("CloseButton")
 
         self.editButton = QtWidgets.QPushButton(self.centralwidget)
         self.editButton.setGeometry(QtCore.QRect(10, 620, 51, 41))
@@ -40,10 +67,6 @@ class Ui_MainWindow(QObject):
         self.NottinghamLogo.setGeometry(QtCore.QRect(-20, 0, 1171, 101))
         self.NottinghamLogo.setStyleSheet(CSS.MainPageLogo)
         self.NottinghamLogo.setObjectName("NottinghamLogo")
-
-        self.line = QtWidgets.QFrame(self.centralwidget)
-        self.line.setGeometry(QtCore.QRect(0, 100, 1154, 20))
-
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -70,7 +93,6 @@ class Ui_MainWindow(QObject):
         self.actionSave_as.setMenuRole(QtWidgets.QAction.TextHeuristicRole)
         self.actionSave_as.setPriority(QtWidgets.QAction.NormalPriority)
         self.actionSave_as.setObjectName("actionSave_as")
-        self.actionSave_as.setEnabled(False)
         self.actionSave_as.triggered.connect(ConvertToPdf)
 
         self.actionTest_model = QtWidgets.QAction(MainWindow)
@@ -82,8 +104,7 @@ class Ui_MainWindow(QObject):
         self.actionExtract_Image = QtWidgets.QAction(MainWindow)
         self.actionExtract_Image.setIcon(QtGui.QIcon('Icons/ExtractIcon.png'))
         self.actionExtract_Image.setObjectName("actionExtract_Image")
-        self.actionExtract_Image.triggered.connect(self.ExtractImage)
-        self.actionExtract_Image.setEnabled(False)
+        self.actionExtract_Image.triggered.connect(ExtractImage)
 
         self.actionSave_Image = QtWidgets.QAction(MainWindow)
         self.actionSave_Image.setIcon(QtGui.QIcon('Icons/ExtractIcon.png'))
@@ -172,145 +193,68 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setWindowIcon(QIcon('Icons/MainNotLogo.jpg'))
         self.setStyleSheet(CSS.BackgroundCSS)
         self.menuBar.setStyleSheet(CSS.MenuBarCSS)
+
+        self.enableOptions(False)
         self.actionTest_model.triggered.connect(self.openTestWindow)
         self.actionTrain_Model.triggered.connect(self.openTrainWindow)
         self.selectModel.triggered.connect(self.openLoadWindow)
         self.editButton.clicked.connect(self.openTestWindow)
 
+    # Update main window when the model is tested
     def updateMainWindow(self):
         file = open("Temp files/CorrectFileReceived.txt", 'r')
+
         CorrectFileReceived = file.read()
+
         file.close()
+
         if CorrectFileReceived == '1':
             self.enableOptions(True)
         else:
             self.enableOptions(False)
-        self.Table()
+
+        self.ShowUpdatedTable()
         self.window.close()
 
+    # Open the test model window
     def openTestWindow(self):
         self.window = QtWidgets.QMainWindow()
         self.window = input_pop_up.MyWindow()
         self.window.show()
         self.window.SubmitButton.clicked.connect(self.updateMainWindow)
 
+    # Open the train model window
     def openTrainWindow(self):
         self.window = QtWidgets.QMainWindow()
         self.window = training_page.MyWindow()
         self.window.show()
 
+    # Open the load model window
     def openLoadWindow(self):
         self.window = QtWidgets.QMainWindow()
         self.window = load_model.MyWindow()
         self.window.show()
 
+    # Enable or disable options(extract image, save as report)
     def enableOptions(self, boolean):
         self.actionSave_as.setEnabled(boolean)
         self.actionExtract_Image.setEnabled(boolean)
-        self.heatMapButton.setEnabled(boolean)
-        if boolean == True:
-            self.heatMapButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-            self.heatMapButton.setStyleSheet(CSS.HeatMapCSS)
-            self.heatMapButton.clicked.connect(self.ExtractImage)
-            self.heatMapButton.setStatusTip("Extract Image")
+        self.heatMap.setEnabled(boolean)
+
+        if boolean:
+
+            self.heatMap.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+            self.heatMap.setStyleSheet(CSS.HeatMapCSS)
+            self.heatMap.clicked.connect(ExtractImage)
+            self.heatMap.setStatusTip("Extract Image")
+
         else:
-            self.heatMapButton.setStatusTip("")
-            self.heatMapButton.setStyleSheet(CSS.DefaultHeatmapCSS)
-            file = open('Temp files/Variables.txt', 'w')
-            file.close()
 
-    def Table(self):
-        file = open('Temp files/Variables.txt', 'r')
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Temperature")
-        self.tableWidget.setItem(0, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 1
-        self.tableWidget.setItem(0, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Humidity")
-        self.tableWidget.setItem(1, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setText(file.readline().strip())  # 2
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        self.tableWidget.setItem(1, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Wind Speed")
-        self.tableWidget.setItem(2, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 3
-        self.tableWidget.setItem(2, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Aluminium Temperature")
-        self.tableWidget.setItem(3, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 5
-        self.tableWidget.setItem(3, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Chemical Temperature")
-        self.tableWidget.setItem(4, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 6
-        self.tableWidget.setItem(4, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Lauric Acid")
-        self.tableWidget.setItem(5, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 7
-        self.tableWidget.setItem(5, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Stearic Acid")
-        self.tableWidget.setItem(6, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 8
-        self.tableWidget.setItem(6, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Parafin Wax")
-        self.tableWidget.setItem(7, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 9
-        self.tableWidget.setItem(7, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Lauric Acid Composition")
-        self.tableWidget.setItem(8, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 10
-        self.tableWidget.setItem(8, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Stearic Acid Wax Composition")
-        self.tableWidget.setItem(9, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 11
-        self.tableWidget.setItem(9, 1, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText("Parafin Wax Composition")
-        self.tableWidget.setItem(10, 0, item)
-        item = QtWidgets.QTableWidgetItem()
-        item.setFlags(QtCore.Qt.ItemIsEnabled)
-        item.setText(file.readline().strip())  # 12
-        self.tableWidget.setItem(10, 1, item)
-        file.close()
+            self.heatMap.setStatusTip("")
+            self.heatMap.setStyleSheet(CSS.DefaultHeatmapCSS)
+            ClearVariableFile()
 
+    # Set up table for the main page
     def InitializeTable(self):
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
         self.tableWidget.setGeometry(QtCore.QRect(0, 120, 411, 481))
@@ -350,16 +294,102 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget.setHorizontalHeaderItem(1, item)
 
-    def ClearFile(self):
-        file = open("Temp files/variables.txt", 'w')
+    # Put values inside the table of the main window
+    def ShowUpdatedTable(self):
+        file = open('Temp files/Variables.txt', 'r')
+
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Temperature")
+        self.tableWidget.setItem(0, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(0, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Humidity")
+        self.tableWidget.setItem(1, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setText(file.readline().strip())
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        self.tableWidget.setItem(1, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Wind Speed")
+        self.tableWidget.setItem(2, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(2, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Aluminium Temperature")
+        self.tableWidget.setItem(3, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(3, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Chemical Temperature")
+        self.tableWidget.setItem(4, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(4, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Lauric Acid")
+        self.tableWidget.setItem(5, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(5, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Stearic Acid")
+        self.tableWidget.setItem(6, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(6, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Parafin Wax")
+        self.tableWidget.setItem(7, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(7, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Lauric Acid Composition")
+        self.tableWidget.setItem(8, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(8, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Stearic Acid Wax Composition")
+        self.tableWidget.setItem(9, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(9, 1, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText("Parafin Wax Composition")
+        self.tableWidget.setItem(10, 0, item)
+        item = QtWidgets.QTableWidgetItem()
+        item.setFlags(QtCore.Qt.ItemIsEnabled)
+        item.setText(file.readline().strip())
+        self.tableWidget.setItem(10, 1, item)
+
         file.close()
-        file1 = open("Temp files/Path.txt", 'w')
-        file1.write('PreInstalledModel')
-        file1.close()
 
-    def ExtractImage(self):
-        additional_features_main()
-
+    # Close all windows when main window is closed
     def closeEvent(self, event):
         for window in QApplication.topLevelWidgets():
             window.close()
