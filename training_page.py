@@ -11,13 +11,11 @@ import SaveModelPopUp
 import TrainingPageDataErrorPopUp
 import TrainingStoppedPage
 import WrongFileImportedError
-from train_neural_network import main as train, get_graph, save_model, set_stop_flag
+from train_neural_network import main as train, get_graph, save_model
 import extract_data as extract
 
 
 class MainBackgroundThread(QThread):
-    global stop_training_flag
-    stop_training_flag = 0
     file = open("StopTrainingFlag.txt", "w")
     file.write("0")
     file.close()
@@ -51,7 +49,6 @@ class MainBackgroundThread(QThread):
 class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
-        MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(852, 539)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)
@@ -328,9 +325,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.OpenTrainingStoppedPage()
         self.progressBar.setValue(100)
         self.updateVariablesStatus()
-        global stop_training_flag
-        stop_training_flag = 1
-        set_stop_flag()
         file = open("StopTrainingFlag.txt", "w")
         file.write("1")
         file.close()
@@ -413,6 +407,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ImportDataButton.setEnabled(boolean)
 
     def closeEvent(self, event):
+        self.StopTraining()
         self.window = QtWidgets.QMainWindow()
         self.window = TrainingPageDataErrorPopUp.MyWindow()
         self.window.close()

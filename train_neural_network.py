@@ -360,15 +360,6 @@ def menu_msg():
     return choice
 
 
-# Calls stop flag in training thread
-def set_stop_flag():
-    global stop_training_flag
-    stop_training_flag = 1  # set stop flag for main thread
-    file = open("StopTrainingFlag.txt", "w")
-    file.write("1")
-    file.close()
-
-
 def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
          original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
     # global variables set up
@@ -379,8 +370,6 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
     global original_image
     original_image = original_image_path
 
-    global stop_training_flag
-    stop_training_flag = 0
     file = open("StopTrainingFlag.txt", "w")
     file.write("0")
     file.close()
