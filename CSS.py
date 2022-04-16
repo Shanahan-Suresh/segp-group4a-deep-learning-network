@@ -14,7 +14,7 @@ QLineEditCSS = "QLineEdit{background-color:white}"
 
 DefaultHeatmapCSS = "QPushButton {background-color : rgb(180,180,180);border :2px solid black;}"
 
-HeatMapCSS = "QPushButton {background-image : url(temp.png);border :2px solid black;}"
+HeatMapCSS = "QPushButton {background-image : url(Temp files/temp.png);border :2px solid black;}"
 
 EditIconCSS = "QPushButton {image: url(Icons/TestIcon.png);border :1px solid black;background : white;}"
 

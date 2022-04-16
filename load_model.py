@@ -12,12 +12,12 @@ def Load():
                                            "Models", "Trained Model (*);")
     path = filename[0]
     print(path)
-    if not os.stat('Path.txt').st_size == 0:
-        file = open('Path.txt', 'w')
+    if not os.stat('Temp files/Path.txt').st_size == 0:
+        file = open('Temp files/Path.txt', 'w')
         file.write(path)
         file.close()
         if path=='':
-            file = open('Path.txt', 'w')
+            file = open('Temp files/Path.txt', 'w')
             file.write('PreInstalledModel')
             file.close()
 
@@ -77,7 +77,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def Close(self):
         if self.SelectModel.currentIndex() == 0:
-            file = open('Path.txt', 'w')
+            file = open('Temp files/Path.txt', 'w')
             file.write('PreInstalledModel')
             file.close()
         self.close()

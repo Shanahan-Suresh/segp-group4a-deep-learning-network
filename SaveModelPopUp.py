@@ -58,7 +58,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.LoadModelButton.clicked.connect(self.openLoadWindow)
 
     def LoadModelName(self):
-        file = open("ModelName.txt", "r")
+        file = open("Temp files/ModelName.txt", "r")
         self.SaveAsText.setText("Model saved as " + file.read() + "!")
         file.close()
 

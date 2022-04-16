@@ -10,11 +10,11 @@ def get_image():
 
 #Function to load in pre-saved model
 def load_model(data):
-    file = open("CorrectFileReceived.txt", 'w')
+    file = open("Temp files/CorrectFileReceived.txt", 'w')
     file.write('1')
     file.close()
 
-    file = open("Path.txt", 'r')
+    file = open("Temp files/Path.txt", 'r')
     FileName = file.readline().strip()
     print(FileName)
     file.close()
@@ -26,7 +26,7 @@ def load_model(data):
         model.load_state_dict(torch.load(FileName, map_location=torch.device('cpu')), strict=False)
 
     except:
-        file = open("CorrectFileReceived.txt", 'w')
+        file = open("Temp files/CorrectFileReceived.txt", 'w')
         file.write('0')
         file.close()
         print("Model could not be loaded. Please verify that the file is a trained neural network.")
@@ -49,13 +49,13 @@ def save_image_from_tensor(image_tensor, height=500, width=666):
     # swap tensor axes so 'channels' is first
     image_tensor = image_tensor.swapaxes(2, 1)
     image_tensor = image_tensor.swapaxes(1, 0)
-    save_image(image_tensor, "temp2.png")
+    save_image(image_tensor, "Temp files/temp2.png")
     
     # resize image to 666 * 500
     image_tensor = F.interpolate(image_tensor.unsqueeze(0).float(), size=(height, width), mode='nearest').squeeze(0).float()
 
     # name of the saved file
-    file_name = 'temp.png'
+    file_name = 'Temp files/temp.png'
 
     # save image
     print('After conversion {}'.format(image_tensor.dtype))

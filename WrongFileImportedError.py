@@ -71,7 +71,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.UpdateError()
 
     def UpdateError(self):
-        file = open("CorrectImportFilesRecieved.txt", "r")
+        file = open("Temp files/CorrectImportFilesRecieved.txt", "r")
         CorrectDataSet = file.readline().strip()
         CorrectImageFolder = file.readline().strip()
         print(CorrectDataSet)

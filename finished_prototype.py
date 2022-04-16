@@ -178,7 +178,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.editButton.clicked.connect(self.openTestWindow)
 
     def updateMainWindow(self):
-        file = open("CorrectFileReceived.txt", 'r')
+        file = open("Temp files/CorrectFileReceived.txt", 'r')
         CorrectFileReceived = file.read()
         file.close()
         if CorrectFileReceived == '1':
@@ -216,11 +216,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.heatMapButton.setStatusTip("")
             self.heatMapButton.setStyleSheet(CSS.DefaultHeatmapCSS)
-            file = open('Variables.txt', 'w')
+            file = open('Temp files/Variables.txt', 'w')
             file.close()
 
     def Table(self):
-        file = open('Variables.txt', 'r')
+        file = open('Temp files/Variables.txt', 'r')
         item = QtWidgets.QTableWidgetItem()
         item.setFlags(QtCore.Qt.ItemIsEnabled)
         item.setText("Temperature")
@@ -351,9 +351,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableWidget.setHorizontalHeaderItem(1, item)
 
     def ClearFile(self):
-        file = open("variables.txt", 'w')
+        file = open("Temp files/variables.txt", 'w')
         file.close()
-        file1 = open("Path.txt", 'w')
+        file1 = open("Temp files/Path.txt", 'w')
         file1.write('PreInstalledModel')
         file1.close()
 

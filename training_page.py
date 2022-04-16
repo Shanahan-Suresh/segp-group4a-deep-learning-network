@@ -17,7 +17,7 @@ import extract_data as extract
 
 
 class MainBackgroundThread(QThread):
-    file = open("StopTrainingFlag.txt", "w")
+    file = open("Temp files/StopTrainingFlag.txt", "w")
     file.write("0")
     file.close()
 
@@ -31,7 +31,7 @@ class MainBackgroundThread(QThread):
               self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
               self.Epoch_loss, self.Total_loss)
 
-        file = open("StopTrainingFlag.txt", "r")
+        file = open("Temp files/StopTrainingFlag.txt", "r")
         if file.read() == "1":
             return
         file.close()
@@ -322,7 +322,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.ValidateFiles()
             self.enableVariables(False)
-            file = open("CorrectImportFilesRecieved.txt", "r")
+            file = open("Temp files/CorrectImportFilesRecieved.txt", "r")
             CorrectDataSet = file.readline().strip()
             CorrectImageFolder = file.readline().strip()
             print("CorrectDataSet" + CorrectDataSet)
@@ -336,12 +336,12 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def StopTraining(self):
         self.progressBar.setValue(100)
         self.updateVariablesStatus()
-        file = open("StopTrainingFlag.txt", "w")
+        file = open("Temp files/StopTrainingFlag.txt", "w")
         file.write("1")
         file.close()
 
     def ValidateFiles(self):
-        file = open("CorrectImportFilesRecieved.txt", "w")
+        file = open("Temp files/CorrectImportFilesRecieved.txt", "w")
         try:
             extract.main(
                 self.ImportDataPath.text())
@@ -409,7 +409,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def SaveFile(self):
         save_model(self.ModelName.text())
-        file = open("ModelName.txt", "w")
+        file = open("Temp files/ModelName.txt", "w")
         file.write(self.ModelName.text())
         file.close()
         self.OpenSaveModelPopUp()

@@ -1,22 +1,18 @@
-import time
+import math
+import os
+from os.path import exists
+
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-import numpy as np
-import matplotlib.pyplot as plt
-import os
-from os.path import exists
-from glob import glob
-from torchvision import transforms
 from PIL import Image
-import math
-import sys
+from torchvision import transforms
 from torchvision.utils import save_image
 
-import TrainingStoppedPage
-from Training_Page_Integration import get_image, refresh_image, update_progress_bar, update_loss_bar
 import extract_data as extract
+from Training_Page_Integration import get_image, refresh_image, update_progress_bar, update_loss_bar
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -111,7 +107,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
         torch.cuda.empty_cache()
 
         for i in range(len(training_data)):
-            file = open("StopTrainingFlag.txt", "r")
+            file = open("Temp files/StopTrainingFlag.txt", "r")
 
             # stops training if user closes main thread
             if file.read() == "1":
@@ -370,7 +366,7 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
     global original_image
     original_image = original_image_path
 
-    file = open("StopTrainingFlag.txt", "w")
+    file = open("Temp files/StopTrainingFlag.txt", "w")
     file.write("0")
     file.close()
 

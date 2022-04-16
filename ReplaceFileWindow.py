@@ -59,7 +59,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.Icon.setStyleSheet(CSS.CautionIconCSS)
         self.setWindowIcon(QIcon('Icons/CautionIcon.png'))
 
-        file=open("ModelName.txt","r")
+        file=open("Temp files/ModelName.txt","r")
         ModelName=file.read()
         file.close()
         self.ChangingText.setText(ModelName+".file already exists.")
