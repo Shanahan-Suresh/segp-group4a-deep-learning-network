@@ -57,7 +57,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.YesButton.setStyleSheet(CSS.QPushButtonCSS)
         self.NoButton.setStyleSheet(CSS.QPushButtonCSS)
         self.Icon.setStyleSheet(CSS.CautionIconCSS)
-        self.setWindowIcon(QIcon('CautionIcon.png'))
+        self.setWindowIcon(QIcon('Icons/CautionIcon.png'))
 
         file=open("ModelName.txt","r")
         ModelName=file.read()

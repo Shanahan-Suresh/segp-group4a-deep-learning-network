@@ -12,7 +12,7 @@ class Ui_MainWindow(QObject):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(231, 77)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)
-        MainWindow.setWindowIcon(QIcon('ErrorIcon.png'))
+        MainWindow.setWindowIcon(QIcon('Icons/ErrorIcon.png'))
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")

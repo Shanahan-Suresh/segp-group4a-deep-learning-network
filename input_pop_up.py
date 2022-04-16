@@ -10,7 +10,7 @@ class Ui_MainWindow(QObject):
 
     # Set up test model UI page.
     def setupUi(self, Form):
-        Form.setWindowIcon(QIcon('TestIcon.png'))
+        Form.setWindowIcon(QIcon('Icons/TestIcon.png'))
         Form.setObjectName("Form")
         Form.setFixedSize(690, 389)
         Form.setStyleSheet(CSS.BackgroundCSS)

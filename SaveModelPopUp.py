@@ -12,7 +12,7 @@ class Ui_MainWindow(QObject):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(241, 77)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)
-        MainWindow.setWindowIcon(QIcon('HappyIcon.png'))
+        MainWindow.setWindowIcon(QIcon('Icons/HappyIcon.png'))
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")

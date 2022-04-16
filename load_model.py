@@ -24,7 +24,7 @@ def Load():
 
 class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
-        self.setWindowIcon(QIcon('SelectModelIcon.png'))
+        self.setWindowIcon(QIcon('Icons/SelectModelIcon.png'))
         MainWindow.setObjectName("MainWindow")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")

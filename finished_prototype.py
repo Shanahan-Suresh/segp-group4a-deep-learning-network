@@ -17,7 +17,7 @@ os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
         self.ClearFile()
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("HeatGen")
         MainWindow.setFixedSize(1154, 723)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -66,7 +66,7 @@ class Ui_MainWindow(QObject):
         MainWindow.setMenuBar(self.menuBar)
 
         self.actionSave_as = QtWidgets.QAction(MainWindow)
-        self.actionSave_as.setIcon(QtGui.QIcon('ReportIcon.png'))
+        self.actionSave_as.setIcon(QtGui.QIcon('Icons/ReportIcon.png'))
         self.actionSave_as.setMenuRole(QtWidgets.QAction.TextHeuristicRole)
         self.actionSave_as.setPriority(QtWidgets.QAction.NormalPriority)
         self.actionSave_as.setObjectName("actionSave_as")
@@ -74,28 +74,28 @@ class Ui_MainWindow(QObject):
         self.actionSave_as.triggered.connect(ConvertToPdf)
 
         self.actionTest_model = QtWidgets.QAction(MainWindow)
-        self.actionTest_model.setIcon(QtGui.QIcon('TestIcon.png'))
+        self.actionTest_model.setIcon(QtGui.QIcon('Icons/TestIcon.png'))
         self.actionTest_model.setCheckable(False)
         self.actionTest_model.setChecked(False)
         self.actionTest_model.setObjectName("actionTest_model")
 
         self.actionExtract_Image = QtWidgets.QAction(MainWindow)
-        self.actionExtract_Image.setIcon(QtGui.QIcon('ExtractIcon.png'))
+        self.actionExtract_Image.setIcon(QtGui.QIcon('Icons/ExtractIcon.png'))
         self.actionExtract_Image.setObjectName("actionExtract_Image")
         self.actionExtract_Image.triggered.connect(self.ExtractImage)
         self.actionExtract_Image.setEnabled(False)
 
         self.actionSave_Image = QtWidgets.QAction(MainWindow)
-        self.actionSave_Image.setIcon(QtGui.QIcon('ExtractIcon.png'))
+        self.actionSave_Image.setIcon(QtGui.QIcon('Icons/ExtractIcon.png'))
         self.actionSave_Image.setObjectName("actionSave_Image")
 
         self.actionTrain_Model = QtWidgets.QAction(MainWindow)
         self.actionTrain_Model.setObjectName("actionTrain_Model")
-        self.actionTrain_Model.setIcon(QtGui.QIcon('TrainingIcon.png'))
+        self.actionTrain_Model.setIcon(QtGui.QIcon('Icons/TrainingIcon.png'))
 
         self.selectModel = QtWidgets.QAction(MainWindow)
         self.selectModel.setObjectName("actionSimulate_Model")
-        self.selectModel.setIcon(QtGui.QIcon('SelectModelIcon.png'))
+        self.selectModel.setIcon(QtGui.QIcon('Icons/SelectModelIcon.png'))
 
         self.menuFile.addAction(self.actionSave_as)
         self.menuFile.addSeparator()
@@ -169,7 +169,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setWindowIcon(QIcon('MainNotLogo.jpg'))
+        self.setWindowIcon(QIcon('Icons/MainNotLogo.jpg'))
         self.setStyleSheet(CSS.BackgroundCSS)
         self.menuBar.setStyleSheet(CSS.MenuBarCSS)
         self.actionTest_model.triggered.connect(self.openTestWindow)

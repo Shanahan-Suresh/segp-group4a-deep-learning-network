@@ -265,7 +265,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setStyleSheet(CSS.BackgroundCSS)
-        self.setWindowIcon(QIcon('TrainingIcon.png'))
+        self.setWindowIcon(QIcon('Icons/TrainingIcon.png'))
         self.enableVariables(True)
         self.ModelName.setEnabled(False)
         self.SaveModelButton.setEnabled(False)
@@ -286,7 +286,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ImportDataPath.setText(path)
 
     def ImportImages(self):
-        filename = str(QFileDialog.getExistingDirectory(self, "Import images", ' '))
+        filename = str(QFileDialog.getExistingDirectory(self, "Import images", 'Raw Data'))
         path = filename
         print(path)
         self.ImportImagesPath.setText(path)
@@ -350,14 +350,17 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             print("Could not load data from given Excel file.")
             CorrectDataPath = 0
 
-        for fname in os.listdir(self.ImportImagesPath.text()):
-            if fname.endswith('.BMT'):
-                CorrectImagePath = 1
-                break
-            else:
-                print('Folder does not contain any BMT files')
-                CorrectImagePath = 0
-                break
+        if len(os.listdir(self.ImportImagesPath.text())) == 0:
+            CorrectImagePath = 0
+        else:
+            for fname in os.listdir(self.ImportImagesPath.text()):
+                if fname.endswith('.BMT'):
+                    CorrectImagePath = 1
+                    break
+                else:
+                    print('Folder does not contain any BMT files')
+                    CorrectImagePath = 0
+                    break
         print(CorrectDataPath)
         print(CorrectImagePath)
         file.write(str(CorrectDataPath) + "\n")

@@ -1,3 +1,4 @@
+
 QSpinBoxCSS = "QSpinBox{border : 2px solid black;background : white;}"
 
 QDoubleSpinBoxCSS = "QDoubleSpinBox{border : 2px solid black;background : white;}"
@@ -15,9 +16,9 @@ DefaultHeatmapCSS = "QPushButton {background-color : rgb(180,180,180);border :2p
 
 HeatMapCSS = "QPushButton {background-image : url(temp.png);border :2px solid black;}"
 
-EditIconCSS = "QPushButton {image: url(TestIcon.png);border :1px solid black;background : white;}"
+EditIconCSS = "QPushButton {image: url(Icons/TestIcon.png);border :1px solid black;background : white;}"
 
-MainPageLogo = "image: url(nottinghamlogo.jpeg);background-color: rgb(255, 255, 255); padding :5px"
+MainPageLogo = "image: url(Icons/nottinghamlogo.jpeg);background-color: rgb(255, 255, 255); padding :5px"
 
 BackgroundCSS = "QWidget {background-color: rgb(223, 223, 223);}"
 
@@ -27,24 +28,25 @@ MenuBarCSS = "QMenuBar{background-color: white}""QMenu{background-color: white}"
 
 TableCSS = "QTableWidget {background-color: rgb(255,255,255);}"
 
-LoadIconCSS = "QPushButton{image: url(LoadIcon.png);border :1px solid black;background : white;}"
+LoadIconCSS = "QPushButton{image: url(Icons/LoadIcon.png);border :1px solid black;background : white;}"
 
-ErrorIconCSS = "image: url(ErrorIcon.png);"
+ErrorIconCSS = "image: url(Icons/ErrorIcon.png);"
 
-HappyIconCSS= "image: url(HappyIcon.png);"
+HappyIconCSS = "image: url(Icons/HappyIcon.png);"
 
-CautionIconCSS= "image: url(CautionIcon.png);"
+CautionIconCSS = "image: url(Icons/CautionIcon.png);"
 
 QComboBoxCSS = "QComboBox{background : white;}"
 
-PreviewImageCSS = "image: url(train_image.png);border :1px solid black;"
+PreviewImageCSS = "image: url(Icons/train_image.png);border :1px solid black;"
 
-StartButtonCSS = "QPushButton{image: url(StartIcon.png);border :1px solid black;background-color:white}"
+StartButtonCSS = "QPushButton{image: url(Icons/StartIcon.png);border :1px solid black;background-color:white}"
 
-PauseButtonCSS = "QPushButton{image: url(PauseIcon.jpg);border :1px solid black;background-color:white}"
+PauseButtonCSS = "QPushButton{image: url(Icons/PauseIcon.jpg);border :1px solid black;background-color:white}"
 
-SaveButtonCSS = "QPushButton{image: url(saveIcon.png);border :1px solid black;background-color:white}"
+SaveButtonCSS = "QPushButton{image: url(Icons/saveIcon.png);border :1px solid black;background-color:white}"
 
 DefaultPicturesCSS = "QLabel{background-color:white;border :1px solid black}"
 
 ClearImage = "background-color: white;border :1px solid black;"
+

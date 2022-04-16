@@ -10,7 +10,7 @@ class Ui_MainWindow(QObject):
         Form.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         Form.setObjectName("Form")
         Form.setFixedSize(240, 83)
-        Form.setWindowIcon(QIcon('CautionIcon.png'))
+        Form.setWindowIcon(QIcon('Icons/CautionIcon.png'))
 
         self.ErrorMessage = QtWidgets.QLabel(Form)
         self.ErrorMessage.setGeometry(QtCore.QRect(10, 20, 221, 16))

@@ -43,7 +43,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setStyleSheet(CSS.BackgroundCSS)
-        self.setWindowIcon(QIcon('TrainingIcon.png'))
+        self.setWindowIcon(QIcon('Icons/TrainingIcon.png'))
 
         self.icon.setStyleSheet(CSS.CautionIconCSS)
         self.MessageText.setText("Training has been stopped.")
