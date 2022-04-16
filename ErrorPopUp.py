@@ -9,6 +9,7 @@ import load_model
 class Ui_MainWindow(QObject):
     # Set up error pop up UI page.
     def setupUi(self, MainWindow):
+        MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(475, 97)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)

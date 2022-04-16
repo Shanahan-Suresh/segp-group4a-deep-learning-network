@@ -8,6 +8,7 @@ import CSS
 class Ui_MainWindow(QObject):
     #set up error page for wrong model name selected
     def setupUi(self, MainWindow):
+        MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(231, 77)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)
@@ -46,3 +47,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+
+if __name__ == "__main__":
+    import sys
+
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = MyWindow()
+    MainWindow.show()
+    sys.exit(app.exec_())

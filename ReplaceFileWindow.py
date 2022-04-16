@@ -7,6 +7,7 @@ import CSS
 
 class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
+        MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(304, 101)
 

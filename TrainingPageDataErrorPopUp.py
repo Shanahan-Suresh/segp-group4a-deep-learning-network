@@ -7,6 +7,7 @@ import CSS
 
 class Ui_MainWindow(QObject):
     def setupUi(self, Form):
+        Form.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         Form.setObjectName("Form")
         Form.setFixedSize(240, 83)
         Form.setWindowIcon(QIcon('CautionIcon.png'))
