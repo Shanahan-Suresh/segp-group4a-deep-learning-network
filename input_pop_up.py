@@ -243,7 +243,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
     # When user clicks submit, the program checks if the correct trained model is loaded and if the correct model is
     # loaded it shows a heatmap on the main screen.
     def SubmitAction(self):
-        integration.main('Data.xlsx')
+        integration.main('Data Sets\Data.xlsx')
         integration.set_data(self.Temperature.text(), self.Humidity.text(), self.WindSpeed.text(),
                              self.AluminiumTemp.text(), self.ChemicalTemp.text(), self.LauricAcid.text(),
                              self.StearicAcid.text(),

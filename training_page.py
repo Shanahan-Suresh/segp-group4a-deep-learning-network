@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
 import CSS
 import ErrorModelName
+import ReplaceFileWindow
 import SaveModelPopUp
 import TrainingPageDataErrorPopUp
 import TrainingStoppedPage
@@ -199,6 +200,7 @@ class Ui_MainWindow(object):
         self.StopButton.setStyleSheet(CSS.PauseButtonCSS)
 
         self.ModelName = QtWidgets.QLineEdit(self.centralwidget)
+        self.ModelName.setMaxLength(50)
         self.ModelName.setGeometry(QtCore.QRect(110, 430, 281, 20))
         self.ModelName.setObjectName("ModelName")
         self.ModelName.setStyleSheet(CSS.QLineEditCSS)
@@ -267,26 +269,30 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ModelName.setEnabled(False)
         self.SaveModelButton.setEnabled(False)
         self.ModelNameText.setEnabled(False)
+        self.StopButton.setEnabled(False)
         self.ImportDataButton.clicked.connect(self.ImportData)
         self.ImportImagesButton.clicked.connect(self.ImportImages)
         self.StartButton.clicked.connect(self.StartTraining)
         self.StopButton.clicked.connect(self.StopTraining)
+        self.StopButton.clicked.connect(self.OpenTrainingStoppedPage)
         self.SaveModelButton.clicked.connect(self.SaveModel)
         self.progressBar.valueChanged.connect(self.updateVariablesStatus)
 
     def ImportData(self):
-        filename = QFileDialog.getOpenFileName(None, "Import data",
-                                               "", " Excel File *.xlsx")
+        filename = QFileDialog.getOpenFileName(self, 'Import data',
+                                               'Data Sets', " Excel File *.xlsx")
         path = filename[0]
         self.ImportDataPath.setText(path)
 
     def ImportImages(self):
-        filename = str(QFileDialog.getExistingDirectory(self, "Import images"))
+        filename = str(QFileDialog.getExistingDirectory(self, "Import images", ' '))
         path = filename
         print(path)
         self.ImportImagesPath.setText(path)
 
     def updateVariablesStatus(self):
+        if 0 < self.progressBar.value() < 100:
+            self.StopButton.setEnabled(True)
         if self.progressBar.value() == 0:
             self.enableVariables(True)
         else:
@@ -322,7 +328,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.enableVariables(True)
 
     def StopTraining(self):
-        self.OpenTrainingStoppedPage()
         self.progressBar.setValue(100)
         self.updateVariablesStatus()
         file = open("StopTrainingFlag.txt", "w")
@@ -387,13 +392,29 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.window = TrainingStoppedPage.MyWindow()
         self.window.show()
 
+    def OpenReplaceFileWindow(self):
+        self.window = QtWidgets.QMainWindow()
+        self.window = ReplaceFileWindow.MyWindow()
+        self.window.show()
+        self.window.YesButton.clicked.connect(self.SaveFile)
+
+    def SaveFile(self):
+        save_model(self.ModelName.text())
+        file = open("ModelName.txt", "w")
+        file.write(self.ModelName.text())
+        file.close()
+        self.OpenSaveModelPopUp()
+
     def SaveModel(self):
+        found = 0
         if self.ModelName.text().isalnum():
-            save_model(self.ModelName.text())
-            file = open("ModelName.txt", "w")
-            file.write(self.ModelName.text())
-            file.close()
-            self.OpenSaveModelPopUp()
+            for fname in os.listdir("Models"):
+                if fname == self.ModelName.text():
+                    found = 1
+            if found == 1:
+                self.OpenReplaceFileWindow()
+            else:
+                self.SaveFile()
         else:
             self.ModelNameError()
 

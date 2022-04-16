@@ -9,7 +9,7 @@ import CSS
 
 def Load():
     filename = QFileDialog.getOpenFileName(None, "Open Model",
-                                           "", "Trained Model (*);")
+                                           "Models", "Trained Model (*);")
     path = filename[0]
     print(path)
     if not os.stat('Path.txt').st_size == 0:

@@ -16,6 +16,7 @@ def load_model(data):
 
     file = open("Path.txt", 'r')
     FileName = file.readline().strip()
+    print(FileName)
     file.close()
 
     model = Net()
