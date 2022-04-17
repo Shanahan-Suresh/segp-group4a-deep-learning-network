@@ -211,7 +211,6 @@ def main():
     global image_tensor
     plt.close()
     image_tensor = file_path1
-
     global fig
     global ax
     fig, ax = plt.subplots()

@@ -104,7 +104,6 @@ class Ui_MainWindow(QObject):
         self.actionExtract_Image = QtWidgets.QAction(MainWindow)
         self.actionExtract_Image.setIcon(QtGui.QIcon('Icons/ExtractIcon.png'))
         self.actionExtract_Image.setObjectName("actionExtract_Image")
-        self.actionExtract_Image.triggered.connect(ExtractImage)
 
         self.actionSave_Image = QtWidgets.QAction(MainWindow)
         self.actionSave_Image.setIcon(QtGui.QIcon('Icons/ExtractIcon.png'))
@@ -194,6 +193,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setStyleSheet(CSS.BackgroundCSS)
         self.menuBar.setStyleSheet(CSS.MenuBarCSS)
 
+        self.heatMap.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.heatMap.clicked.connect(ExtractImage)
+
         self.enableOptions(False)
         self.actionTest_model.triggered.connect(self.openTestWindow)
         self.actionTrain_Model.triggered.connect(self.openTrainWindow)
@@ -208,13 +210,13 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         file.close()
 
+        self.ShowUpdatedTable()
         if CorrectFileReceived == '1':
             self.enableOptions(True)
         else:
             self.enableOptions(False)
 
-        self.ShowUpdatedTable()
-        self.window.close()
+        self.window.close()# close test model page
 
     # Open the test model window
     def openTestWindow(self):
@@ -240,19 +242,13 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionSave_as.setEnabled(boolean)
         self.actionExtract_Image.setEnabled(boolean)
         self.heatMap.setEnabled(boolean)
-
         if boolean:
-
-            self.heatMap.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
             self.heatMap.setStyleSheet(CSS.HeatMapCSS)
-            self.heatMap.clicked.connect(ExtractImage)
             self.heatMap.setStatusTip("Extract Image")
-
         else:
-
-            self.heatMap.setStatusTip("")
             self.heatMap.setStyleSheet(CSS.DefaultHeatmapCSS)
-            ClearVariableFile()
+            self.heatMap.setStatusTip("")
+        ClearVariableFile()
 
     # Set up table for the main page
     def InitializeTable(self):
