@@ -200,6 +200,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionTest_model.triggered.connect(self.openTestWindow)
         self.actionTrain_Model.triggered.connect(self.openTrainWindow)
         self.selectModel.triggered.connect(self.openLoadWindow)
+        self.actionExtract_Image.triggered.connect(ExtractImage)
         self.editButton.clicked.connect(self.openTestWindow)
 
     # Update main window when the model is tested
