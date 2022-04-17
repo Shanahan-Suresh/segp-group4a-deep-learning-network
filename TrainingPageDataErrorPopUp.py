@@ -37,11 +37,3 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
         super().__init__()
         self.setupUi(self)
         self.setStyleSheet(CSS.BackgroundCSS)
-
-if __name__ == "__main__":
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = MyWindow()
-    MainWindow.show()
-    sys.exit(app.exec_())
