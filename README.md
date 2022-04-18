@@ -1,4 +1,4 @@
-# Deep Learning Neural Network
+# HeatGen (Deep Learning Neural Network)
 
 The aim of this project is to build a tool that is able to help researchers study new heat
 absorbing materials for pavements via a multi-layered neural network deep, given only a set of physical variables.
@@ -13,13 +13,14 @@ absorbing materials for pavements via a multi-layered neural network deep, given
 
 ### Installing
 
-* This application is still in the development phase and does not have a launcher at the moment. 
+* This Github repo does not include a launcher at this point in time
 
 ### Executing program
 
 * Ensure all necessary dependencies are installed on your machine
 * Download the repository as a zip file and extract to a suitable folder
-* Run the Mainscreen.py file
+* Include the model found [here](https://drive.google.com/file/d/1pgMIKd2dN7HZ-_lpQyNB-QhS3Jka30Z1/view?usp=sharing) into the Models folder, rename it to 'PreInstalledModel'
+* Run the finished_prototype.py file
 
 ## Authors
 
