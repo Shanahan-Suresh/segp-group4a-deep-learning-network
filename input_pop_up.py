@@ -10,6 +10,7 @@ class Ui_MainWindow(QObject):
 
     # Set up test model UI page.
     def setupUi(self, Form):
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         Form.setWindowIcon(QIcon('Icons/TestIcon.png'))
         Form.setObjectName("Form")
         Form.setFixedSize(690, 389)

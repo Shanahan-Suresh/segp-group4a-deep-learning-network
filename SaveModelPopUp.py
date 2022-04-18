@@ -10,6 +10,7 @@ class Ui_MainWindow(QObject):
     # Setup save model pop up
     def setupUi(self, MainWindow):
         MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(241, 77)
         MainWindow.setStyleSheet(CSS.BackgroundCSS)

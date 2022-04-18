@@ -7,6 +7,7 @@ import CSS
 class Ui_MainWindow(QObject):
     # Set up training stopped page.
     def setupUi(self, MainWindow):
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(261, 77)
         MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)

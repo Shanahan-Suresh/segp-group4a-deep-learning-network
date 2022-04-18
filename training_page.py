@@ -264,6 +264,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.setStyleSheet(CSS.BackgroundCSS)
         self.setWindowIcon(QIcon('Icons/TrainingIcon.png'))
 

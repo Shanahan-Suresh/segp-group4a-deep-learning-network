@@ -7,6 +7,7 @@ import CSS
 class Ui_MainWindow(QObject):
     # Show the wrong file imported pop up.
     def setupUi(self, MainWindow):
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(260, 115)

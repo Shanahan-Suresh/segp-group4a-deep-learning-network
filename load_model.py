@@ -27,6 +27,7 @@ def LoadModel():
 
 class Ui_MainWindow(QObject):
     def setupUi(self, MainWindow):
+        self.setWindowModality(QtCore.Qt.ApplicationModal)
         self.setWindowIcon(QIcon('Icons/SelectModelIcon.png'))
         MainWindow.setObjectName("MainWindow")
 
