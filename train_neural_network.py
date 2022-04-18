@@ -222,7 +222,7 @@ class Net(nn.Module):
     # Below are the layers applied during training
     def __init__(self):
         super(Net, self).__init__()
-        self.fc1 = nn.Linear(11, 2000)
+        self.fc1 = nn.Linear(11, 2400)
         self.batchnorm1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU()
         self.dropout1 = nn.Dropout(0.25)
@@ -230,7 +230,7 @@ class Net(nn.Module):
 
         self.dropout2 = nn.Dropout2d(0.25)
 
-        self.fc2 = nn.Linear(2000, 19200)
+        self.fc2 = nn.Linear(2400, 19200)
 
         self.Convolution1 = nn.Conv2d(36, 64, (3, 3), padding=1, bias=True)
         self.dropout3 = nn.Dropout2d(0.25)
@@ -246,7 +246,6 @@ class Net(nn.Module):
         out = self.fc1(x)
         leakRelu = nn.ReLU()
         out = leakRelu(out)
-        # out = self.dropout1(out)
         out = self.fc2(out)
 
         test_shape = torch.reshape(out, (12, 40, 40))  # Formula : input_size = channels * sqr_root(dimension)
@@ -264,31 +263,26 @@ class Net(nn.Module):
 
         # 1st Convolutional Layer
         test_shape = self.Convolution1(test_shape)
-        # test_shape=self.batchnorm1(test_shape)
         leakRelu = nn.ReLU()
         test_shape = leakRelu(test_shape)
-        # test_shape=self.dropout3(test_shape)
 
         # 2nd Convolutional Layer
         test_shape = self.Convolution2(test_shape)
-        # test_shape=self.batchnorm2(test_shape)
         leakRelu = nn.ReLU()
         test_shape = leakRelu(test_shape)
-        # test_shape=self.dropout3(test_shape)
 
         # 3rd Convolutional Layer
         test_shape = self.Convolution3(test_shape)
-        # test_shape = self.batchnorm3(test_shape)
         leakRelu = nn.ReLU()
         test_shape = leakRelu(test_shape)
 
         # Last Convolutional layer
         test_shape = self.Convolution4(test_shape)
-        # m = nn.MaxPool2d(3, stride=1, padding=1)
-        # test_shape = m(test_shape)
-        # test_shape=leakRelu(test_shape)
-        test_shape = test_shape.swapaxes(1, 2)  # reverse order to 'width, height, channels'
+
+        # reverse order to 'width, height, channels'
+        test_shape = test_shape.swapaxes(1, 2)
         test_shape = test_shape.swapaxes(2, 3)
+
         return test_shape
 
 
