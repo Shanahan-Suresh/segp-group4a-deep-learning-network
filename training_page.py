@@ -338,6 +338,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if CorrectDataSet == "0" or CorrectImageFolder == "0":
                 self.error()
                 self.enableVariables(True)
+                self.StartButton.setEnabled(True)
 
     # Stop training procedure.
     def StopTraining(self):
