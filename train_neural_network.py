@@ -72,9 +72,6 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     momentum = float(momentum)
     epoch_num = int(float(epoch_num))
 
-    # set up loss function
-    criterion = nn.CrossEntropyLoss()
-
     # move device to GPU if user selected and if possible
     device = torch.device('cuda' if (torch.cuda.is_available() and mode == 2) else 'cpu')
 
@@ -340,18 +337,10 @@ def performance_evaluation(test_data, training_data_count, model_name):
     main()
 
 
-# Message to display train or evaluate options
-def menu_msg():
-    print("\n------Console Menu------")
-    print("1.Train")
-    print("2.Performance Evaluation")
-    print("3.Exit")
-    choice = int(input(""))
-    return choice
-
-
+# Main function to feed parameters into called subfunctions
 def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learning_rate, momentum, preview_image,
          original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
+
     # global variables set up
     global SR_file_number
     data, SR_file_number = extract.main(
