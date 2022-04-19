@@ -68,8 +68,8 @@ def getOriginalImage(file_num):
 # Trains the neural network to convert data into an image
 def training(training_data, testing_data, epoch_num, mode, learning_rate, momentum, preview_image,
              original_image_widget, progress_bar, epoch_loss_widget, total_loss_widget):
-    learning_rate = int(float(learning_rate))
-    momentum = int(float(momentum))
+    learning_rate = float(learning_rate)
+    momentum = float(momentum)
     epoch_num = int(float(epoch_num))
 
     # set up loss function
@@ -88,7 +88,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     class_instance = model.float()
 
     # optimizer
-    optimizer = optim.SGD(class_instance.parameters(), lr=0.009, momentum=0.9)
+    optimizer = optim.SGD(class_instance.parameters(), lr= learning_rate, momentum=momentum)
 
     # set up loss function
     loss_function = nn.L1Loss()
