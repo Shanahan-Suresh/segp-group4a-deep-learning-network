@@ -16,6 +16,7 @@ def main():
     col_width = epw / 2
 
     file = open('Temp files/Variables.txt', 'r')
+
     Temperature = file.readline().strip()
     Humidity = file.readline().strip()
     WindSpeed = file.readline().strip()
@@ -27,6 +28,7 @@ def main():
     LauricAcidComposition = file.readline().strip()
     StearicAcidWaxComposition = file.readline().strip()
     ParafinWaxComposition = file.readline().strip()
+
     file.close()
 
     data = [['Temperature', Temperature],
@@ -51,7 +53,7 @@ def main():
             pdf.cell(col_width, 2 * th, str(datum), border=1)
         pdf.ln(2 * th)
     PDFfile, check = QFileDialog.getSaveFileName(None, "Save As Report",
-                                                 "", "PDF (*.pdf)")
+                                                 "Reports", "PDF (*.pdf)")
     if check:
         print(PDFfile)
         pdf.output(PDFfile, 'F')

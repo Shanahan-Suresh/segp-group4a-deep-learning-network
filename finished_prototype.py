@@ -250,7 +250,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.heatMap.setStyleSheet(CSS.DefaultHeatmapCSS)
             self.heatMap.setStatusTip("")
-        ClearVariableFile()
+            ClearVariableFile()
 
     # Set up table for the main page
     def InitializeTable(self):
