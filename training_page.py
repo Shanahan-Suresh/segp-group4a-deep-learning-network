@@ -1,5 +1,5 @@
 import os
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog
@@ -72,7 +72,7 @@ class Ui_MainWindow(object):
         self.Epoch = QtWidgets.QSpinBox(self.centralwidget)
         self.Epoch.setGeometry(QtCore.QRect(120, 310, 62, 22))
         self.Epoch.setAccelerated(True)
-        self.Epoch.setMinimum(2)
+        self.Epoch.setMinimum(11)
         self.Epoch.setValue(30)
         self.Epoch.setMaximum(3000)
         self.Epoch.setObjectName("Epoch")
@@ -88,7 +88,7 @@ class Ui_MainWindow(object):
         self.TrainingRatio = QtWidgets.QSpinBox(self.centralwidget)
         self.TrainingRatio.setGeometry(QtCore.QRect(120, 390, 62, 22))
         self.TrainingRatio.setAccelerated(True)
-        self.TrainingRatio.setMinimum(2)
+        self.TrainingRatio.setMinimum(50)
         self.TrainingRatio.setValue(90)
         self.TrainingRatio.setMaximum(95)
         self.TrainingRatio.setObjectName("TrainingRatio")
@@ -192,7 +192,6 @@ class Ui_MainWindow(object):
         self.StartButton.setGeometry(QtCore.QRect(30, 470, 41, 31))
         self.StartButton.setObjectName("StartButton")
         self.StartButton.setStyleSheet(CSS.StartButtonCSS)
-        self.StartButton.setStatusTip("Start training")
 
         self.StopButton = QtWidgets.QPushButton(self.centralwidget)
         self.StopButton.setGeometry(QtCore.QRect(80, 470, 41, 31))
@@ -225,6 +224,7 @@ class Ui_MainWindow(object):
         self.SaveModelButton.setGeometry(QtCore.QRect(780, 480, 41, 31))
         self.SaveModelButton.setObjectName("SaveButton")
         self.SaveModelButton.setStyleSheet(CSS.SaveButtonCSS)
+        self.SaveModelButton.setStatusTip("Save model")
         self.SaveModelButton.setHidden(True)
 
         self.OriginalImageText = QtWidgets.QLabel(self.centralwidget)
@@ -265,14 +265,18 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setWindowModality(QtCore.Qt.ApplicationModal)
+        self.StartButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.StopButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.SaveModelButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.setStyleSheet(CSS.BackgroundCSS)
         self.setWindowIcon(QIcon('Icons/TrainingIcon.png'))
 
+        self.enableStartButton()
         self.enableVariables(True)
         self.ModelName.setEnabled(False)
         self.SaveModelButton.setHidden(True)
         self.ModelNameText.setEnabled(False)
-        self.StopButton.setEnabled(False)
+        self.disableStopButton()
 
         self.ImportDataButton.clicked.connect(self.ImportData)
         self.ImportImagesButton.clicked.connect(self.ImportImages)
@@ -281,6 +285,18 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.StopButton.clicked.connect(self.OpenTrainingStoppedPage)
         self.SaveModelButton.clicked.connect(self.SaveModel)
         self.progressBar.valueChanged.connect(self.updateVariablesStatus)
+
+    def disableStopButton(self):
+        self.StopButton.setEnabled(False)
+
+    def enableStopButton(self):
+        self.StopButton.setEnabled(True)
+
+    def enableStartButton(self):
+        self.StartButton.setEnabled(True)
+
+    def disableStartButton(self):
+        self.StartButton.setEnabled(False)
 
     # Open file dialog to import data
     def ImportData(self):
@@ -299,20 +315,20 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # Update variables for training page while training is going on.
     def updateVariablesStatus(self):
         if 0 < self.progressBar.value() < 100:
-            self.StopButton.setEnabled(True)
+            self.enableStopButton()
         if self.progressBar.value() == 0:
             self.enableVariables(True)
         else:
             self.enableVariables(False)
 
         if self.progressBar.value() == 100:
-            self.StopButton.setEnabled(False)
+            self.disableStopButton()
             self.ModelName.setEnabled(True)
             self.ModelNameText.setEnabled(True)
             self.SaveModelButton.setHidden(False)
             self.ModelNameText.setEnabled(True)
             self.progressBar.setValue(0)
-            self.StartButton.setEnabled(True)
+            self.enableStartButton()
 
     # Start training procedure.
     def StartTraining(self):
@@ -339,7 +355,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             if CorrectDataSet == "0" or CorrectImageFolder == "0":
                 self.error()
                 self.enableVariables(True)
-                self.StartButton.setEnabled(True)
+                self.enableStartButton()
 
     # Stop training procedure.
     def StopTraining(self):
@@ -351,7 +367,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     # Checks if data set and image folder provided are valid, if valid it starts training.
     def ValidateFiles(self):
-        self.StartButton.setEnabled(False)
+        self.disableStartButton()
         file = open("Temp files/CorrectImportFilesRecieved.txt", "w")
         try:
             extract.main(
@@ -459,7 +475,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ImportImagesButton.setEnabled(boolean)
         self.ImportDataButton.setEnabled(boolean)
 
-    #closes all sub windows when training page is closed.
+    # closes all sub windows when training page is closed.
     def closeEvent(self, event):
         self.StopTraining()
 

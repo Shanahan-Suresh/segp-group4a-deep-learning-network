@@ -1,5 +1,5 @@
 import os
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog
@@ -50,6 +50,7 @@ class Ui_MainWindow(QObject):
         self.LoadModel.setStyleSheet(CSS.LoadIconCSS)
         self.LoadModel.setText("")
         self.LoadModel.setObjectName("LoadModelButton")
+        self.LoadModel.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
         self.LoadModelLabel = QtWidgets.QLabel(self.centralwidget)
         self.LoadModelLabel.setGeometry(QtCore.QRect(20, 60, 61, 16))

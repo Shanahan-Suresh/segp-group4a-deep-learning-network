@@ -56,12 +56,13 @@ class Ui_MainWindow(QObject):
         self.heatMap.setStyleSheet(CSS.DefaultHeatmapCSS)
         self.heatMap.setObjectName("CloseButton")
 
-        self.editButton = QtWidgets.QPushButton(self.centralwidget)
-        self.editButton.setGeometry(QtCore.QRect(10, 620, 51, 41))
-        self.editButton.setStyleSheet(CSS.EditIconCSS)
-        self.editButton.setText("")
-        self.editButton.setObjectName("LoadModelButton")
-        self.editButton.setStatusTip("Test Model")
+        self.TestButton = QtWidgets.QPushButton(self.centralwidget)
+        self.TestButton.setGeometry(QtCore.QRect(10, 620, 51, 41))
+        self.TestButton.setStyleSheet(CSS.EditIconCSS)
+        self.TestButton.setText("")
+        self.TestButton.setObjectName("LoadModelButton")
+        self.TestButton.setStatusTip("Test Model")
+        self.TestButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
         self.NottinghamLogo = QtWidgets.QLabel(self.centralwidget)
         self.NottinghamLogo.setGeometry(QtCore.QRect(-20, 0, 1171, 101))
@@ -201,7 +202,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionTrain_Model.triggered.connect(self.openTrainWindow)
         self.selectModel.triggered.connect(self.openLoadWindow)
         self.actionExtract_Image.triggered.connect(ExtractImage)
-        self.editButton.clicked.connect(self.openTestWindow)
+        self.TestButton.clicked.connect(self.openTestWindow)
 
     # Update main window when the model is tested
     def updateMainWindow(self):
@@ -217,7 +218,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.enableOptions(False)
 
-        self.window.close()# close test model page
+        self.window.close()  # close test model page
 
     # Open the test model window
     def openTestWindow(self):

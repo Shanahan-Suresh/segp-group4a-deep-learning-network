@@ -166,7 +166,7 @@ def modifyDataset():
     data = finaldf.drop(["Chemicals","Composition, g"], axis=1)
     shuffle_data =  data.sample(frac=1)
 
-    shuffle_data.to_excel("Shuffled.xlsx")
+    shuffle_data.to_excel("Temp files/Shuffled.xlsx")
     SR_file_numbers = shuffle_data.loc[:,'SR file number']
     data = shuffle_data.drop(["SR file number"],axis = 1)
     return data,SR_file_numbers
