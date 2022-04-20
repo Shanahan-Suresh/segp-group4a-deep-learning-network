@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
-import CSS
+import setup
 
 
 class Ui_MainWindow(QObject):
@@ -11,7 +11,7 @@ class Ui_MainWindow(QObject):
         MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(231, 77)
-        MainWindow.setStyleSheet(CSS.BackgroundCSS)
+        MainWindow.setStyleSheet(setup.BackgroundCSS)
         MainWindow.setWindowIcon(QIcon('Icons/ErrorIcon.png'))
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -24,12 +24,12 @@ class Ui_MainWindow(QObject):
         self.CloseButton = QtWidgets.QPushButton(self.centralwidget)
         self.CloseButton.setGeometry(QtCore.QRect(140, 40, 75, 23))
         self.CloseButton.setObjectName("CloseButton")
-        self.CloseButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.CloseButton.setStyleSheet(setup.QPushButtonCSS)
         self.CloseButton.clicked.connect(self.close)
 
         self.ErrorIcon = QtWidgets.QLabel(self.centralwidget)
         self.ErrorIcon.setGeometry(QtCore.QRect(0, 10, 51, 41))
-        self.ErrorIcon.setStyleSheet(CSS.ErrorIconCSS)
+        self.ErrorIcon.setStyleSheet(setup.ErrorIconCSS)
         self.ErrorIcon.setObjectName("ErrorIcon")
         MainWindow.setCentralWidget(self.centralwidget)
 

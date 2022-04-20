@@ -43,6 +43,7 @@ def main():
             ['Stearic Acid Wax Composition', StearicAcidWaxComposition],
             ['Parafin Wax Composition', ParafinWaxComposition]
             ]
+
     pdf.set_font('Times', '', 10.0)
     pdf.ln(0.5)
     th = pdf.font_size

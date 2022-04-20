@@ -4,7 +4,7 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog
 
-import CSS
+import setup
 
 
 # Load a new model
@@ -19,9 +19,12 @@ def LoadModel():
         file.write(path)
 
         file.close()
+
         if path == '':
             file = open('Temp files/Path.txt', 'w')
+
             file.write('PreInstalledModel')
+
             file.close()
 
 
@@ -39,7 +42,7 @@ class Ui_MainWindow(QObject):
         self.SelectModel.setObjectName("comboBox")
         self.SelectModel.addItem("")
         self.SelectModel.addItem("")
-        self.SelectModel.setStyleSheet(CSS.QComboBoxCSS)
+        self.SelectModel.setStyleSheet(setup.QComboBoxCSS)
 
         self.ModelLabel = QtWidgets.QLabel(self.centralwidget)
         self.ModelLabel.setGeometry(QtCore.QRect(20, 20, 47, 13))
@@ -47,7 +50,7 @@ class Ui_MainWindow(QObject):
 
         self.LoadModel = QtWidgets.QPushButton(self.centralwidget)
         self.LoadModel.setGeometry(QtCore.QRect(90, 50, 51, 41))
-        self.LoadModel.setStyleSheet(CSS.LoadIconCSS)
+        self.LoadModel.setStyleSheet(setup.LoadIconCSS)
         self.LoadModel.setText("")
         self.LoadModel.setObjectName("LoadModelButton")
         self.LoadModel.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -59,7 +62,7 @@ class Ui_MainWindow(QObject):
         self.ApplyButton = QtWidgets.QPushButton(self.centralwidget)
         self.ApplyButton.setGeometry(QtCore.QRect(10, 100, 75, 23))
         self.ApplyButton.setObjectName("CloseButton")
-        self.ApplyButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.ApplyButton.setStyleSheet(setup.QPushButtonCSS)
 
         self.LoadModelVisible(False)
 
@@ -83,7 +86,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setFixedSize(239, 138)
-        self.setStyleSheet(CSS.BackgroundCSS)
+        self.setStyleSheet(setup.BackgroundCSS)
         self.SelectModel.activated.connect(self.updateMainWindow)
         self.LoadModel.clicked.connect(LoadModel)
         self.ApplyButton.clicked.connect(self.Apply)

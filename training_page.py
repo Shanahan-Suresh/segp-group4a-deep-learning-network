@@ -4,20 +4,23 @@ from PyQt5.QtCore import QThread
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
-import CSS
-import ErrorModelName
-import ReplaceFileWindow
-import SaveModelPopUp
-import TrainingPageDataErrorPopUp
-import TrainingStoppedPage
-import WrongFileImportedError
+import setup
+import model_name_error_popup
+import training_page_replace_file_popup
+import save_model_popup
+import training_page_data_import_error_popup
+import training_stopped_popup
+import training_page_wrong_file_imported_popup
 from train_neural_network import main as train, get_graph, save_model
 import extract_data as extract
 
 
 class MainBackgroundThread(QThread):
+
     file = open("Temp files/StopTrainingFlag.txt", "w")
+
     file.write("0")
+
     file.close()
 
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
@@ -44,7 +47,7 @@ class MainBackgroundThread(QThread):
         plt.title("Training Loss and Validation Loss")
         plt.legend()
         plt.savefig("Temp files/loss_graph")
-        self.Graph.setStyleSheet("image: url(Temp files/loss_graph.png);border :1px solid black;")
+        self.Graph.setStyleSheet(setup.TrainingGraph)
 
 
 class Ui_MainWindow(object):
@@ -52,7 +55,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(852, 539)
-        MainWindow.setStyleSheet(CSS.BackgroundCSS)
+        MainWindow.setStyleSheet(setup.BackgroundCSS)
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -72,27 +75,27 @@ class Ui_MainWindow(object):
         self.Epoch = QtWidgets.QSpinBox(self.centralwidget)
         self.Epoch.setGeometry(QtCore.QRect(120, 310, 62, 22))
         self.Epoch.setAccelerated(True)
-        self.Epoch.setMinimum(11)
+        self.Epoch.setMinimum(2)
         self.Epoch.setValue(30)
         self.Epoch.setMaximum(3000)
         self.Epoch.setObjectName("Epoch")
-        self.Epoch.setStyleSheet(CSS.QSpinBoxCSS)
+        self.Epoch.setStyleSheet(setup.QSpinBoxCSS)
 
         self.TrainingMode = QtWidgets.QComboBox(self.centralwidget)
         self.TrainingMode.setGeometry(QtCore.QRect(120, 350, 69, 22))
         self.TrainingMode.setObjectName("TrainingMode")
-        self.TrainingMode.setStyleSheet(CSS.QComboBoxCSS)
+        self.TrainingMode.setStyleSheet(setup.QComboBoxCSS)
         self.TrainingMode.addItem("")
         self.TrainingMode.addItem("")
 
         self.TrainingRatio = QtWidgets.QSpinBox(self.centralwidget)
         self.TrainingRatio.setGeometry(QtCore.QRect(120, 390, 62, 22))
         self.TrainingRatio.setAccelerated(True)
-        self.TrainingRatio.setMinimum(50)
+        self.TrainingRatio.setMinimum(2)
         self.TrainingRatio.setValue(90)
         self.TrainingRatio.setMaximum(95)
         self.TrainingRatio.setObjectName("TrainingRatio")
-        self.TrainingRatio.setStyleSheet(CSS.QSpinBoxCSS)
+        self.TrainingRatio.setStyleSheet(setup.QSpinBoxCSS)
 
         self.Momentum = QtWidgets.QDoubleSpinBox(self.centralwidget)
         self.Momentum.setDecimals(4)
@@ -103,7 +106,7 @@ class Ui_MainWindow(object):
         self.Momentum.setMaximum(0.99)
         self.Momentum.setGeometry(QtCore.QRect(320, 360, 62, 22))
         self.Momentum.setObjectName("Momentum")
-        self.Momentum.setStyleSheet(CSS.QDoubleSpinBoxCSS)
+        self.Momentum.setStyleSheet(setup.QDoubleSpinBoxCSS)
 
         self.LearningRateText = QtWidgets.QLabel(self.centralwidget)
         self.LearningRateText.setGeometry(QtCore.QRect(240, 330, 71, 16))
@@ -122,7 +125,7 @@ class Ui_MainWindow(object):
         self.LearningRate.setMaximum(0.9999)
         self.LearningRate.setGeometry(QtCore.QRect(320, 330, 62, 22))
         self.LearningRate.setObjectName("LearningRate")
-        self.LearningRate.setStyleSheet(CSS.QDoubleSpinBoxCSS)
+        self.LearningRate.setStyleSheet(setup.QDoubleSpinBoxCSS)
 
         self.line = QtWidgets.QFrame(self.centralwidget)
         self.line.setGeometry(QtCore.QRect(213, 300, 20, 121))
@@ -136,30 +139,30 @@ class Ui_MainWindow(object):
 
         self.ImportDataButton = QtWidgets.QPushButton(self.centralwidget)
         self.ImportDataButton.setGeometry(QtCore.QRect(460, 50, 91, 23))
-        self.ImportDataButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.ImportDataButton.setStyleSheet(setup.QPushButtonCSS)
         self.ImportDataButton.setObjectName("ImportDataButton")
 
         self.ImportImagesButton = QtWidgets.QPushButton(self.centralwidget)
         self.ImportImagesButton.setGeometry(QtCore.QRect(460, 80, 91, 23))
-        self.ImportImagesButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.ImportImagesButton.setStyleSheet(setup.QPushButtonCSS)
         self.ImportImagesButton.setObjectName("ImportImagesButton")
 
         self.ImportDataPath = QtWidgets.QLineEdit(self.centralwidget)
         self.ImportDataPath.setGeometry(QtCore.QRect(560, 50, 281, 20))
         self.ImportDataPath.setText("")
         self.ImportDataPath.setEnabled(False)
-        self.ImportDataPath.setStyleSheet(CSS.QLineEditCSS)
+        self.ImportDataPath.setStyleSheet(setup.QLineEditCSS)
 
         self.ImportImagesPath = QtWidgets.QLineEdit(self.centralwidget)
         self.ImportImagesPath.setGeometry(QtCore.QRect(560, 80, 281, 20))
         self.ImportImagesPath.setText("")
         self.ImportImagesPath.setObjectName("ImportImagesPath")
         self.ImportImagesPath.setEnabled(False)
-        self.ImportImagesPath.setStyleSheet(CSS.QLineEditCSS)
+        self.ImportImagesPath.setStyleSheet(setup.QLineEditCSS)
 
         self.OriginalImage = QtWidgets.QLabel(self.centralwidget)
         self.OriginalImage.setGeometry(QtCore.QRect(20, 80, 160, 120))
-        self.OriginalImage.setStyleSheet(CSS.DefaultPicturesCSS)
+        self.OriginalImage.setStyleSheet(setup.DefaultPicturesCSS)
         self.OriginalImage.setText("")
         self.OriginalImage.setObjectName("OriginalImage")
 
@@ -175,10 +178,10 @@ class Ui_MainWindow(object):
 
         self.NewImage = QtWidgets.QLabel(self.centralwidget)
         self.NewImage.setGeometry(QtCore.QRect(230, 80, 160, 120))
-        self.NewImage.setStyleSheet(CSS.PreviewImageCSS)
+        self.NewImage.setStyleSheet(setup.PreviewImageCSS)
         self.NewImage.setText("")
         self.NewImage.setObjectName("NewImage")
-        self.NewImage.setStyleSheet(CSS.DefaultPicturesCSS)
+        self.NewImage.setStyleSheet(setup.DefaultPicturesCSS)
 
         self.EpochLoss = QtWidgets.QLabel(self.centralwidget)
         self.EpochLoss.setGeometry(QtCore.QRect(495, 390, 191, 16))
@@ -191,18 +194,18 @@ class Ui_MainWindow(object):
         self.StartButton = QtWidgets.QPushButton(self.centralwidget)
         self.StartButton.setGeometry(QtCore.QRect(30, 470, 41, 31))
         self.StartButton.setObjectName("StartButton")
-        self.StartButton.setStyleSheet(CSS.StartButtonCSS)
+        self.StartButton.setStyleSheet(setup.StartButtonCSS)
 
         self.StopButton = QtWidgets.QPushButton(self.centralwidget)
         self.StopButton.setGeometry(QtCore.QRect(80, 470, 41, 31))
         self.StopButton.setObjectName("StopButton")
-        self.StopButton.setStyleSheet(CSS.PauseButtonCSS)
+        self.StopButton.setStyleSheet(setup.PauseButtonCSS)
 
         self.ModelName = QtWidgets.QLineEdit(self.centralwidget)
         self.ModelName.setMaxLength(50)
         self.ModelName.setGeometry(QtCore.QRect(110, 430, 281, 20))
         self.ModelName.setObjectName("ModelName")
-        self.ModelName.setStyleSheet(CSS.QLineEditCSS)
+        self.ModelName.setStyleSheet(setup.QLineEditCSS)
 
         self.ModelNameText = QtWidgets.QLabel(self.centralwidget)
         self.ModelNameText.setGeometry(QtCore.QRect(40, 430, 61, 16))
@@ -210,7 +213,7 @@ class Ui_MainWindow(object):
 
         self.Graph = QtWidgets.QLabel(self.centralwidget)
         self.Graph.setGeometry(QtCore.QRect(490, 140, 320, 240))
-        self.Graph.setStyleSheet(CSS.DefaultPicturesCSS)
+        self.Graph.setStyleSheet(setup.DefaultPicturesCSS)
         self.Graph.setText("")
         self.Graph.setObjectName("Graph")
 
@@ -223,7 +226,7 @@ class Ui_MainWindow(object):
         self.SaveModelButton = QtWidgets.QPushButton(self.centralwidget)
         self.SaveModelButton.setGeometry(QtCore.QRect(780, 480, 41, 31))
         self.SaveModelButton.setObjectName("SaveButton")
-        self.SaveModelButton.setStyleSheet(CSS.SaveButtonCSS)
+        self.SaveModelButton.setStyleSheet(setup.SaveButtonCSS)
         self.SaveModelButton.setStatusTip("Save model")
         self.SaveModelButton.setHidden(True)
 
@@ -268,7 +271,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.StartButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.StopButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.SaveModelButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.setStyleSheet(CSS.BackgroundCSS)
+        self.setStyleSheet(setup.BackgroundCSS)
         self.setWindowIcon(QIcon('Icons/TrainingIcon.png'))
 
         self.enableStartButton()
@@ -326,15 +329,14 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.ModelName.setEnabled(True)
             self.ModelNameText.setEnabled(True)
             self.SaveModelButton.setHidden(False)
-            self.ModelNameText.setEnabled(True)
             self.progressBar.setValue(0)
             self.enableStartButton()
 
     # Start training procedure.
     def StartTraining(self):
-        self.Graph.setStyleSheet(CSS.ClearImage)
-        self.OriginalImage.setStyleSheet(CSS.ClearImage)
-        self.NewImage.setStyleSheet(CSS.ClearImage)
+        self.Graph.setStyleSheet(setup.ClearImage)
+        self.OriginalImage.setStyleSheet(setup.ClearImage)
+        self.NewImage.setStyleSheet(setup.ClearImage)
         self.EpochLoss.setText("Epoch Loss: ")
         self.TotalTrainingLoss.setText("Training Loss: ")
         self.SaveModelButton.setHidden(True)
@@ -347,9 +349,12 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.ValidateFiles()
             self.enableVariables(False)
+
             file = open("Temp files/CorrectImportFilesRecieved.txt", "r")
+
             CorrectDataSet = file.readline().strip()
             CorrectImageFolder = file.readline().strip()
+
             file.close()
 
             if CorrectDataSet == "0" or CorrectImageFolder == "0":
@@ -361,14 +366,19 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def StopTraining(self):
         self.progressBar.setValue(100)
         self.updateVariablesStatus()
+
         file = open("Temp files/StopTrainingFlag.txt", "w")
+
         file.write("1")
+
         file.close()
 
     # Checks if data set and image folder provided are valid, if valid it starts training.
     def ValidateFiles(self):
         self.disableStartButton()
+
         file = open("Temp files/CorrectImportFilesRecieved.txt", "w")
+
         try:
             extract.main(
                 self.ImportDataPath.text())
@@ -390,7 +400,9 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     break
         file.write(str(CorrectDataPath) + "\n")
         file.write(str(CorrectImagePath) + "\n")
+
         file.close()
+
         if CorrectImagePath == 1 and CorrectDataPath == 1:
             self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(),
                                                self.Epoch.text(),
@@ -404,41 +416,44 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # Open error pop up to let user know the dataset and image folder is empty.
     def DataErrorPopUp(self):
         self.window = QtWidgets.QMainWindow()
-        self.window = TrainingPageDataErrorPopUp.MyWindow()
+        self.window = training_page_data_import_error_popup.MyWindow()
         self.window.show()
 
     # Open error pop us telling user which file provided is invalid.
     def error(self):
         self.window = QtWidgets.QMainWindow()
-        self.window = WrongFileImportedError.MyWindow()
+        self.window = training_page_wrong_file_imported_popup.MyWindow()
         self.window.show()
 
     # Open error pop up and notifying user that model name entered is invalid.
     def ModelNameError(self):
         self.window = QtWidgets.QMainWindow()
-        self.window = ErrorModelName.MyWindow()
+        self.window = model_name_error_popup.MyWindow()
         self.window.show()
 
     # Open  pop up notifying user of the file name saved for the model.
     def OpenSaveModelPopUp(self):
         self.window = QtWidgets.QMainWindow()
-        self.window = SaveModelPopUp.MyWindow()
+        self.window = save_model_popup.MyWindow()
         self.window.show()
 
     # Open pop up notifying user that training has been stopped.
     def OpenTrainingStoppedPage(self):
         self.window = QtWidgets.QMainWindow()
-        self.window = TrainingStoppedPage.MyWindow()
+        self.window = training_stopped_popup.MyWindow()
         self.window.show()
 
     # Open pop up asking user if they want to replace the existing file.
     def OpenReplaceFileWindow(self):
         file = open("Temp files/ModelName.txt", "w")
+
         print(self.ModelName.text())
         file.write(self.ModelName.text())
+
         file.close()
+
         self.window = QtWidgets.QMainWindow()
-        self.window = ReplaceFileWindow.MyWindow()
+        self.window = training_page_replace_file_popup.MyWindow()
         self.window.show()
         self.window.YesButton.clicked.connect(self.SaveFile)
 
@@ -446,9 +461,12 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def SaveFile(self):
         save_model(self.ModelName.text())
         file = open("Temp files/ModelName.txt", "w")
+
         print(self.ModelName.text())
         file.write(self.ModelName.text())
+
         file.close()
+
         self.OpenSaveModelPopUp()
 
     # Verification done to check if file name is  valid, if valid then saves the model.

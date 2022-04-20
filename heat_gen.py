@@ -1,14 +1,14 @@
 import os
-import CSS
+import setup
 import load_model
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QHeaderView, QApplication
 from PyQt5.QtGui import QIcon
-import input_pop_up
+import test_model
 import training_page
 from additional_features import main as additional_features_main
-from ConvertToPDF import main as ConvertToPdf
+from convert_to_pdf import main as ConvertToPdf
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -22,7 +22,9 @@ def ClearFile():
 # File containing name of pre installed model
 def LoadPreInstalledModel():
     file = open("Temp files/Path.txt", 'w')
+
     file.write('PreInstalledModel')
+
     file.close()
 
 
@@ -53,12 +55,12 @@ class Ui_MainWindow(QObject):
 
         self.heatMap = QtWidgets.QPushButton(self.centralwidget)
         self.heatMap.setGeometry(QtCore.QRect(460, 120, 666, 500))
-        self.heatMap.setStyleSheet(CSS.DefaultHeatmapCSS)
+        self.heatMap.setStyleSheet(setup.DefaultHeatmapCSS)
         self.heatMap.setObjectName("CloseButton")
 
         self.TestButton = QtWidgets.QPushButton(self.centralwidget)
         self.TestButton.setGeometry(QtCore.QRect(10, 620, 51, 41))
-        self.TestButton.setStyleSheet(CSS.EditIconCSS)
+        self.TestButton.setStyleSheet(setup.EditIconCSS)
         self.TestButton.setText("")
         self.TestButton.setObjectName("LoadModelButton")
         self.TestButton.setStatusTip("Test Model")
@@ -66,7 +68,7 @@ class Ui_MainWindow(QObject):
 
         self.NottinghamLogo = QtWidgets.QLabel(self.centralwidget)
         self.NottinghamLogo.setGeometry(QtCore.QRect(-20, 0, 1171, 101))
-        self.NottinghamLogo.setStyleSheet(CSS.MainPageLogo)
+        self.NottinghamLogo.setStyleSheet(setup.MainPageLogo)
         self.NottinghamLogo.setObjectName("NottinghamLogo")
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -191,8 +193,8 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.setWindowIcon(QIcon('Icons/MainNotLogo.jpg'))
-        self.setStyleSheet(CSS.BackgroundCSS)
-        self.menuBar.setStyleSheet(CSS.MenuBarCSS)
+        self.setStyleSheet(setup.BackgroundCSS)
+        self.menuBar.setStyleSheet(setup.MenuBarCSS)
 
         self.heatMap.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.heatMap.clicked.connect(ExtractImage)
@@ -223,7 +225,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # Open the test model window
     def openTestWindow(self):
         self.window = QtWidgets.QMainWindow()
-        self.window = input_pop_up.MyWindow()
+        self.window = test_model.MyWindow()
         self.window.show()
         self.window.SubmitButton.clicked.connect(self.updateMainWindow)
 
@@ -245,10 +247,10 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actionExtract_Image.setEnabled(boolean)
         self.heatMap.setEnabled(boolean)
         if boolean:
-            self.heatMap.setStyleSheet(CSS.HeatMapCSS)
+            self.heatMap.setStyleSheet(setup.HeatMapCSS)
             self.heatMap.setStatusTip("Extract Image")
         else:
-            self.heatMap.setStyleSheet(CSS.DefaultHeatmapCSS)
+            self.heatMap.setStyleSheet(setup.DefaultHeatmapCSS)
             self.heatMap.setStatusTip("")
             ClearVariableFile()
 
@@ -256,7 +258,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def InitializeTable(self):
         self.tableWidget = QtWidgets.QTableWidget(self.centralwidget)
         self.tableWidget.setGeometry(QtCore.QRect(0, 120, 411, 481))
-        self.tableWidget.setStyleSheet(CSS.TableCSS)
+        self.tableWidget.setStyleSheet(setup.TableCSS)
         hheader = self.tableWidget.horizontalHeader()
         hheader.setSectionResizeMode(QHeaderView.Stretch)
         vheader = self.tableWidget.verticalHeader()

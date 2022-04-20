@@ -1,4 +1,3 @@
-
 QSpinBoxCSS = "QSpinBox{border : 2px solid black;background : white;}"
 
 QDoubleSpinBoxCSS = "QDoubleSpinBox{border : 2px solid black;background : white;}"
@@ -50,3 +49,8 @@ DefaultPicturesCSS = "QLabel{background-color:white;border :1px solid black}"
 
 ClearImage = "background-color: white;border :1px solid black;"
 
+TrainingOriginalImage = "image: url(Temp files/original_image.png);border :1px solid black;"
+
+TrainingGeneratedImage = "image: url(Temp files/train_image.png);border :1px solid black;"
+
+TrainingGraph = "image: url(Temp files/loss_graph.png);border :1px solid black;"

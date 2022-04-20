@@ -12,7 +12,7 @@ from torchvision import transforms
 from torchvision.utils import save_image
 
 import extract_data as extract
-from Training_Page_Integration import get_image, refresh_image, update_progress_bar, update_loss_bar
+from training_page_integration import get_image, refresh_image, update_progress_bar, update_loss_bar
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
@@ -110,7 +110,9 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
             if file.read() == "1":
                 print("Training Stopped")
                 return
+
             file.close()
+
             tensor = torch.tensor(training_data.iloc[i].values)
             if mode == 2:
                 tensor = tensor.to(device)  # CUDA CODE
@@ -185,8 +187,6 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
         print("Total training loss : {}\n".format(total_training_loss / len(training_data)))
         total_training_loss = 0
         total_validation_loss = 0
-
-    print("Training completed")
 
     # set validation and training loss arrays
     global x
@@ -298,7 +298,7 @@ def save_image_from_tensor(image_tensor, image_size=500):
     image_tensor = transform(image_tensor)
 
     # name of the saved file
-    file_name = 'test.png'
+    file_name = 'Temp files/test.png'
 
     # save image
     save_image(image_tensor, file_name)
@@ -350,7 +350,9 @@ def main(excel_path, original_image_path, epoch_num, mode, training_ratio, learn
     original_image = original_image_path
 
     file = open("Temp files/StopTrainingFlag.txt", "w")
+
     file.write("0")
+
     file.close()
 
     # normalize data

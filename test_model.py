@@ -1,9 +1,10 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
-import ErrorPopUp
-import integration
-import CSS
+
+import setup
+import test_model_error_popup
+import test_model_integration
 
 
 class Ui_MainWindow(QObject):
@@ -14,12 +15,12 @@ class Ui_MainWindow(QObject):
         Form.setWindowIcon(QIcon('Icons/TestIcon.png'))
         Form.setObjectName("Form")
         Form.setFixedSize(690, 389)
-        Form.setStyleSheet(CSS.BackgroundCSS)
+        Form.setStyleSheet(setup.BackgroundCSS)
 
         self.SubmitButton = QtWidgets.QPushButton(Form)
         self.SubmitButton.setGeometry(QtCore.QRect(530, 350, 141, 31))
         self.SubmitButton.clicked.connect(self.SubmitAction)
-        self.SubmitButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.SubmitButton.setStyleSheet(setup.QPushButtonCSS)
         self.SubmitButton.setObjectName("SubmitButton")
 
         self.ParafinWaxText = QtWidgets.QLabel(Form)
@@ -40,7 +41,7 @@ class Ui_MainWindow(QObject):
 
         self.WindSpeed = QtWidgets.QSpinBox(Form)
         self.WindSpeed.setGeometry(QtCore.QRect(230, 140, 71, 31))
-        self.WindSpeed.setStyleSheet(CSS.QSpinBoxCSS)
+        self.WindSpeed.setStyleSheet(setup.QSpinBoxCSS)
         self.WindSpeed.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.WindSpeed.setAccelerated(True)
         self.WindSpeed.setMaximum(30)
@@ -48,7 +49,7 @@ class Ui_MainWindow(QObject):
 
         self.LauricAcidComp = QtWidgets.QSpinBox(Form)
         self.LauricAcidComp.setGeometry(QtCore.QRect(600, 189, 71, 31))
-        self.LauricAcidComp.setStyleSheet(CSS.QSpinBoxCSS)
+        self.LauricAcidComp.setStyleSheet(setup.QSpinBoxCSS)
         self.LauricAcidComp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.LauricAcidComp.setAccelerated(True)
         self.LauricAcidComp.setMaximum(3)
@@ -56,7 +57,7 @@ class Ui_MainWindow(QObject):
 
         self.LauricAcid = QtWidgets.QSpinBox(Form)
         self.LauricAcid.setGeometry(QtCore.QRect(600, 9, 71, 31))
-        self.LauricAcid.setStyleSheet(CSS.QSpinBoxCSS)
+        self.LauricAcid.setStyleSheet(setup.QSpinBoxCSS)
         self.LauricAcid.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.LauricAcid.setAccelerated(True)
         self.LauricAcid.setMaximum(1)
@@ -68,7 +69,7 @@ class Ui_MainWindow(QObject):
 
         self.ParafinWaxComp = QtWidgets.QSpinBox(Form)
         self.ParafinWaxComp.setGeometry(QtCore.QRect(600, 310, 71, 31))
-        self.ParafinWaxComp.setStyleSheet(CSS.QSpinBoxCSS)
+        self.ParafinWaxComp.setStyleSheet(setup.QSpinBoxCSS)
         self.ParafinWaxComp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.ParafinWaxComp.setAccelerated(True)
         self.ParafinWaxComp.setMaximum(3)
@@ -80,7 +81,7 @@ class Ui_MainWindow(QObject):
 
         self.Humidity = QtWidgets.QDoubleSpinBox(Form)
         self.Humidity.setGeometry(QtCore.QRect(230, 80, 71, 31))
-        self.Humidity.setStyleSheet(CSS.QDoubleSpinBoxCSS)
+        self.Humidity.setStyleSheet(setup.QDoubleSpinBoxCSS)
         self.Humidity.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.Humidity.setAccelerated(True)
         self.Humidity.setSingleStep(0.1)
@@ -99,7 +100,7 @@ class Ui_MainWindow(QObject):
 
         self.StearicAcidWaxComp = QtWidgets.QSpinBox(Form)
         self.StearicAcidWaxComp.setGeometry(QtCore.QRect(600, 249, 71, 31))
-        self.StearicAcidWaxComp.setStyleSheet(CSS.QSpinBoxCSS)
+        self.StearicAcidWaxComp.setStyleSheet(setup.QSpinBoxCSS)
         self.StearicAcidWaxComp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.StearicAcidWaxComp.setAccelerated(True)
         self.StearicAcidWaxComp.setMaximum(3)
@@ -107,7 +108,7 @@ class Ui_MainWindow(QObject):
 
         self.ChemicalTemp = QtWidgets.QDoubleSpinBox(Form)
         self.ChemicalTemp.setGeometry(QtCore.QRect(230, 260, 71, 31))
-        self.ChemicalTemp.setStyleSheet(CSS.QDoubleSpinBoxCSS)
+        self.ChemicalTemp.setStyleSheet(setup.QDoubleSpinBoxCSS)
         self.ChemicalTemp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.ChemicalTemp.setAccelerated(True)
         self.ChemicalTemp.setSingleStep(0.1)
@@ -118,7 +119,7 @@ class Ui_MainWindow(QObject):
 
         self.Temperature = QtWidgets.QDoubleSpinBox(Form)
         self.Temperature.setGeometry(QtCore.QRect(230, 20, 71, 31))
-        self.Temperature.setStyleSheet(CSS.QDoubleSpinBoxCSS)
+        self.Temperature.setStyleSheet(setup.QDoubleSpinBoxCSS)
         self.Temperature.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.Temperature.setAccelerated(True)
         self.Temperature.setDecimals(1)
@@ -137,7 +138,7 @@ class Ui_MainWindow(QObject):
 
         self.ParafinWax = QtWidgets.QSpinBox(Form)
         self.ParafinWax.setGeometry(QtCore.QRect(600, 129, 71, 31))
-        self.ParafinWax.setStyleSheet(CSS.QSpinBoxCSS)
+        self.ParafinWax.setStyleSheet(setup.QSpinBoxCSS)
         self.ParafinWax.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.ParafinWax.setAccelerated(True)
         self.ParafinWax.setMaximum(1)
@@ -149,7 +150,7 @@ class Ui_MainWindow(QObject):
 
         self.AluminiumTemp = QtWidgets.QDoubleSpinBox(Form)
         self.AluminiumTemp.setGeometry(QtCore.QRect(230, 200, 71, 31))
-        self.AluminiumTemp.setStyleSheet(CSS.QDoubleSpinBoxCSS)
+        self.AluminiumTemp.setStyleSheet(setup.QDoubleSpinBoxCSS)
         self.AluminiumTemp.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.AluminiumTemp.setAccelerated(True)
         self.AluminiumTemp.setSingleStep(0.1)
@@ -159,7 +160,7 @@ class Ui_MainWindow(QObject):
 
         self.StearicAcid = QtWidgets.QSpinBox(Form)
         self.StearicAcid.setGeometry(QtCore.QRect(600, 69, 71, 31))
-        self.StearicAcid.setStyleSheet(CSS.QSpinBoxCSS)
+        self.StearicAcid.setStyleSheet(setup.QSpinBoxCSS)
         self.StearicAcid.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.StearicAcid.setAccelerated(True)
         self.StearicAcid.setMaximum(1)
@@ -244,8 +245,8 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
     # When user clicks submit, the program checks if the correct trained model is loaded and if the correct model is
     # loaded it shows a heatmap on the main screen.
     def SubmitAction(self):
-        integration.main('Data Sets\Data.xlsx')
-        integration.set_data(self.Temperature.text(), self.Humidity.text(), self.WindSpeed.text(),
+        test_model_integration.main('Data Sets\Data.xlsx')
+        test_model_integration.set_data(self.Temperature.text(), self.Humidity.text(), self.WindSpeed.text(),
                              self.AluminiumTemp.text(), self.ChemicalTemp.text(), self.LauricAcid.text(),
                              self.StearicAcid.text(),
                              self.ParafinWax.text(), self.LauricAcidComp.text(), self.StearicAcidWaxComp.text(),
@@ -259,7 +260,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
 
         if CorrectFileReceived == '0':
             self.window = QtWidgets.QMainWindow()
-            self.window = ErrorPopUp.MyWindow()
+            self.window = test_model_error_popup.MyWindow()
             self.window.show()
 
         with open("Temp files/Variables.txt", 'w') as file:

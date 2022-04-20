@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
 
-import CSS
+import setup
 import load_model
 
 
@@ -13,23 +13,23 @@ class Ui_MainWindow(QObject):
         MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(475, 97)
-        MainWindow.setStyleSheet(CSS.BackgroundCSS)
+        MainWindow.setStyleSheet(setup.BackgroundCSS)
         MainWindow.setWindowIcon(QIcon('Icons/ErrorIcon.png'))
 
         self.ErrorIcon = QtWidgets.QLabel(MainWindow)
         self.ErrorIcon.setGeometry(QtCore.QRect(5, 15, 51, 41))
-        self.ErrorIcon.setStyleSheet(CSS.ErrorIconCSS)
+        self.ErrorIcon.setStyleSheet(setup.ErrorIconCSS)
         self.ErrorIcon.setObjectName("ErrorIcon")
 
         self.CloseButton = QtWidgets.QPushButton(MainWindow)
         self.CloseButton.setGeometry(QtCore.QRect(370, 60, 75, 23))
         self.CloseButton.setObjectName("CloseButton")
-        self.CloseButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.CloseButton.setStyleSheet(setup.QPushButtonCSS)
 
         self.LoadModelButton = QtWidgets.QPushButton(MainWindow)
         self.LoadModelButton.setGeometry(QtCore.QRect(270, 60, 90, 23))
         self.LoadModelButton.setObjectName("LoadModelButton")
-        self.LoadModelButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.LoadModelButton.setStyleSheet(setup.QPushButtonCSS)
         self.LoadModelButton.clicked.connect(self.LoadModel)
 
         self.AlertMessage = QtWidgets.QLabel(MainWindow)

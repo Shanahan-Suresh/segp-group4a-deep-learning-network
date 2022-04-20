@@ -1,6 +1,9 @@
 from torchvision.utils import save_image
 
 #link tensor from training page to model
+import setup
+
+
 def get_image(produced_image,original_image):
     save_produced_image_tensor(produced_image)
     save_original_image_tensor(original_image)
@@ -21,8 +24,8 @@ def save_original_image_tensor(image_tensor):
 
 #change disaplay image based on saved image
 def refresh_image(preview_image,original_image_widget):
-    preview_image.setStyleSheet("image: url(Temp files/train_image.png);border :1px solid black;")
-    original_image_widget.setStyleSheet("image: url(Temp files/original_image.png);border :1px solid black;")
+    preview_image.setStyleSheet(setup.TrainingGeneratedImage)
+    original_image_widget.setStyleSheet(setup.TrainingOriginalImage)
 
 #progress bar update
 def update_progress_bar(progress_bar,epoch,epoch_num):

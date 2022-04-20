@@ -15,8 +15,9 @@ def load_model(data):
     file.close()
 
     file = open("Temp files/Path.txt", 'r')
+
     FileName = file.readline().strip()
-    print(FileName)
+
     file.close()
 
     model = Net()
@@ -27,8 +28,11 @@ def load_model(data):
 
     except:
         file = open("Temp files/CorrectFileReceived.txt", 'w')
+
         file.write('0')
+
         file.close()
+
         print("Model could not be loaded. Please verify that the file is a trained neural network.")
 
     model.eval()

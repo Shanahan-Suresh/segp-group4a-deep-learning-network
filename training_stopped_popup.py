@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
-import CSS
+import setup
 
 
 class Ui_MainWindow(QObject):
@@ -44,11 +44,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setStyleSheet(CSS.BackgroundCSS)
+        self.setStyleSheet(setup.BackgroundCSS)
         self.setWindowIcon(QIcon('Icons/TrainingIcon.png'))
 
-        self.icon.setStyleSheet(CSS.CautionIconCSS)
+        self.icon.setStyleSheet(setup.CautionIconCSS)
         self.MessageText.setText("Training has been stopped.")
 
-        self.closeButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.closeButton.setStyleSheet(setup.QPushButtonCSS)
         self.closeButton.clicked.connect(self.close)

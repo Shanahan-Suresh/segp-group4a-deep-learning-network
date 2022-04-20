@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
 
-import CSS
+import setup
 
 
 class Ui_MainWindow(QObject):
@@ -55,14 +55,17 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setStyleSheet(CSS.BackgroundCSS)
-        self.YesButton.setStyleSheet(CSS.QPushButtonCSS)
-        self.NoButton.setStyleSheet(CSS.QPushButtonCSS)
-        self.Icon.setStyleSheet(CSS.CautionIconCSS)
+        self.setStyleSheet(setup.BackgroundCSS)
+        self.YesButton.setStyleSheet(setup.QPushButtonCSS)
+        self.NoButton.setStyleSheet(setup.QPushButtonCSS)
+        self.Icon.setStyleSheet(setup.CautionIconCSS)
         self.setWindowIcon(QIcon('Icons/CautionIcon.png'))
 
         file = open("Temp files/ModelName.txt", "r")
+
         ModelName = file.read()
+
         file.close()
+
         self.ChangingText.setText(ModelName + ".file already exists.")
         self.NoButton.clicked.connect(self.close)

@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
 
-import CSS
+import setup
 
 
 class Ui_MainWindow(QObject):
@@ -20,7 +20,7 @@ class Ui_MainWindow(QObject):
         self.CloseButton = QtWidgets.QPushButton(Form)
         self.CloseButton.setGeometry(QtCore.QRect(150, 50, 75, 23))
         self.CloseButton.setObjectName("CloseButton")
-        self.CloseButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.CloseButton.setStyleSheet(setup.QPushButtonCSS)
         self.CloseButton.clicked.connect(self.close)
 
         self.retranslateUi(Form)
@@ -37,4 +37,4 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.setStyleSheet(CSS.BackgroundCSS)
+        self.setStyleSheet(setup.BackgroundCSS)

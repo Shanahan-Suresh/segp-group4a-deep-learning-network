@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QObject
 from PyQt5.QtGui import QIcon
 
-import CSS
+import setup
 import load_model
 
 
@@ -13,7 +13,7 @@ class Ui_MainWindow(QObject):
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(241, 77)
-        MainWindow.setStyleSheet(CSS.BackgroundCSS)
+        MainWindow.setStyleSheet(setup.BackgroundCSS)
         MainWindow.setWindowIcon(QIcon('Icons/HappyIcon.png'))
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -26,18 +26,18 @@ class Ui_MainWindow(QObject):
         self.CloseButton = QtWidgets.QPushButton(self.centralwidget)
         self.CloseButton.setGeometry(QtCore.QRect(160, 50, 75, 23))
         self.CloseButton.setObjectName("CloseButton")
-        self.CloseButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.CloseButton.setStyleSheet(setup.QPushButtonCSS)
         self.CloseButton.clicked.connect(self.close)
 
         self.HappyIcon = QtWidgets.QLabel(self.centralwidget)
         self.HappyIcon.setGeometry(QtCore.QRect(10, 10, 51, 41))
-        self.HappyIcon.setStyleSheet(CSS.HappyIconCSS)
+        self.HappyIcon.setStyleSheet(setup.HappyIconCSS)
         self.HappyIcon.setText("")
         self.HappyIcon.setObjectName("HappyIcon")
 
         self.LoadModelButton = QtWidgets.QPushButton(self.centralwidget)
         self.LoadModelButton.setGeometry(QtCore.QRect(80, 50, 75, 23))
-        self.LoadModelButton.setStyleSheet(CSS.QPushButtonCSS)
+        self.LoadModelButton.setStyleSheet(setup.QPushButtonCSS)
         self.LoadModelButton.setObjectName("LoadModelButton")
 
         MainWindow.setCentralWidget(self.centralwidget)
