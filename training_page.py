@@ -478,19 +478,3 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # closes all sub windows when training page is closed.
     def closeEvent(self, event):
         self.StopTraining()
-
-        self.window = QtWidgets.QMainWindow()
-        self.window = TrainingPageDataErrorPopUp.MyWindow()
-        self.window.close()
-
-        self.window = QtWidgets.QMainWindow()
-        self.window = WrongFileImportedError.MyWindow()
-        self.window.close()
-
-        self.window = QtWidgets.QMainWindow()
-        self.window = ErrorModelName.MyWindow()
-        self.window.close()
-
-        self.window = QtWidgets.QMainWindow()
-        self.window = SaveModelPopUp.MyWindow()
-        self.window.close()
