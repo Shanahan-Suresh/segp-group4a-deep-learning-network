@@ -19,7 +19,7 @@ def ClearFile():
     LoadPreInstalledModel()
 
 
-# File containing name of pre installed model
+# File containing name of pre-installed model
 def LoadPreInstalledModel():
     file = open("Temp files/Path.txt", 'w')
 

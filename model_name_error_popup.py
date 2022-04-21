@@ -5,7 +5,7 @@ import setup
 
 
 class Ui_MainWindow(QObject):
-    #Set up error page for wrong model name selected
+    # Set up error page for wrong model name selected
     def setupUi(self, MainWindow):
         self.setWindowModality(QtCore.Qt.ApplicationModal)
         MainWindow.setWindowFlag(QtCore.Qt.WindowCloseButtonHint, False)

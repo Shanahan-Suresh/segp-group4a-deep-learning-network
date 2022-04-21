@@ -247,10 +247,11 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
     def SubmitAction(self):
         test_model_integration.main('Data Sets\Data.xlsx')
         test_model_integration.set_data(self.Temperature.text(), self.Humidity.text(), self.WindSpeed.text(),
-                             self.AluminiumTemp.text(), self.ChemicalTemp.text(), self.LauricAcid.text(),
-                             self.StearicAcid.text(),
-                             self.ParafinWax.text(), self.LauricAcidComp.text(), self.StearicAcidWaxComp.text(),
-                             self.ParafinWaxComp.text())
+                                        self.AluminiumTemp.text(), self.ChemicalTemp.text(), self.LauricAcid.text(),
+                                        self.StearicAcid.text(),
+                                        self.ParafinWax.text(), self.LauricAcidComp.text(),
+                                        self.StearicAcidWaxComp.text(),
+                                        self.ParafinWaxComp.text())
 
         file = open("Temp files/CorrectFileReceived.txt", 'r')
 
@@ -264,7 +265,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):  # ++++
             self.window.show()
 
         with open("Temp files/Variables.txt", 'w') as file:
-
             file.write(self.Temperature.text() + " °C" + "\n")
             file.write(self.Humidity.text() + " %" + "\n")
             file.write(self.WindSpeed.text() + " km/hr" + "\n")

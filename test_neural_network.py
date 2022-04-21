@@ -4,11 +4,13 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torchvision.utils import save_image
 
-#Function to return global image tensor
+
+# Function to return global image tensor
 def get_image():
     return ProducedImageTensor
 
-#Function to load in pre-saved model
+
+# Function to load in pre-saved model
 def load_model(data):
     file = open("Temp files/CorrectFileReceived.txt", 'w')
     file.write('1')
@@ -22,7 +24,7 @@ def load_model(data):
 
     model = Net()
 
-    #exception handling to detect if file is viable model
+    # exception handling to detect if file is viable model
     try:
         model.load_state_dict(torch.load(FileName, map_location=torch.device('cpu')), strict=False)
 
@@ -46,17 +48,16 @@ def load_model(data):
     return ProducedImageTensor
 
 
-
 # Saves a single tensor as an image to file
 def save_image_from_tensor(image_tensor, height=500, width=666):
-
     # swap tensor axes so 'channels' is first
     image_tensor = image_tensor.swapaxes(2, 1)
     image_tensor = image_tensor.swapaxes(1, 0)
     save_image(image_tensor, "Temp files/temp2.png")
-    
+
     # resize image to 666 * 500
-    image_tensor = F.interpolate(image_tensor.unsqueeze(0).float(), size=(height, width), mode='nearest').squeeze(0).float()
+    image_tensor = F.interpolate(image_tensor.unsqueeze(0).float(), size=(height, width), mode='nearest').squeeze(
+        0).float()
 
     # name of the saved file
     file_name = 'Temp files/temp.png'

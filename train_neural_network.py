@@ -103,6 +103,7 @@ def training(training_data, testing_data, epoch_num, mode, learning_rate, moment
     for epoch in range(epoch_num):
         torch.cuda.empty_cache()
 
+
         for i in range(len(training_data)):
             file = open("Temp files/StopTrainingFlag.txt", "r")
 

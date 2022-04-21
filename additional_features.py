@@ -6,27 +6,28 @@ from matplotlib import pyplot as plt
 from matplotlib.widgets import Button
 from torchvision import transforms
 
-os.environ['KMP_DUPLICATE_LIB_OK']='True'
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 
 global button_clicked_count
 
-#Function to normalize data received from cursor position
+
+# Function to normalize data received from cursor position
 def format_cursor_data(data):
+    if data[0] > 0.45 and data[1] >= 0.45:
+        return "[" + str(round((13 * data[0] + 8 * data[1] + 5.6 * data[2]), 2)) + "]"
 
-    if data[0] > 0.45 and data [1] >= 0.45:
-        return "[" + str(round((13*data[0] + 8*data[1] + 5.6*data[2]),2)) + "]"
+    if data[0] < 0.1 and data[1] >= data[2]:
 
-    if data[0] < 0.1 and data[1] >= data[2] :
-
-        if(data[1] - data[2] >= 0.2):
-            return "[" + str(round((15*data[0] + 14*data[1] + 5*data[2]),2)) + "]"
+        if (data[1] - data[2] >= 0.2):
+            return "[" + str(round((15 * data[0] + 14 * data[1] + 5 * data[2]), 2)) + "]"
 
         else:
-            return "[" + str(round((15*data[0] + 12*data[1] + 4*data[2]),2)) + "]"
+            return "[" + str(round((15 * data[0] + 12 * data[1] + 4 * data[2]), 2)) + "]"
 
-    return "[" + str(round((23*data[0] + 10*data[1] + 6*data[2]),2)) + "]"
+    return "[" + str(round((23 * data[0] + 10 * data[1] + 6 * data[2]), 2)) + "]"
 
-#Control draw line objects
+
+# Control draw line objects
 class LineBuilder(object):
     def __init__(self, fig, ax):
         self.xs = []
@@ -35,12 +36,12 @@ class LineBuilder(object):
         self.fig = fig
         self.points = Points()
 
-    def mouse_click(self, event):       
+    def mouse_click(self, event):
         if not event.inaxes:
             return
 
-        #left click
-        if event.button == 1 and 0 <= event.xdata <= 666 and 0 <= event.ydata <= 500 :
+        # left click
+        if event.button == 1 and 0 <= event.xdata <= 666 and 0 <= event.ydata <= 500:
 
             self.xs.append(event.xdata)
             self.ys.append(event.ydata)
@@ -48,9 +49,8 @@ class LineBuilder(object):
                 self.points.x_start_point(event.xdata)
                 self.points.y_start_point(event.ydata)
 
-            #add a line to plot if it has 2 points
+            # add a line to plot if it has 2 points
             if len(self.xs) % 2 == 0:
-
                 self.points.x_end_point(event.xdata)
                 self.points.y_end_point(event.ydata)
                 line, = self.ax.plot([self.xs[-2], self.xs[-1]], [self.ys[-2], self.ys[-1]], 'r')
@@ -58,53 +58,55 @@ class LineBuilder(object):
                 fig.canvas.mpl_disconnect(cid1)
                 fig.canvas.mpl_disconnect(cid2)
 
-        #right click
+        # right click
         if event.button == 3:
             if len(self.xs) > 0:
                 self.xs.pop()
                 self.ys.pop()
 
-            #delete last line drawn if the line is missing a point, never deletes the original stock plot
+            # delete last line drawn if the line is missing a point, never deletes the original stock plot
             if len(self.xs) % 2 == 1 and len(self.ax.lines) > 1:
                 self.ax.lines.pop()
                 fig.canvas.mpl_disconnect(cid1)
                 fig.canvas.mpl_disconnect(cid2)
 
-            #refresh plot
+            # refresh plot
             self.fig.canvas.draw()
 
-
-    #dtaws a temporary line from a single point to the mouse position
+    # draws a temporary line from a single point to the mouse position
     def mouse_move(self, event):
         if not event.inaxes:
             return
 
-        #delete the temporary line when mouse move to another position
+        # delete the temporary line when mouse move to another position
         if len(self.xs) % 2 == 1:
-            line, =self.ax.plot([self.xs[-1], event.xdata], [self.ys[-1], event.ydata], 'r')
+            line, = self.ax.plot([self.xs[-1], event.xdata], [self.ys[-1], event.ydata], 'r')
             line.figure.canvas.draw()
             self.ax.lines.pop()
 
-#Mouse point class definition
-class Points():
+
+# Mouse point class definition
+class Points:
     def __init__(self):
         self.start_point_x = 0
         self.start_point_y = 0
         self.end_point_x = 0
         self.end_point_y = 0
-    def x_start_point(self,point):
+
+    def x_start_point(self, point):
         self.start_point_x = numpy.floor(point)
 
-    def y_start_point(self,point):
+    def y_start_point(self, point):
         self.start_point_y = numpy.floor(point)
 
-    def x_end_point(self,point):
+    def x_end_point(self, point):
         self.end_point_x = numpy.floor(point)
 
-    def y_end_point(self,point):
+    def y_end_point(self, point):
         self.end_point_y = numpy.floor(point)
 
         self.get_all_coordinates()
+
     def get_all_coordinates(self):
         arr = []
         x_diff = self.end_point_x - self.start_point_x
@@ -113,84 +115,86 @@ class Points():
             m = 0
         else:
             m = (self.end_point_y - self.start_point_y) / (self.end_point_x - self.start_point_x)
-        
+
         c = self.end_point_y - m * self.end_point_x
 
-        if (self.start_point_x > self.end_point_x):
-            for x in range (int(self.start_point_x),int(self.end_point_x+1), -1):
+        if self.start_point_x > self.end_point_x:
+            for x in range(int(self.start_point_x), int(self.end_point_x + 1), -1):
                 y = m * x + c
-                arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
+                arr.append([int(numpy.ceil(x)), int(numpy.ceil(y))])
 
-
-        if(self.end_point_x == self.start_point_x):
+        if self.end_point_x == self.start_point_x:
             x = self.start_point_x
-            if(self.start_point_y > self.end_point_y):
-                for y in range(int(numpy.ceil(self.start_point_y)),int(numpy.floor(self.end_point_y)),-1):
-                    arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
+            if self.start_point_y > self.end_point_y:
+                for y in range(int(numpy.ceil(self.start_point_y)), int(numpy.floor(self.end_point_y)), -1):
+                    arr.append([int(numpy.ceil(x)), int(numpy.ceil(y))])
             else:
-                for y in range(int(numpy.ceil(self.start_point_y)),int(numpy.floor(self.end_point_y)),1):
-                    arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
+                for y in range(int(numpy.ceil(self.start_point_y)), int(numpy.floor(self.end_point_y)), 1):
+                    arr.append([int(numpy.ceil(x)), int(numpy.ceil(y))])
         else:
-            for x in range (int(self.start_point_x),int(self.end_point_x+1)):
+            for x in range(int(self.start_point_x), int(self.end_point_x + 1)):
                 y = m * x + c
-                arr.append([int(numpy.ceil(x)),int(numpy.ceil(y))])
-      
+                arr.append([int(numpy.ceil(x)), int(numpy.ceil(y))])
+
         calculate(arr)
 
 
-
-#Obtain data value from given rgb value 
+# Obtain data value from given rgb value
 def calculate(arr):
     rgb = []
     for x in range(len(arr)):
         x_coordinate = arr[x][0]
-        y_coordinate = arr[x][1]       
+        y_coordinate = arr[x][1]
         red_channel = image_tensor[y_coordinate][x_coordinate][0]
         green_channel = image_tensor[y_coordinate][x_coordinate][1]
         blue_channel = image_tensor[y_coordinate][x_coordinate][2]
 
-        rgb.append([red_channel.numpy(),green_channel.numpy(),blue_channel.numpy()])
-    
+        rgb.append([red_channel.numpy(), green_channel.numpy(), blue_channel.numpy()])
+
     calculate_temperature(rgb)
 
-#Calculate normalized temperature based from given data value
+
+# Calculate normalized temperature based from given data value
 def calculate_temperature(array):
     temp = []
     for x in range(len(array)):
 
-        if array[x][0] > 0.45 and array[x][1] >= 0.45:     
-            temp.append((round((13*array[x][0] + 8*array[x][1] + 5.6*array[x][2]),2)))
+        if array[x][0] > 0.45 and array[x][1] >= 0.45:
+            temp.append((round((13 * array[x][0] + 8 * array[x][1] + 5.6 * array[x][2]), 2)))
             continue
 
-        if array[x][0] < 0.1 and array[x][1] >= array[x][2] :
+        if array[x][0] < 0.1 and array[x][1] >= array[x][2]:
 
-            if(array[x][1] - array[x][2] >= 0.2):
-                temp.append((round((15*array[x][0] + 14*array[x][1] + 5*array[x][2]),2)))
+            if array[x][1] - array[x][2] >= 0.2:
+                temp.append((round((15 * array[x][0] + 14 * array[x][1] + 5 * array[x][2]), 2)))
             else:
-                temp.append((round((15*array[x][0] + 12*array[x][1] + 4*array[x][2]),2)))
+                temp.append((round((15 * array[x][0] + 12 * array[x][1] + 4 * array[x][2]), 2)))
             continue
 
-        else:           
-            temp.append((round((23*array[x][0] + 10*array[x][1] + 6*array[x][2]),2)))
+        else:
+            temp.append((round((23 * array[x][0] + 10 * array[x][1] + 6 * array[x][2]), 2)))
             continue
-    
+
     plot_graph(temp)
 
-#Plot graph based on array values
+
+# Plot graph based on array values
 def plot_graph(temp_array):
     n = len(temp_array)
     x = np.arange(n)
     fig1, ax1 = plt.subplots()
-    ax1.plot(x,temp_array)
+    ax1.plot(x, temp_array)
     plt.show()
 
-#Remove canvas
-def donecallback(cid1,cid2):
+
+# Remove canvas
+def donecallback(cid1, cid2):
     fig.canvas.mpl_disconnect(cid1)
     fig.canvas.mpl_disconnect(cid2)
-    
-#Plot lines between two points
-def plot_lines(event):
+
+
+# Plot lines between two points
+def plot_lines():
     global cid1
     global cid2
     cid1 = fig.canvas.mpl_connect('button_press_event', draw_line.mouse_click)
@@ -205,8 +209,8 @@ def main():
     convert_tensor = transforms.ToTensor()
 
     file_path1 = convert_tensor(file_path1)
-    file_path1 = file_path1.swapaxes(1,0)
-    file_path1 = file_path1.swapaxes(2,1)
+    file_path1 = file_path1.swapaxes(1, 0)
+    file_path1 = file_path1.swapaxes(2, 1)
 
     global image_tensor
     plt.close()
@@ -214,7 +218,7 @@ def main():
     global fig
     global ax
     fig, ax = plt.subplots()
-    ax.set_ylim([0,500])
+    ax.set_ylim([0, 500])
     tmp = ax.imshow(file_path1)
     tmp.format_cursor_data = format_cursor_data
 
@@ -227,4 +231,3 @@ def main():
     btn1.on_clicked(plot_lines)
 
     plt.show()
-
