@@ -15,39 +15,23 @@ from train_neural_network import main as train, get_graph, save_model
 import extract_data as extract
 
 
-class MainBackgroundThread(QThread):
-
-    file = open("Temp files/StopTrainingFlag.txt", "w")
-
-    file.write("0")
-
-    file.close()
-
+class MyThread(QThread):
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
                  preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget):
         QThread.__init__(self)
         self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio, self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar, self.Graph, self.Epoch_loss, self.Total_loss = ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum, preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget
 
     def run(self):
+        file = open("Temp files/StopTrainingFlag.txt", "w")
+
+        file.write("0")
+
+        file.close()
+
         train(self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio,
               self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
               self.Epoch_loss, self.Total_loss)
 
-        file = open("Temp files/StopTrainingFlag.txt", "r")
-        if file.read() == "1":
-            return
-        file.close()
-
-        plt.cla()
-        x, training_loss_arr, validation_loss_arr = get_graph()
-        plt.plot(x, training_loss_arr, color='r', label='training loss')
-        plt.plot(x, validation_loss_arr, color='g', label='validation loss')
-        plt.xlabel("Epoch")
-        plt.ylabel("Loss")
-        plt.title("Training Loss and Validation Loss")
-        plt.legend()
-        plt.savefig("Temp files/loss_graph")
-        self.Graph.setStyleSheet(setup.TrainingGraph)
 
 
 class Ui_MainWindow(object):
@@ -306,6 +290,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         filename = QFileDialog.getOpenFileName(self, 'Import data',
                                                'Data Sets', " Excel File *.xlsx")
         path = filename[0]
+        print(path)
         self.ImportDataPath.setText(path)
 
     # Open file dialog to import images
@@ -380,8 +365,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         file = open("Temp files/CorrectImportFilesRecieved.txt", "w")
 
         try:
-            extract.main(
-                self.ImportDataPath.text())
+            extract.main(self.ImportDataPath.text())
             CorrectDataPath = 1
         except:
             print("Could not load data from given Excel file.")
@@ -404,14 +388,7 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         file.close()
 
         if CorrectImagePath == 1 and CorrectDataPath == 1:
-            self.worker = MainBackgroundThread(self.ImportDataPath.text(), self.ImportImagesPath.text(),
-                                               self.Epoch.text(),
-                                               self.TrainingMode.currentText(), self.TrainingRatio.text(),
-                                               self.LearningRate.text(),
-                                               self.Momentum.text(), self.NewImage, self.OriginalImage,
-                                               self.progressBar,
-                                               self.Graph, self.EpochLoss, self.TotalTrainingLoss)
-            self.worker.start()
+            self.my_method()
 
     # Open error pop up to let user know the dataset and image folder is empty.
     def DataErrorPopUp(self):
@@ -496,3 +473,34 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # closes all sub windows when training page is closed.
     def closeEvent(self, event):
         self.StopTraining()
+
+    @QtCore.pyqtSlot()
+    def my_method(self):
+        self.loadthread = MyThread(self.ImportDataPath.text(), self.ImportImagesPath.text(),
+                                   self.Epoch.text(),
+                                   self.TrainingMode.currentText(), self.TrainingRatio.text(),
+                                   self.LearningRate.text(),
+                                   self.Momentum.text(), self.NewImage, self.OriginalImage,
+                                   self.progressBar,
+                                   self.Graph, self.EpochLoss, self.TotalTrainingLoss)
+        self.loadthread.start()
+        self.loadthread.finished.connect(self.on_finished)
+
+    @QtCore.pyqtSlot()
+    def on_finished(self):
+        file = open("Temp files/StopTrainingFlag.txt", "r")
+        flag = file.read()
+        file.close()
+        if flag == "1":
+            return
+
+        plt.cla()
+        x, training_loss_arr, validation_loss_arr = get_graph()
+        plt.plot(x, training_loss_arr, color='r', label='training loss')
+        plt.plot(x, validation_loss_arr, color='g', label='validation loss')
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+        plt.title("Training Loss and Validation Loss")
+        plt.legend()
+        plt.savefig("Temp files/loss_graph")
+        self.Graph.setStyleSheet(setup.TrainingGraph)
