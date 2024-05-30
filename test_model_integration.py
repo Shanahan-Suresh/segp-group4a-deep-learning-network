@@ -28,7 +28,7 @@ def set_data(temperature, humidity, windpseed, aluminium_temp, chemical_temp, la
     dataframe['Stearic Acid Composition'] = [sac]
 
     dataframe = dataframe.astype(float)
-    df = data.append(dataframe, ignore_index=True)
+    df = pd.concat([data, dataframe], ignore_index=True)
 
     normalized_data = normalize_data(df)
     input_data_normalized = normalized_data.iloc[-1]

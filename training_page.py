@@ -1,6 +1,6 @@
 import os
 from PyQt5 import QtCore, QtWidgets, QtGui
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, pyqtSlot
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QFileDialog
 from matplotlib import pyplot as plt
@@ -11,31 +11,39 @@ import save_model_popup
 import training_page_data_import_error_popup
 import training_stopped_popup
 import training_page_wrong_file_imported_popup
-from train_neural_network import main as train, get_graph, save_model
+from train_neural_network import main as train, save_model
 import extract_data as extract
+from train_neural_network import signals  # Import signals from backend
 
 
 class MyThread(QThread):
     def __init__(self, ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum,
                  preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget):
         QThread.__init__(self)
-        self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio, self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar, self.Graph, self.Epoch_loss, self.Total_loss = ImportDataPath, ImportImagesPath, Epoch, TrainingMode, TrainingRatio, LearningRate, Momentum, preview_image, original_image, progress_bar, graph_widget, epoch_loss_widget, total_loss_widget
+        self.ImportDataPath = ImportDataPath
+        self.ImportImagesPath = ImportImagesPath
+        self.Epoch = Epoch
+        self.TrainingMode = TrainingMode
+        self.TrainingRatio = TrainingRatio
+        self.LearningRate = LearningRate
+        self.Momentum = Momentum
+        self.PreviewImage = preview_image
+        self.OriginalImage = original_image
+        self.ProgressBar = progress_bar
+        self.Graph = graph_widget
+        self.Epoch_loss = epoch_loss_widget
+        self.Total_loss = total_loss_widget
 
     def run(self):
         file = open("Temp files/StopTrainingFlag.txt", "w")
-
         file.write("0")
-
         file.close()
-
         train(self.ImportDataPath, self.ImportImagesPath, self.Epoch, self.TrainingMode, self.TrainingRatio,
               self.LearningRate, self.Momentum, self.PreviewImage, self.OriginalImage, self.ProgressBar,
               self.Epoch_loss, self.Total_loss)
 
 
-
 class Ui_MainWindow(object):
-    # Set up training page
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(852, 539)
@@ -273,6 +281,14 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.SaveModelButton.clicked.connect(self.SaveModel)
         self.progressBar.valueChanged.connect(self.updateVariablesStatus)
 
+        # Connect signals to slots
+        signals.update_progress.connect(self.update_progress_bar)
+        signals.update_epoch_loss.connect(self.update_loss_bar)
+        signals.update_total_loss.connect(self.update_total_loss_bar)
+        signals.update_images.connect(self.update_images)
+        signals.update_graph.connect(self.update_graph)
+        signals.training_complete.connect(self.on_training_complete)
+
     def disableStopButton(self):
         self.StopButton.setEnabled(False)
 
@@ -285,7 +301,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def disableStartButton(self):
         self.StartButton.setEnabled(False)
 
-    # Open file dialog to import data
     def ImportData(self):
         filename = QFileDialog.getOpenFileName(self, 'Import data',
                                                'Data Sets', " Excel File *.xlsx")
@@ -293,14 +308,12 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         print(path)
         self.ImportDataPath.setText(path)
 
-    # Open file dialog to import images
     def ImportImages(self):
         filename = str(QFileDialog.getExistingDirectory(self, "Import images", 'Raw Data'))
         path = filename
         print(path)
         self.ImportImagesPath.setText(path)
 
-    # Update variables for training page while training is going on.
     def updateVariablesStatus(self):
         if 0 < self.progressBar.value() < 100:
             self.enableStopButton()
@@ -317,7 +330,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.progressBar.setValue(0)
             self.enableStartButton()
 
-    # Start training procedure.
     def StartTraining(self):
         self.Graph.setStyleSheet(setup.ClearImage)
         self.OriginalImage.setStyleSheet(setup.ClearImage)
@@ -347,18 +359,14 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.enableVariables(True)
                 self.enableStartButton()
 
-    # Stop training procedure.
     def StopTraining(self):
         self.progressBar.setValue(100)
         self.updateVariablesStatus()
 
         file = open("Temp files/StopTrainingFlag.txt", "w")
-
         file.write("1")
-
         file.close()
 
-    # Checks if data set and image folder provided are valid, if valid it starts training.
     def ValidateFiles(self):
         self.disableStartButton()
 
@@ -390,37 +398,31 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if CorrectImagePath == 1 and CorrectDataPath == 1:
             self.my_method()
 
-    # Open error pop up to let user know the dataset and image folder is empty.
     def DataErrorPopUp(self):
         self.window = QtWidgets.QMainWindow()
         self.window = training_page_data_import_error_popup.MyWindow()
         self.window.show()
 
-    # Open error pop us telling user which file provided is invalid.
     def error(self):
         self.window = QtWidgets.QMainWindow()
         self.window = training_page_wrong_file_imported_popup.MyWindow()
         self.window.show()
 
-    # Open error pop up and notifying user that model name entered is invalid.
     def ModelNameError(self):
         self.window = QtWidgets.QMainWindow()
         self.window = model_name_error_popup.MyWindow()
         self.window.show()
 
-    # Open  pop up notifying user of the file name saved for the model.
     def OpenSaveModelPopUp(self):
         self.window = QtWidgets.QMainWindow()
         self.window = save_model_popup.MyWindow()
         self.window.show()
 
-    # Open pop up notifying user that training has been stopped.
     def OpenTrainingStoppedPage(self):
         self.window = QtWidgets.QMainWindow()
         self.window = training_stopped_popup.MyWindow()
         self.window.show()
 
-    # Open pop up asking user if they want to replace the existing file.
     def OpenReplaceFileWindow(self):
         file = open("Temp files/ModelName.txt", "w")
 
@@ -434,7 +436,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.window.show()
         self.window.YesButton.clicked.connect(self.SaveFile)
 
-    # Method to save the file.
     def SaveFile(self):
         save_model(self.ModelName.text())
         file = open("Temp files/ModelName.txt", "w")
@@ -446,7 +447,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.OpenSaveModelPopUp()
 
-    # Verification done to check if file name is  valid, if valid then saves the model.
     def SaveModel(self):
         found = 0
         if self.ModelName.text().isalnum():
@@ -460,7 +460,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.ModelNameError()
 
-    # Unlocks or locks all input.
     def enableVariables(self, boolean):
         self.Epoch.setEnabled(boolean)
         self.TrainingMode.setEnabled(boolean)
@@ -470,7 +469,6 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ImportImagesButton.setEnabled(boolean)
         self.ImportDataButton.setEnabled(boolean)
 
-    # closes all sub windows when training page is closed.
     def closeEvent(self, event):
         self.StopTraining()
 
@@ -494,13 +492,47 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if flag == "1":
             return
 
+    @pyqtSlot(int)
+    def update_progress_bar(self, value):
+        self.progressBar.setValue(value)
+
+    @pyqtSlot(float)
+    def update_loss_bar(self, value):
+        self.EpochLoss.setText(f"Epoch Loss: {value}")
+
+    @pyqtSlot(float)
+    def update_total_loss_bar(self, value):
+        self.TotalTrainingLoss.setText(f"Training Loss: {value}")
+
+    @pyqtSlot(object, object)
+    def update_images(self, produced_image, original_image):
+        self.OriginalImage.setStyleSheet(setup.TrainingOriginalImage)
+        self.NewImage.setStyleSheet(setup.TrainingGeneratedImage)
+
+        # Add code to update images in the UI
+        pass
+
+    @pyqtSlot()
+    def on_training_complete(self):
+        self.progressBar.setValue(100)
+        self.updateVariablesStatus()
+
+    @pyqtSlot(list, list, list)
+    def update_graph(self, x, training_loss_arr, validation_loss_arr):
         plt.cla()
-        x, training_loss_arr, validation_loss_arr = get_graph()
-        plt.plot(x, training_loss_arr, color='r', label='training loss')
-        plt.plot(x, validation_loss_arr, color='g', label='validation loss')
+        plt.plot(x[:len(training_loss_arr)], training_loss_arr, color='r', label='training loss')
+        plt.plot(x[:len(validation_loss_arr)], validation_loss_arr, color='g', label='validation loss')
         plt.xlabel("Epoch")
         plt.ylabel("Loss")
         plt.title("Training Loss and Validation Loss")
         plt.legend()
-        plt.savefig("Temp files/loss_graph")
-        self.Graph.setStyleSheet(setup.TrainingGraph)
+        plt.savefig("Temp files/loss_graph.png")
+
+        # Load the saved graph image
+        pixmap = QtGui.QPixmap("Temp files/loss_graph.png")
+
+        # Resize the pixmap to fit the QLabel dimensions
+        scaled_pixmap = pixmap.scaled(self.Graph.size(), QtCore.Qt.KeepAspectRatio)
+
+        # Set the resized pixmap to the QLabel
+        self.Graph.setPixmap(scaled_pixmap)
